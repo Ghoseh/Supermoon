@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pdb
+*.obj
+*.o
+*.exe
+*.dll
+.zig-cache/
+zig-out/
+Music/
+Cache/
+State/
+*.log
+*.csv
+.env

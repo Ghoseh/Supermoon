@@ -1,0 +1,282 @@
+{
+  "scope": "Production/vendored/linked dependency families established from source, actual build receipts, PE imports and private companion PDBs. Not a complete redistribution clearance for every third-party file in the full multi-platform compiler archive.",
+  "components": [
+    {
+      "id": "dr_mp3",
+      "name": "dr_mp3",
+      "version": "0.7.4 (header says TBD), commit 51e61d308dde6b437fce0c5fabb32cd86b40f4d7 plus preserved Supermoon bounds/error patches",
+      "license": "MIT-0 selected; Unlicense alternative not required",
+      "integration": "Vendor header copied; low-level implementation compiled into supermoon_playlist.dll",
+      "notices_and_distribution_conditions": "MIT-0 has no attribution-retention condition. Preserve current LICENSE/header and minimp3 notice voluntarily; distinguish local modifications.",
+      "source_distribution_obligation": "No obligation to publish Supermoon or dependency source merely for binary distribution under these terms.",
+      "evidence_status": "confirmed",
+      "notes": "Header copyright2023 and separate repository LICENSE copyright2020 are both retained, not silently reconciled."
+    },
+    {
+      "id": "minimp3",
+      "name": "minimp3-derived decoder core",
+      "version": "Embedded snapshot within pinned dr_mp3; no independent minimp3 revision asserted",
+      "license": "CC0-1.0",
+      "integration": "Included inside dr_mp3; not a separately linked library",
+      "notices_and_distribution_conditions": "No mandatory copyright attribution/source offer under CC0; retain embedded acknowledgement and dedication as provenance.",
+      "source_distribution_obligation": "No obligation to publish Supermoon or dependency source merely for binary distribution under these terms.",
+      "evidence_status": "confirmed",
+      "notes": ""
+    },
+    {
+      "id": "libebur128",
+      "name": "libebur128",
+      "version": "1.2.6, commit 67b33abe1558160ed76ada1322329b0e9e058b02; compiled modified ebur128_peak.c",
+      "license": "MIT",
+      "integration": "Vendor source copied; generated/modified meter statically linked into playlist payload",
+      "notices_and_distribution_conditions": "Include full copyright, MIT permission and disclaimer with source and binary distributions. Retain upstream COPYING and clearly identify modified meter.",
+      "source_distribution_obligation": "No obligation to publish Supermoon or dependency source merely for binary distribution under these terms.",
+      "evidence_status": "confirmed",
+      "notes": ""
+    },
+    {
+      "id": "berkeley-queue",
+      "name": "Berkeley sys/queue.h",
+      "version": "8.5 (Berkeley) 1994-08-20, pinned by libebur128 file hash",
+      "license": "BSD-3-Clause",
+      "integration": "Copied header; queue macros compile into the loudness meter",
+      "notices_and_distribution_conditions": "Source retains full notice/conditions/disclaimer. Binary package reproduces them in documentation/materials. No endorsement using university/contributor names.",
+      "source_distribution_obligation": "No obligation to publish Supermoon or dependency source merely for binary distribution under these terms.",
+      "evidence_status": "confirmed",
+      "notes": ""
+    },
+    {
+      "id": "libcxx",
+      "name": "LLVM libc++",
+      "version": "Bundled Zig0.15.2 snapshot; _LIBCPP_VERSION=200100 (20.1.0 header)",
+      "license": "Apache-2.0 WITH LLVM-exception; legacy notices also preserved",
+      "integration": "Headers compiled and static C++ runtime included in both DLLs",
+      "notices_and_distribution_conditions": "Compiler-inserted object portions qualify for LLVM exception to Apache4(a),(b),(d). Full notice file recommended anyway. If library source/toolchain itself redistributed, retain applicable notices, LICENSE, change notices and NOTICE if supplied.",
+      "source_distribution_obligation": "No obligation to publish Supermoon or dependency source merely for binary distribution under these terms.",
+      "evidence_status": "confirmed",
+      "notes": ""
+    },
+    {
+      "id": "libcxxabi",
+      "name": "LLVM libc++abi",
+      "version": "Pinned Zig0.15.2 runtime snapshot (LLVM20.1 family; independent patch version not established)",
+      "license": "Apache-2.0 WITH LLVM-exception; retain legacy/per-file notices",
+      "integration": "Static exception/RTTI runtime in both DLLs; companion PDB has cxa_* modules",
+      "notices_and_distribution_conditions": "Same LLVM compilation exception distinction as libc++; preserve exact bundled LICENSE rather than replacing with generic Apache text.",
+      "source_distribution_obligation": "No obligation to publish Supermoon or dependency source merely for binary distribution under these terms.",
+      "evidence_status": "confirmed",
+      "notes": ""
+    },
+    {
+      "id": "libunwind",
+      "name": "LLVM libunwind",
+      "version": "Pinned Zig0.15.2 snapshot (LLVM20.1 family; independent patch version not established)",
+      "license": "Apache-2.0 WITH LLVM-exception; retain legacy/per-file notices",
+      "integration": "Static Windows SEH unwinder in both DLLs; Unwind-seh/UnwindLevel1/libunwind modules observed",
+      "notices_and_distribution_conditions": "Same LLVM compilation exception/source/tool redistribution rules. Ship exact license as conservative notice coverage.",
+      "source_distribution_obligation": "No obligation to publish Supermoon or dependency source merely for binary distribution under these terms.",
+      "evidence_status": "confirmed",
+      "notes": ""
+    },
+    {
+      "id": "zig-builtins",
+      "name": "Zig compiler runtime/builtins",
+      "version": "Zig0.15.2 pinned compiler_rt snapshot",
+      "license": "MIT for Zig implementation, with separately identified borrowed portions",
+      "integration": "Static compiler_rt_zcu.obj in both DLLs; not automatically the LLVM compiler-rt implementation",
+      "notices_and_distribution_conditions": "Include Zig copyright and MIT license for copied runtime portions; retain separate musl/other per-file notices. Do not apply LLVM exception to all Zig code.",
+      "source_distribution_obligation": "No obligation to publish Supermoon or dependency source merely for binary distribution under these terms.",
+      "evidence_status": "confirmed",
+      "notes": ""
+    },
+    {
+      "id": "musl-math",
+      "name": "musl-derived math helper code in Zig builtins",
+      "version": "Snapshot carried in Zig0.15.2; separate musl release not established",
+      "license": "MIT plus permissive per-file math notices (including BSD/Sun/Arm terms as applicable)",
+      "integration": "Referenced/ported within compiler runtime; compiler_rt.fma.dd symbols observed; full musl libc is not linked",
+      "notices_and_distribution_conditions": "Keep musl COPYRIGHT plus applicable math-file notices conservatively. Source-reference table can overinclude optimized-out functions; it is not a symbol-perfect bill of materials.",
+      "source_distribution_obligation": "No obligation to publish Supermoon or dependency source merely for binary distribution under these terms.",
+      "evidence_status": "confirmed family, conservative per-file attribution",
+      "notes": ""
+    },
+    {
+      "id": "mingw",
+      "name": "MinGW-w64 headers, CRT startup and UCRT bridge helpers",
+      "version": "13.0.0 alpha per bundled _mingw_mac.h; archive hash is authoritative",
+      "license": "ZPL-2.1 default with public-domain and separately licensed file exceptions",
+      "integration": "Headers and static CRT/bridge objects in both DLLs; OS UCRT imported dynamically",
+      "notices_and_distribution_conditions": "Carry COPYING for default-ZPL portions; source/binary retain required notices, nonendorsement/trademark conditions; modified ZPL files require change/date notices. Preserve public-domain notices and subordinate licenses.",
+      "source_distribution_obligation": "No obligation to publish Supermoon or dependency source merely for binary distribution under these terms.",
+      "evidence_status": "confirmed",
+      "notes": "COPYING mentions possible LGPL exceptions generally; no linked LGPL component was established. Do not classify all MinGW as public domain or LGPL."
+    },
+    {
+      "id": "gdtoa",
+      "name": "David M. Gay / Lucent gdtoa conversion code",
+      "version": "Vendored MinGW snapshot within Zig0.15.2; no independent release tag established",
+      "license": "LicenseRef-Lucent-gdtoa (exact permissive notices; do not substitute a different dtoa license text)",
+      "integration": "Statically linked in both DLLs; gethex/strtodg/strtopx and related modules/source references observed",
+      "notices_and_distribution_conditions": "Reproduce relevant Lucent copyright, permission and warranty notices in copies/supporting documentation; no Lucent-name advertising/publicity without permission. Preserve all differing year variants.",
+      "source_distribution_obligation": "No obligation to publish Supermoon or dependency source merely for binary distribution under these terms.",
+      "evidence_status": "confirmed",
+      "notes": ""
+    },
+    {
+      "id": "windows-ucrt",
+      "name": "Microsoft Universal CRT and api-ms-win-crt contracts",
+      "version": "10.0.26100.9711 (WinBuild.160101.0800) (current host, not fixed distribution version)",
+      "license": "Proprietary Microsoft Windows component",
+      "integration": "Dynamically imported by both DLLs from host OS; not copied into mod",
+      "notices_and_distribution_conditions": "Do not bundle arbitrary OS DLL copies. Current package relies on installed Windows components; separate authorized redistributable deployment would need its own Microsoft terms. No OSS attribution/source offer is triggered by using the OS API.",
+      "source_distribution_obligation": "No source distribution obligation from normal use of OS imports; no redistribution license inferred.",
+      "evidence_status": "confirmed",
+      "notes": ""
+    },
+    {
+      "id": "windows-kernel32.dll",
+      "name": "kernel32.dll — Windows kernel/user-mode platform APIs",
+      "version": "10.0.26100.9549 (WinBuild.160101.0800) (current host)",
+      "license": "Proprietary Microsoft Windows component",
+      "integration": "System dynamically resolved/imported; not redistributed. ",
+      "notices_and_distribution_conditions": "Use host-provided DLL; no OS DLL included in proposed mod notices bundle. Do not confuse original system WinMM with first-party Supermoon winmm.dll.",
+      "source_distribution_obligation": "No source publication requirement from normal host API use.",
+      "evidence_status": "confirmed",
+      "notes": ""
+    },
+    {
+      "id": "windows-user32.dll",
+      "name": "user32.dll — Windows UI/keyboard APIs",
+      "version": "10.0.26100.8117 (WinBuild.160101.0800) (current host)",
+      "license": "Proprietary Microsoft Windows component",
+      "integration": "System dynamically resolved/imported; not redistributed. ",
+      "notices_and_distribution_conditions": "Use host-provided DLL; no OS DLL included in proposed mod notices bundle. Do not confuse original system WinMM with first-party Supermoon winmm.dll.",
+      "source_distribution_obligation": "No source publication requirement from normal host API use.",
+      "evidence_status": "confirmed",
+      "notes": ""
+    },
+    {
+      "id": "windows-bcrypt.dll",
+      "name": "bcrypt.dll — Windows CNG cryptography APIs",
+      "version": "10.0.26100.1 (WinBuild.160101.0800) (current host)",
+      "license": "Proprietary Microsoft Windows component",
+      "integration": "System dynamically resolved/imported; not redistributed. ",
+      "notices_and_distribution_conditions": "Use host-provided DLL; no OS DLL included in proposed mod notices bundle. Do not confuse original system WinMM with first-party Supermoon winmm.dll.",
+      "source_distribution_obligation": "No source publication requirement from normal host API use.",
+      "evidence_status": "confirmed",
+      "notes": ""
+    },
+    {
+      "id": "windows-winmm.dll",
+      "name": "winmm.dll — Native Windows multimedia forwarding target",
+      "version": "10.0.26100.1 (WinBuild.160101.0800) (current host)",
+      "license": "Proprietary Microsoft Windows component",
+      "integration": "System dynamically resolved/imported; not redistributed. Native OS WinMM loaded by Supermoon proxy; not the first-party proxy DLL.",
+      "notices_and_distribution_conditions": "Use host-provided DLL; no OS DLL included in proposed mod notices bundle. Do not confuse original system WinMM with first-party Supermoon winmm.dll.",
+      "source_distribution_obligation": "No source publication requirement from normal host API use.",
+      "evidence_status": "confirmed",
+      "notes": ""
+    },
+    {
+      "id": "zig-tool",
+      "name": "Zig compiler/toolchain",
+      "version": "0.15.2; archived executable identity verified",
+      "license": "MIT for Zig itself; bundled components have their own licenses",
+      "integration": "Build-only; complete ZIP copied into PRIVATE RC1 reproducibility baseline, not runtime mod",
+      "notices_and_distribution_conditions": "If compiler is publicly redistributed, retain Zig MIT and all constituent licenses/notices; root MIT alone is insufficient. Prefer public build instructions with official download+SHA rather than bundling compiler.",
+      "source_distribution_obligation": "No source offer for Zig MIT itself; does not clear obligations of every transitive compiler/archive component.",
+      "evidence_status": "confirmed",
+      "notes": ""
+    },
+    {
+      "id": "llvm-tools",
+      "name": "LLVM/Clang/LLD compiler infrastructure",
+      "version": "Clang driver reports20.1.2; other independent tool patch versions not asserted",
+      "license": "Apache-2.0 WITH LLVM-exception plus applicable third-party/legacy notices",
+      "integration": "Build-only via Zig tool; LLVM compiler backend is not linked into Supermoon DLLs",
+      "notices_and_distribution_conditions": "Using compiler alone does not license generated Supermoon code under Apache. Redistributing compiler itself requires complete applicable notices/licenses, unlike merely distributing compiler-inserted runtime portions.",
+      "source_distribution_obligation": "No obligation to publish Supermoon or dependency source merely for binary distribution under these terms.",
+      "evidence_status": "confirmed",
+      "notes": ""
+    },
+    {
+      "id": "winpthreads",
+      "name": "MinGW-w64 winpthreads",
+      "version": "Snapshot bundled with Zig0.15.2",
+      "license": "MIT (per-file notices; Intel/mingw contributors)",
+      "integration": "Copied ONLY inside private compiler archive; no specifically linked winpthreads component established for RC1",
+      "notices_and_distribution_conditions": "Retain MIT notices if its source/binary is redistributed. libc++ mutex/thread module names alone must not be mistaken for winpthreads.",
+      "source_distribution_obligation": "No source publication requirement under inspected MIT terms.",
+      "evidence_status": "toolchain-only, no positive runtime inclusion",
+      "notes": ""
+    },
+    {
+      "id": "other-platform-libs",
+      "name": "Other-target libc/source trees in compiler ZIP",
+      "version": "Snapshots pinned by complete Zig archive SHA; separate platform versions not established",
+      "license": "Mixed: glibc LGPL/GPL exceptions; musl MIT/per-file; WASI Apache/MIT/LLVM exception; BSD/Darwin per-file terms",
+      "integration": "Private build-tool archive copies only; not Windows RC1 runtime dependencies",
+      "notices_and_distribution_conditions": "Not covered by a blanket Zig MIT statement. Any PUBLIC compiler/source-archive redistribution needs a separate complete per-file license/source-obligation pass. No need to copy these trees into Supermoon runtime/source releases.",
+      "source_distribution_obligation": "Conditional: GPL/LGPL components can impose license/source/corresponding-source or relink requirements if actually redistributed in covered forms. No such Supermoon runtime requirement established.",
+      "evidence_status": "conditional archive redistribution, not runtime inclusion",
+      "notes": ""
+    },
+    {
+      "id": "supermoon",
+      "name": "Supermoon first-party code",
+      "version": "v1.0.0; exact endurance-tested RC1 binaries",
+      "license": "MIT for original source and documentation",
+      "integration": "Both DLLs and source; distinct from third-party licenses",
+      "notices_and_distribution_conditions": "Preserve LICENSE copyright and permission notice with copies or substantial portions. Third-party and original recording terms are separate.",
+      "source_distribution_obligation": "MIT does not require publishing source or a source offer.",
+      "evidence_status": "Owner selected MIT on 2026-10-16.",
+      "notes": ""
+    },
+    {
+      "id": "notification-assets",
+      "name": "Owner-created shuffle notification PCM",
+      "version": "Pinned RC1 notification_assets_data.inc and two PCM reference files",
+      "license": "Original recordings; reserved rights, included for Supermoon use; see ASSET_NOTICE.md",
+      "integration": "Copied/compiled into playlist payload; not one of27 personal playlist songs",
+      "notices_and_distribution_conditions": "Both cues are owner-created. No third-party audio attribution is required. The source-code MIT grant does not grant separate standalone reuse rights in recordings/sample arrays.",
+      "source_distribution_obligation": "No third-party source obligation; asset terms remain separate from source MIT.",
+      "evidence_status": "Owner-confirmed original authorship in this conversation",
+      "notes": ""
+    },
+    {
+      "id": "nms-host",
+      "name": "No Man's Sky / native ByteBeat host",
+      "version": "Pinned executable SHA256 13d5060d4efb9d2a6a6b1b349bc4257231056cc2a055df4bb15d816262cc3499",
+      "license": "Proprietary host; no game redistribution license asserted",
+      "integration": "Native ABI/hook interoperability; no game executable, Wwise SDK or game audio library is supplied as a redistributable dependency",
+      "notices_and_distribution_conditions": "Keep game files, copied-function fixtures, disassembly and private interoperability evidence out of public package. OSS dependency notices do not grant host/game-asset rights.",
+      "source_distribution_obligation": "No host-source distribution license or obligation inferred from interoperability.",
+      "evidence_status": "scope boundary, not legal clearance",
+      "notes": ""
+    }
+  ],
+  "compiler": {
+    "compiler": "Zig 0.15.2",
+    "driver_reported_Clang": "20.1.2",
+    "target": "x86_64-unknown-windows-gnu",
+    "bootstrap_commit": "7ef74e656cf8ddbd6bf891a8475892aa1afa6891",
+    "libcxx_header_version": 200100,
+    "mingw_header_version": "13.0.0 alpha",
+    "archive_sha256": "3a0ed1e8799a2f8ce2a6e6290a9ff22e6906f8227865911fb7ddedc3cc14cb0c",
+    "zig_exe_sha256": "d408dd38eed3e5204af841bcebf70502a4dbbb8399a3a3262be55059370bc018",
+    "compiler_queried_version_only_no_compilation": true
+  },
+  "DLLs": {
+    "winmm.dll": {
+      "bytes": 937984,
+      "sha256": "30e5fb9cf5470ca8b209169d4e344f120b06883e9d2d57f72918093c32ade92f"
+    },
+    "supermoon_playlist.dll": {
+      "bytes": 6140928,
+      "sha256": "2a936e8efcafe1ed2c94d9b66e19bae2b135f53e4d3659a2b35956b9d7b2970d"
+    }
+  },
+  "notification_recordings": "Owner-created; see ASSET_NOTICE.md.",
+  "original_source_license": "MIT, owner selected 2026-10-16; see LICENSE.",
+  "runtime_source_offer_obligation": "None identified for the included Windows runtime components. Full compiler archive is not distributed."
+}

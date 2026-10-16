@@ -1,0 +1,214 @@
+--- upstream/dr_mp3.h
++++ supermoon/dr_mp3.h
+@@ -269,7 +269,7 @@
+ typedef struct
+ {
+     const drmp3_uint8 *buf;
+-    int pos, limit;
++    int pos, limit, error; /* Sticky Supermoon bounded-decode failure. */
+ } drmp3_bs;
+ 
+ typedef struct
+@@ -824,10 +824,18 @@
+     bs->buf   = data;
+     bs->pos   = 0;
+     bs->limit = bytes*8;
++    bs->error = 0;
+ }
+ 
+ static drmp3_uint32 drmp3_bs_get_bits(drmp3_bs *bs, int n)
+ {
++    /* Supermoon bounded bitreader: validate before forming a source pointer. */
++    if (n < 0 || n > 32 || bs->pos < 0 || bs->pos > bs->limit || n > bs->limit - bs->pos) {
++        bs->error = 1;
++        bs->pos = bs->limit + 1;
++        return 0;
++    }
++    if (n == 0) return 0;
+     drmp3_uint32 next, cache = 0, s = bs->pos & 7;
+     int shl = n + s;
+     const drmp3_uint8 *p = bs->buf + (bs->pos >> 3);
+@@ -1356,19 +1364,32 @@
+ 
+ #define DRMP3_PEEK_BITS(n)    (bs_cache >> (32 - (n)))
+ #define DRMP3_FLUSH_BITS(n)   { bs_cache <<= (n); bs_sh += (n); }
+-#define DRMP3_CHECK_BITS      while (bs_sh >= 0) { bs_cache |= (drmp3_uint32)*bs_next_ptr++ << bs_sh; bs_sh -= 8; }
+-#define DRMP3_BSPOS           ((bs_next_ptr - bs->buf)*8 - 24 + bs_sh)
++#define DRMP3_CHECK_BITS      while (bs_sh >= 0) { if (bs_sh >= 32) { bs->error = 1; bs->pos = bs->limit; return; } bs_cache |= (drmp3_uint32)DRMP3_HUFF_BYTE(bs_next_index) << bs_sh; ++bs_next_index; bs_sh -= 8; }
++#define DRMP3_BSPOS           ((int)(bs_next_index*8) - 24 + bs_sh)
++#define DRMP3_HUFF_BYTE(i)    ((i) < bs_bytes ? bs->buf[(i)] : 0)
++/* Speculative table lookahead stays zero-extended; required code/sign/linbits
++   consumption must fit the current granule, even when later bytes exist. */
++#define DRMP3_CONSUME_BITS(n) { int required_bits = (n); if (DRMP3_BSPOS > layer3gr_limit || required_bits > layer3gr_limit - DRMP3_BSPOS) { bs->error = 1; return; } DRMP3_FLUSH_BITS(required_bits); }
+ 
+     float one = 0.0f;
+     int ireg = 0, big_val_cnt = gr_info->big_values;
+     const drmp3_uint8 *sfb = gr_info->sfbtab;
+-    const drmp3_uint8 *bs_next_ptr = bs->buf + bs->pos/8;
+-    drmp3_uint32 bs_cache = (((bs_next_ptr[0]*256u + bs_next_ptr[1])*256u + bs_next_ptr[2])*256u + bs_next_ptr[3]) << (bs->pos & 7);
+-    int pairs_to_decode, np, bs_sh = (bs->pos & 7) - 8;
+-    bs_next_ptr += 4;
++    /* Bounded virtual lookahead: zero extend; never form/read an OOB pointer. */
++    size_t bs_bytes = (size_t)((bs->limit + 7)/8), bs_next_index;
++    const float *scf_end = scf + 40;
++    float *dst_end = dst + 576;
++    const drmp3_uint8 *sfb_end = sfb + gr_info->n_long_sfb + gr_info->n_short_sfb + 1;
++    drmp3_uint32 bs_cache;
++    int pairs_to_decode, np, bs_sh;
++    if (bs->error || bs->pos < 0 || bs->pos > bs->limit || bs->limit < 0 || layer3gr_limit < bs->pos || layer3gr_limit > bs->limit) { bs->error = 1; bs->pos = bs->limit; return; }
++    bs_next_index = (size_t)(bs->pos/8);
++    bs_cache = (((DRMP3_HUFF_BYTE(bs_next_index)*256u + DRMP3_HUFF_BYTE(bs_next_index+1))*256u + DRMP3_HUFF_BYTE(bs_next_index+2))*256u + DRMP3_HUFF_BYTE(bs_next_index+3)) << (bs->pos & 7);
++    bs_sh = (bs->pos & 7) - 8;
++    bs_next_index += 4;
+ 
+     while (big_val_cnt > 0)
+     {
++        if (ireg >= 3) { bs->error = 1; bs->pos = bs->limit; return; }
+         int tab_num = gr_info->table_select[ireg];
+         int sfb_cnt = gr_info->region_count[ireg++];
+         const drmp3_int16 *codebook = tabs + tabindex[tab_num];
+@@ -1377,20 +1398,23 @@
+         {
+             do
+             {
++                if (sfb >= sfb_end || scf >= scf_end) { bs->error = 1; bs->pos = bs->limit; return; }
+                 np = *sfb++ / 2;
++                if (np <= 0 || dst_end - dst < 2) { bs->error = 1; bs->pos = bs->limit; return; }
+                 pairs_to_decode = DRMP3_MIN(big_val_cnt, np);
+                 one = *scf++;
+                 do
+                 {
++                    if (dst_end - dst < 2) { bs->error = 1; bs->pos = bs->limit; return; }
+                     int j, w = 5;
+                     int leaf = codebook[DRMP3_PEEK_BITS(w)];
+                     while (leaf < 0)
+                     {
+-                        DRMP3_FLUSH_BITS(w);
++                        DRMP3_CONSUME_BITS(w);
+                         w = leaf & 7;
+                         leaf = codebook[DRMP3_PEEK_BITS(w) - (leaf >> 3)];
+                     }
+-                    DRMP3_FLUSH_BITS(leaf >> 8);
++                    DRMP3_CONSUME_BITS(leaf >> 8);
+ 
+                     for (j = 0; j < 2; j++, dst++, leaf >>= 4)
+                     {
+@@ -1398,14 +1422,14 @@
+                         if (lsb == 15)
+                         {
+                             lsb += DRMP3_PEEK_BITS(linbits);
+-                            DRMP3_FLUSH_BITS(linbits);
++                            DRMP3_CONSUME_BITS(linbits);
+                             DRMP3_CHECK_BITS;
+                             *dst = one*drmp3_L3_pow_43(lsb)*((drmp3_int32)bs_cache < 0 ? -1: 1);
+                         } else
+                         {
+                             *dst = g_drmp3_pow43[16 + lsb - 16*(bs_cache >> 31)]*one;
+                         }
+-                        DRMP3_FLUSH_BITS(lsb ? 1 : 0);
++                        DRMP3_CONSUME_BITS(lsb ? 1 : 0);
+                     }
+                     DRMP3_CHECK_BITS;
+                 } while (--pairs_to_decode);
+@@ -1414,26 +1438,29 @@
+         {
+             do
+             {
++                if (sfb >= sfb_end || scf >= scf_end) { bs->error = 1; bs->pos = bs->limit; return; }
+                 np = *sfb++ / 2;
++                if (np <= 0 || dst_end - dst < 2) { bs->error = 1; bs->pos = bs->limit; return; }
+                 pairs_to_decode = DRMP3_MIN(big_val_cnt, np);
+                 one = *scf++;
+                 do
+                 {
++                    if (dst_end - dst < 2) { bs->error = 1; bs->pos = bs->limit; return; }
+                     int j, w = 5;
+                     int leaf = codebook[DRMP3_PEEK_BITS(w)];
+                     while (leaf < 0)
+                     {
+-                        DRMP3_FLUSH_BITS(w);
++                        DRMP3_CONSUME_BITS(w);
+                         w = leaf & 7;
+                         leaf = codebook[DRMP3_PEEK_BITS(w) - (leaf >> 3)];
+                     }
+-                    DRMP3_FLUSH_BITS(leaf >> 8);
++                    DRMP3_CONSUME_BITS(leaf >> 8);
+ 
+                     for (j = 0; j < 2; j++, dst++, leaf >>= 4)
+                     {
+                         int lsb = leaf & 0x0F;
+                         *dst = g_drmp3_pow43[16 + lsb - 16*(bs_cache >> 31)]*one;
+-                        DRMP3_FLUSH_BITS(lsb ? 1 : 0);
++                        DRMP3_CONSUME_BITS(lsb ? 1 : 0);
+                     }
+                     DRMP3_CHECK_BITS;
+                 } while (--pairs_to_decode);
+@@ -1443,6 +1470,7 @@
+ 
+     for (np = 1 - big_val_cnt;; dst += 4)
+     {
++        if (dst_end - dst < 4) break;
+         const drmp3_uint8 *codebook_count1 = (gr_info->count1_table) ? tab33 : tab32;
+         int leaf = codebook_count1[DRMP3_PEEK_BITS(4)];
+         if (!(leaf & 8))
+@@ -1454,7 +1482,10 @@
+         {
+             break;
+         }
+-#define DRMP3_RELOAD_SCALEFACTOR  if (!--np) { np = *sfb++/2; if (!np) break; one = *scf++; }
++        /* An incomplete final count1 quad is stuffing, not mandatory big_values.
++           Do not emit any coefficient unless all its sign bits fit. */
++        if (((leaf >> 7)&1) + ((leaf >> 6)&1) + ((leaf >> 5)&1) + ((leaf >> 4)&1) > layer3gr_limit - DRMP3_BSPOS) break;
++#define DRMP3_RELOAD_SCALEFACTOR  if (!--np) { if (sfb >= sfb_end || scf >= scf_end) { bs->error = 1; return; } np = *sfb++/2; if (!np) break; one = *scf++; }
+ #define DRMP3_DEQ_COUNT1(s) if (leaf & (128 >> s)) { dst[s] = ((drmp3_int32)bs_cache < 0) ? -one : one; DRMP3_FLUSH_BITS(1) }
+         DRMP3_RELOAD_SCALEFACTOR;
+         DRMP3_DEQ_COUNT1(0);
+@@ -1833,9 +1864,16 @@
+ 
+     for (ch = 0; ch < nch; ch++)
+     {
++        int physical_limit = s->bs.limit;
+         int layer3gr_limit = s->bs.pos + gr_info[ch].part_23_length;
++        if (s->bs.error || layer3gr_limit < s->bs.pos || layer3gr_limit > physical_limit) { s->bs.error = 1; return; }
++        /* Scalefactors use the same declared budget as Huffman data. */
++        s->bs.limit = layer3gr_limit;
+         drmp3_L3_decode_scalefactors(h->header, s->ist_pos[ch], &s->bs, gr_info + ch, s->scf, ch);
++        s->bs.limit = physical_limit;
++        if (s->bs.error) return;
+         drmp3_L3_huffman(s->grbuf[ch], &s->bs, gr_info + ch, s->scf, layer3gr_limit);
++        if (s->bs.error) return;
+     }
+ 
+     if (DRMP3_HDR_TEST_I_STEREO(h->header))
+@@ -2315,6 +2353,7 @@
+     int i = 0, igr, frame_size = 0, success = 1;
+     const drmp3_uint8 *hdr;
+     drmp3_bs bs_frame[1];
++    void *pcm_start = pcm;
+ 
+     if (mp3_bytes > 4 && dec->header[0] == 0xff && drmp3_hdr_compare(dec->header, mp3))
+     {
+@@ -2352,7 +2391,7 @@
+     if (info->layer == 3)
+     {
+         int main_data_begin = drmp3_L3_read_side_info(bs_frame, dec->scratch.gr_info, hdr);
+-        if (main_data_begin < 0 || bs_frame->pos > bs_frame->limit)
++        if (main_data_begin < 0 || bs_frame->error || bs_frame->pos > bs_frame->limit)
+         {
+             drmp3dec_init(dec);
+             return 0;
+@@ -2364,6 +2403,14 @@
+             {
+                 DRMP3_ZERO_MEMORY(dec->scratch.grbuf[0], 576*2*sizeof(float));
+                 drmp3_L3_decode(dec, &dec->scratch, dec->scratch.gr_info + igr*info->channels, info->channels);
++                if (dec->scratch.bs.error)
++                {
++                    /* A later granule may fail after earlier synthesis. A failed
++                       frame publishes neither a successful count nor partial PCM. */
++                    DRMP3_ZERO_MEMORY(pcm_start, drmp3_hdr_frame_samples(hdr)*info->channels*sizeof(drmp3d_sample_t));
++                    drmp3dec_init(dec);
++                    return 0;
++                }
+                 drmp3d_synth_granule(dec->qmf_state, dec->scratch.grbuf[0], 18, info->channels, (drmp3d_sample_t*)pcm, dec->scratch.syn[0]);
+             }
+         }

@@ -1,0 +1,52 @@
+{
+  "compiler": {
+    "compiler": "Zig 0.15.2",
+    "driver_reported_Clang": "20.1.2",
+    "target": "x86_64-unknown-windows-gnu",
+    "bootstrap_commit": "7ef74e656cf8ddbd6bf891a8475892aa1afa6891",
+    "libcxx_header_version": 200100,
+    "mingw_header_version": "13.0.0 alpha",
+    "archive_sha256": "3a0ed1e8799a2f8ce2a6e6290a9ff22e6906f8227865911fb7ddedc3cc14cb0c",
+    "zig_exe_sha256": "d408dd38eed3e5204af841bcebf70502a4dbbb8399a3a3262be55059370bc018",
+    "compiler_queried_version_only_no_compilation": true
+  },
+  "payload_sources": [
+    "supermoon_playback.cpp",
+    "native_bridges.S",
+    "observer.cpp",
+    "title_test.cpp",
+    "title_test_bridge.S",
+    "time.cpp",
+    "time_bridge.S",
+    "writer.cpp",
+    "wav_reader.cpp",
+    "playlist/stream_engine.cpp",
+    "playlist/notifications.cpp",
+    "playlist/wav_pipeline.cpp",
+    "playlist/mp3_reader.cpp",
+    "playlist/normalization.cpp",
+    "playlist/persistent_cache.cpp",
+    "playlist/library.cpp",
+    "playlist/keyboard_settings.cpp",
+    "playlist/windows_keyboard.cpp",
+    "recovery_native.cpp"
+  ],
+  "proxy_sources": [
+    "winmm_bootstrap.cpp",
+    "playlist/winmm_forwarding.cpp",
+    "winmm_forwarders.S",
+    "playlist/compatibility.cpp"
+  ],
+  "DLLs": {
+    "winmm.dll": {
+      "bytes": 937984,
+      "sha256": "30e5fb9cf5470ca8b209169d4e344f120b06883e9d2d57f72918093c32ade92f"
+    },
+    "supermoon_playlist.dll": {
+      "bytes": 6140928,
+      "sha256": "2a936e8efcafe1ed2c94d9b66e19bae2b135f53e4d3659a2b35956b9d7b2970d"
+    }
+  },
+  "game_executable_sha256": "13d5060d4efb9d2a6a6b1b349bc4257231056cc2a055df4bb15d816262cc3499",
+  "game_executable_bytes": 88560712
+}

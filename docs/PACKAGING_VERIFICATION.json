@@ -1,0 +1,134 @@
+{
+  "result": "PASS",
+  "original_source_license": "MIT (owner selected)",
+  "source_files": 89,
+  "comment_only_copyright_files": 64,
+  "production_preprocessing_units": 24,
+  "all_noncomment_and_preprocessed_tokens_identical": true,
+  "vendor_generated_meter_DEF_configuration_assets_byte_identical": true,
+  "DLLs": {
+    "winmm.dll": {
+      "bytes": 937984,
+      "sha256": "30e5fb9cf5470ca8b209169d4e344f120b06883e9d2d57f72918093c32ade92f"
+    },
+    "supermoon_playlist.dll": {
+      "bytes": 6140928,
+      "sha256": "2a936e8efcafe1ed2c94d9b66e19bae2b135f53e4d3659a2b35956b9d7b2970d"
+    }
+  },
+  "exports": {
+    "winmm.dll": 181,
+    "supermoon_playlist.dll": 5
+  },
+  "selected_public_native_suites_passed": 11,
+  "F1_guard_cases_normal_and_UBSan": 585,
+  "parser_allocations": 0,
+  "compiler_preprocessing_only_no_runtime_rebuild": true,
+  "portable_wrapper_build_executed": false,
+  "portable_wrapper_dry_run_recipe_and_closure_checked": true,
+  "normalizer_idempotence_checked_on_disposable_copies": true,
+  "regression_test_binaries_only_compiled": true,
+  "DLLs_loaded_installed_or_game_launched": false,
+  "public_test_summaries": [
+    {
+      "test": "startup_policy_tests",
+      "UBSan": false,
+      "result": "PASS",
+      "stdout": "PASS 46 startup readiness/disable-policy checks; no game loaded\n",
+      "stderr": ""
+    },
+    {
+      "test": "wav_pipeline_tests",
+      "UBSan": false,
+      "result": "PASS",
+      "stdout": "PASS internal WAV pipeline PCM8/16/24/32 float32/64 extensible mono/stereo, strict RIFF, exact counts, direct24k, float average, negative-only reconstructed-peak headroom, source pins, cache refusal; passband_RMS=0.353579 alias_RMS=8.44168e-06 bounded disk-backed preparation\n",
+      "stderr": ""
+    },
+    {
+      "test": "cache_tests",
+      "UBSan": false,
+      "result": "PASS",
+      "stdout": "BENCH cold_2 ms=18.6632 reused=0 rebuilt=2 hash_bytes=38488 disk_bytes=20086\nBENCH warm_2 ms=2.0952 reused=2 rebuilt=0 hash_bytes=38488 disk_bytes=20086\nBENCH add_one ms=10.182 reused=2 rebuilt=1 hash_bytes=57732 disk_bytes=30131\nBENCH modify_one ms=9.2908 reused=2 rebuilt=1 hash_bytes=57732 disk_bytes=40176\nBENCH cold_1000 ms=4974.22 reused=0 rebuilt=1000 hash_bytes=844000 disk_bytes=841002\nBENCH warm_1000 ms=843.26 reused=1000 rebuilt=0 hash_bytes=844000 disk_bytes=841002\nPASS persistent cache 1625 checks; crash children, strict integrity, incremental reuse, referenced leases, quota, Unicode, isolated failures; fixture root=<fresh owned disposable directory>\n",
+      "stderr": ""
+    },
+    {
+      "test": "notification_tests",
+      "UBSan": false,
+      "result": "PASS",
+      "stdout": "PASS notification checks=1976117 audited_allocations=0 latest_commit_bounded actual_core_mix playlist_cursor_intact fallback config exclusion\n",
+      "stderr": ""
+    },
+    {
+      "test": "notification_peak_tests",
+      "UBSan": false,
+      "result": "PASS",
+      "stdout": "mix amplitude=0.100000 on=0 true_peak=0.461004049\nmix amplitude=0.100000 on=1 true_peak=0.296863586\nmix amplitude=0.841395 on=0 true_peak=0.923755169\nmix amplitude=0.841395 on=1 true_peak=0.942258120\nmix amplitude=0.881050 on=0 true_peak=0.937176049\nmix amplitude=0.881050 on=1 true_peak=0.950290680\nmix amplitude=0.944060 on=0 true_peak=0.976317465\nmix amplitude=0.944060 on=1 true_peak=0.976317465\nrapid mode=0 true_peak=0.963193595\nrapid mode=1 true_peak=0.963193595\nPASS notification true_peak cases=10 maximum=0.976317465 unchanged_resident_meter\n",
+      "stderr": ""
+    },
+    {
+      "test": "stream_engine_tests",
+      "UBSan": false,
+      "result": "PASS",
+      "stdout": "PASS stream engine: 100 real EOF songs/20 shuffle cycles, exact samples, audible history, stale generations, scoped activity, invalid caches, bounded commands, concurrent controls; zero audited callback allocations, 50 worker lifecycles/no handle leak; PCM queue=65536 bytes\n",
+      "stderr": ""
+    },
+    {
+      "test": "endurance_tests",
+      "UBSan": false,
+      "result": "PASS",
+      "stdout": "PASS endurance checks=161940 simulated_seconds=16200 callbacks=648000 completed_frames=388800000 empty_frames=21600 ring_dropped=0 concurrent_admitted=61910 rejected_accounted=38090\n",
+      "stderr": ""
+    },
+    {
+      "test": "keyboard_tests",
+      "UBSan": false,
+      "result": "PASS",
+      "stdout": "PASS keyboard checks=150273 handles=70->70 callbacks_new=0 four_edges=PASS config=PASS persistence=PASS shuffle_mode=PASS previous3sec=PASS continuity=PASS\nLIMITS: owned fixtures and deterministic input contexts; no NMS focus/overlay/binding/live keyboard verification. LUFS is qualified separately by the consolidated cache/audio test.\n",
+      "stderr": "HANDLES before child first use 68\nHANDLES after child first use 70\nHANDLES settings 70\nHANDLES engine 70\nHANDLES delayed 70\nHANDLES scoped 70\nHANDLES producers 70\nHANDLES child 70\nOWN handle comparison before=70 after=70\n"
+    },
+    {
+      "test": "forwarding_tests",
+      "UBSan": false,
+      "result": "PASS",
+      "stdout": "PASS WINMM own-process subset: seven failure children, 181 OS targets, hot/slow ABI stubs and concurrent resolvers; separate proxy DLL load intentionally skipped\n",
+      "stderr": ""
+    },
+    {
+      "test": "compatibility_tests",
+      "UBSan": false,
+      "result": "PASS",
+      "stdout": "PASS compatibility: per-build Yes/No persistence/reset, native validation mandatory, all policy combinations, suspected active-session recovery, exclusive ownership, corrupt-state refusal; no Windows dialog or game activation\n",
+      "stderr": ""
+    },
+    {
+      "test": "recovery_tests",
+      "UBSan": false,
+      "result": "PASS",
+      "stdout": "PASS recovery: actual child termination AND normal exit without clean token; activation rejection/partial/success/returnless exits permit next process; legacy advisory; live duplicate and unqueryable owner refusal; PID reuse identity; failed return writes; corrupt state; 100 initializations. Native clean exit still unproven\n",
+      "stderr": ""
+    },
+    {
+      "test": "f1_guard",
+      "UBSan": false,
+      "result": "PASS",
+      "stdout": "{\"checks\": 585, \"failures\": 0, \"parser_allocations\": 0, \"guard_pages\": true}",
+      "stderr": ""
+    },
+    {
+      "test": "startup_policy_tests",
+      "UBSan": true,
+      "result": "PASS",
+      "stdout": "PASS 46 startup readiness/disable-policy checks; no game loaded\n",
+      "stderr": ""
+    },
+    {
+      "test": "f1_guard",
+      "UBSan": true,
+      "result": "PASS",
+      "stdout": "{\"checks\": 585, \"failures\": 0, \"parser_allocations\": 0, \"guard_pages\": true}",
+      "stderr": ""
+    }
+  ],
+  "privacy": "Exact final files/archive members must be verified by their manifests; initial byte-pattern coincidences were inspected, no personal data or secrets found. Required upstream attribution retained.",
+  "preservation": "Protected source, baseline, music, inventory and endurance evidence compared before/after; historical telemetry exception not repaired or concealed."
+}

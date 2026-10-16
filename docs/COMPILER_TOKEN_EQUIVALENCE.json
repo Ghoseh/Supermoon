@@ -1,0 +1,314 @@
+[
+  {
+    "unit": "supermoon_playback.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 1078488,
+      "sha256": "8541549abf491d052c170b74c74d2fffa77e54b8cfe149242c442d3716915009"
+    },
+    "public": {
+      "tokens": 1078488,
+      "sha256": "8541549abf491d052c170b74c74d2fffa77e54b8cfe149242c442d3716915009"
+    },
+    "identical": true
+  },
+  {
+    "unit": "native_bridges.S",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 457,
+      "sha256": "e6ebb33617cf6c02564939abafd324264c29d3fed59033b5fc480319c623715a"
+    },
+    "public": {
+      "tokens": 457,
+      "sha256": "e6ebb33617cf6c02564939abafd324264c29d3fed59033b5fc480319c623715a"
+    },
+    "identical": true
+  },
+  {
+    "unit": "observer.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 1008007,
+      "sha256": "8b07b42fc3a16c68bb3fc470543e182da56c6befa2305fefea48609b2ad41fe4"
+    },
+    "public": {
+      "tokens": 1008007,
+      "sha256": "8b07b42fc3a16c68bb3fc470543e182da56c6befa2305fefea48609b2ad41fe4"
+    },
+    "identical": true
+  },
+  {
+    "unit": "title_test.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 1009335,
+      "sha256": "d6a669c536434b899779749332b7d2b180f7d852bc25df6a70705d8bbd479086"
+    },
+    "public": {
+      "tokens": 1009335,
+      "sha256": "d6a669c536434b899779749332b7d2b180f7d852bc25df6a70705d8bbd479086"
+    },
+    "identical": true
+  },
+  {
+    "unit": "title_test_bridge.S",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 84,
+      "sha256": "8c5fd369daf14751c49f0d93e8774b205e2effa1a5eac196237639d2b00bfd8b"
+    },
+    "public": {
+      "tokens": 84,
+      "sha256": "8c5fd369daf14751c49f0d93e8774b205e2effa1a5eac196237639d2b00bfd8b"
+    },
+    "identical": true
+  },
+  {
+    "unit": "time.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 1013816,
+      "sha256": "9508bc01fa0b29fa2c7fb4b47774d3cf1f1b121faa74568666c03779afe586f5"
+    },
+    "public": {
+      "tokens": 1013816,
+      "sha256": "9508bc01fa0b29fa2c7fb4b47774d3cf1f1b121faa74568666c03779afe586f5"
+    },
+    "identical": true
+  },
+  {
+    "unit": "time_bridge.S",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 838,
+      "sha256": "6d65a5fddfbe95c48268e3cc8d7b57d2a81232faccd40b108a42647f166859d4"
+    },
+    "public": {
+      "tokens": 838,
+      "sha256": "6d65a5fddfbe95c48268e3cc8d7b57d2a81232faccd40b108a42647f166859d4"
+    },
+    "identical": true
+  },
+  {
+    "unit": "writer.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 1016001,
+      "sha256": "65fee47691376e144508acab2dfc268feb9720958f6c00a7fd6b09ef849caef0"
+    },
+    "public": {
+      "tokens": 1016001,
+      "sha256": "65fee47691376e144508acab2dfc268feb9720958f6c00a7fd6b09ef849caef0"
+    },
+    "identical": true
+  },
+  {
+    "unit": "wav_reader.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 528004,
+      "sha256": "7c2a85161f34658db10d2b8bc93645f822559e3cba727aadb1ec8edcce204cf7"
+    },
+    "public": {
+      "tokens": 528004,
+      "sha256": "7c2a85161f34658db10d2b8bc93645f822559e3cba727aadb1ec8edcce204cf7"
+    },
+    "identical": true
+  },
+  {
+    "unit": "playlist/stream_engine.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 595267,
+      "sha256": "1b2228365ce104e69613e32ad2652d8f3e16b3f4aceb0abe1edd16957f5dafa8"
+    },
+    "public": {
+      "tokens": 595267,
+      "sha256": "1b2228365ce104e69613e32ad2652d8f3e16b3f4aceb0abe1edd16957f5dafa8"
+    },
+    "identical": true
+  },
+  {
+    "unit": "playlist/notifications.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 1317484,
+      "sha256": "d31b96b1ad69e19511ad647bbea95f781822fd99db48ea67517814474f50a0b4"
+    },
+    "public": {
+      "tokens": 1317484,
+      "sha256": "d31b96b1ad69e19511ad647bbea95f781822fd99db48ea67517814474f50a0b4"
+    },
+    "identical": true
+  },
+  {
+    "unit": "playlist/wav_pipeline.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 947016,
+      "sha256": "e5c5524326a8168ed834b0094553a30e1ac31a81e0047b07dc13cfcd4d57f156"
+    },
+    "public": {
+      "tokens": 947016,
+      "sha256": "e5c5524326a8168ed834b0094553a30e1ac31a81e0047b07dc13cfcd4d57f156"
+    },
+    "identical": true
+  },
+  {
+    "unit": "playlist/mp3_reader.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 971757,
+      "sha256": "828d694b634c00cf755da63608dd5c4194a59304a3e44084f2ca40b168104397"
+    },
+    "public": {
+      "tokens": 971757,
+      "sha256": "828d694b634c00cf755da63608dd5c4194a59304a3e44084f2ca40b168104397"
+    },
+    "identical": true
+  },
+  {
+    "unit": "playlist/normalization.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 943373,
+      "sha256": "4bce41faede56843f48c3bc129dce1ceba9cb80763501b3d4b9fa5424bcd6f66"
+    },
+    "public": {
+      "tokens": 943373,
+      "sha256": "4bce41faede56843f48c3bc129dce1ceba9cb80763501b3d4b9fa5424bcd6f66"
+    },
+    "identical": true
+  },
+  {
+    "unit": "playlist/persistent_cache.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 975418,
+      "sha256": "4b871523d45a43fa042406d139110d4a76daaef599080727b09116b64108c437"
+    },
+    "public": {
+      "tokens": 975418,
+      "sha256": "4b871523d45a43fa042406d139110d4a76daaef599080727b09116b64108c437"
+    },
+    "identical": true
+  },
+  {
+    "unit": "playlist/library.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 937712,
+      "sha256": "fbb45a4fedbe53a55484ad189b2762718261ff60d5524c3949d75495ef441fac"
+    },
+    "public": {
+      "tokens": 937712,
+      "sha256": "fbb45a4fedbe53a55484ad189b2762718261ff60d5524c3949d75495ef441fac"
+    },
+    "identical": true
+  },
+  {
+    "unit": "playlist/keyboard_settings.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 938220,
+      "sha256": "fb83c2097c4b6753e903925691415d167d1b5d533f9b166610d004acfa6b1c5f"
+    },
+    "public": {
+      "tokens": 938220,
+      "sha256": "fb83c2097c4b6753e903925691415d167d1b5d533f9b166610d004acfa6b1c5f"
+    },
+    "identical": true
+  },
+  {
+    "unit": "playlist/windows_keyboard.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 1003569,
+      "sha256": "5b88deefefb615bcc8bb321eca53f19ba6ace895c487d32337558904ef26d9f8"
+    },
+    "public": {
+      "tokens": 1003569,
+      "sha256": "5b88deefefb615bcc8bb321eca53f19ba6ace895c487d32337558904ef26d9f8"
+    },
+    "identical": true
+  },
+  {
+    "unit": "recovery_native.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 497249,
+      "sha256": "ac8a5d055d6cc7040daaadc02301d0a04aee305cf7be419087587572ab472482"
+    },
+    "public": {
+      "tokens": 497249,
+      "sha256": "ac8a5d055d6cc7040daaadc02301d0a04aee305cf7be419087587572ab472482"
+    },
+    "identical": true
+  },
+  {
+    "unit": "winmm_bootstrap.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 964581,
+      "sha256": "9596687ba0791be41620ce73dc86941d2faf81bd75497e8a9ecb29aa6856d109"
+    },
+    "public": {
+      "tokens": 964581,
+      "sha256": "9596687ba0791be41620ce73dc86941d2faf81bd75497e8a9ecb29aa6856d109"
+    },
+    "identical": true
+  },
+  {
+    "unit": "playlist/winmm_forwarding.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 438223,
+      "sha256": "5b8ce98d06f1db3d00f056865c363fd0c4fb65e79cdc69976eddb4babc8591e9"
+    },
+    "public": {
+      "tokens": 438223,
+      "sha256": "5b8ce98d06f1db3d00f056865c363fd0c4fb65e79cdc69976eddb4babc8591e9"
+    },
+    "identical": true
+  },
+  {
+    "unit": "winmm_forwarders.S",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 7259,
+      "sha256": "27641f9edd9475c0de07098006dde7795d780a6e69a02002ea6db68d20c6e18c"
+    },
+    "public": {
+      "tokens": 7259,
+      "sha256": "27641f9edd9475c0de07098006dde7795d780a6e69a02002ea6db68d20c6e18c"
+    },
+    "identical": true
+  },
+  {
+    "unit": "playlist/compatibility.cpp",
+    "driver": "c++",
+    "RC1": {
+      "tokens": 974773,
+      "sha256": "332c5242aa95e6117d562283af8785bf914c478c4c4767f90ebfa45fc6bc8143"
+    },
+    "public": {
+      "tokens": 974773,
+      "sha256": "332c5242aa95e6117d562283af8785bf914c478c4c4767f90ebfa45fc6bc8143"
+    },
+    "identical": true
+  },
+  {
+    "unit": "ebur128_peak.c",
+    "driver": "cc",
+    "RC1": {
+      "tokens": 64401,
+      "sha256": "48716b0c6abcb2b3debdaeb28292323a49b406ed9d64a7fed3b5f489a9032125"
+    },
+    "public": {
+      "tokens": 64401,
+      "sha256": "48716b0c6abcb2b3debdaeb28292323a49b406ed9d64a7fed3b5f489a9032125"
+    },
+    "identical": true
+  }
+]

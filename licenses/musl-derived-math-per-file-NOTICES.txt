@@ -1,0 +1,83 @@
+From lib/libc/musl/src/math/__cos.c
+/* origin: FreeBSD /usr/src/lib/msun/src/k_cos.c */
+
+From lib/libc/musl/src/math/__cosdf.c
+/* origin: FreeBSD /usr/src/lib/msun/src/k_cosf.c */
+
+From lib/libc/musl/src/math/__rem_pio2.c
+/* origin: FreeBSD /usr/src/lib/msun/src/e_rem_pio2.c */
+
+From lib/libc/musl/src/math/__rem_pio2_large.c
+/* origin: FreeBSD /usr/src/lib/msun/src/k_rem_pio2.c */
+
+From lib/libc/musl/src/math/__rem_pio2f.c
+/* origin: FreeBSD /usr/src/lib/msun/src/e_rem_pio2f.c */
+
+From lib/libc/musl/src/math/__sin.c
+/* origin: FreeBSD /usr/src/lib/msun/src/k_sin.c */
+
+From lib/libc/musl/src/math/__sindf.c
+/* origin: FreeBSD /usr/src/lib/msun/src/k_sinf.c */
+
+From lib/libc/musl/src/math/__tandf.c
+/* origin: FreeBSD /usr/src/lib/msun/src/k_tanf.c */
+
+From lib/libc/musl/src/math/exp.c
+/*
+ * Double-precision e^x function.
+ *
+ * Copyright (c) 2018, Arm Limited.
+ * SPDX-License-Identifier: MIT
+ */
+
+From lib/libc/musl/src/math/exp2.c
+/*
+ * Double-precision 2^x function.
+ *
+ * Copyright (c) 2018, Arm Limited.
+ * SPDX-License-Identifier: MIT
+ */
+
+From lib/libc/musl/src/math/exp2f.c
+/*
+ * Single-precision 2^x function.
+ *
+ * Copyright (c) 2017-2018, Arm Limited.
+ * SPDX-License-Identifier: MIT
+ */
+
+From lib/libc/musl/src/math/expf.c
+/*
+ * Single-precision e^x function.
+ *
+ * Copyright (c) 2017-2018, Arm Limited.
+ * SPDX-License-Identifier: MIT
+ */
+
+From lib/libc/musl/src/math/fmaf.c
+/* origin: FreeBSD /usr/src/lib/msun/src/s_fmaf.c */
+
+From lib/libc/musl/src/math/fmal.c
+/* origin: FreeBSD /usr/src/lib/msun/src/s_fmal.c */
+
+From lib/libc/musl/src/math/log10.c
+/* origin: FreeBSD /usr/src/lib/msun/src/e_log10.c */
+
+From lib/libc/musl/src/math/log10f.c
+/* origin: FreeBSD /usr/src/lib/msun/src/e_log10f.c */
+
+From lib/libc/musl/src/math/log2.c
+/*
+ * Double-precision log2(x) function.
+ *
+ * Copyright (c) 2018, Arm Limited.
+ * SPDX-License-Identifier: MIT
+ */
+
+From lib/libc/musl/src/math/log2f.c
+/*
+ * Single-precision log2 function.
+ *
+ * Copyright (c) 2017-2018, Arm Limited.
+ * SPDX-License-Identifier: MIT
+ */
