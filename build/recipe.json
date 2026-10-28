@@ -8,7 +8,7 @@
     "mingw_header_version": "13.0.0 alpha",
     "archive_sha256": "3a0ed1e8799a2f8ce2a6e6290a9ff22e6906f8227865911fb7ddedc3cc14cb0c",
     "zig_exe_sha256": "d408dd38eed3e5204af841bcebf70502a4dbbb8399a3a3262be55059370bc018",
-    "compiler_queried_version_only_no_compilation": true
+    "compiler_queried_version_only_no_compilation": false
   },
   "payload_sources": [
     "supermoon_playback.cpp",
@@ -50,5 +50,6 @@
   "game_executable_sha256": "d1c7155764271eff0733c37d1849e685a11da3d54a41d685d7898fc0aad83a87",
   "game_executable_bytes": 89491528,
   "steam_build_id": 26271400,
-  "qualification": "Compatibility repair; see docs/MIGRATION_STATUS.md"
+  "qualification": "Build reproduced; offline and live compatibility checks passed; see docs/MIGRATION_STATUS.md",
+  "version": "1.0.1"
 }

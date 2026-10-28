@@ -1,4 +1,4 @@
-# Supermoon compatibility update — NMS build 26271400
+# Supermoon v1.0.1
 
 Play your own supported WAV and MP3 music through the personal ByteBeat player's
 Supermoon track in No Man's Sky. Supermoon prepares a disk-backed playlist,
@@ -54,7 +54,7 @@ Third-party libraries retain their own terms; include THIRD_PARTY_NOTICES.md and
 licenses/ when redistributing binaries. Notification recordings were created by
 the project owner; see ASSET_NOTICE.md for their separate scope.
 Development, reverse-engineering support, testing and documentation used OpenAI
-Codex AI assistance. This packaging pass used GPT-6; a complete historical model
+Codex AI assistance. The original packaging pass used GPT-6; a complete historical model
 roster is not established. The owner directed development and performed gameplay
 acceptance. No claim of AI-generated notification recordings is made.
 

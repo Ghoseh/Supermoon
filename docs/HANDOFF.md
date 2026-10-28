@@ -1,9 +1,15 @@
-# Compatibility repair handoff
+# Compatibility maintenance
 
-Worktree branch: `update/nms-26271400`. Original release branch remains unchanged.
+Version 1.0.1 targets NMS Steam build 26271400. The behavior reference is
+Supermoon v1.0.0, commit `d5ff3ca`. This update adapts native integration without
+changing playlist, preparation, control or recovery behavior.
 
-Use the pinned Zig 0.15.2 compiler documented in BUILD_AND_PROVENANCE.md. `python -B tools/build.py --zig <zig.exe>` reproduces the pinned updated DLL pair in disposable output. `python -B tools/run_tests.py --zig <zig.exe>` runs the portable regression selection.
+Use the pinned toolchain and portable commands in BUILD_AND_PROVENANCE.md.
+MIGRATION_STATUS.md records the adaptation and performed checks.
 
-Private native comparison/generation scripts, binary-input fixtures, reviewer receipts, build and test receipts, installation/backup manifest and pending live evidence are in the owner's separate `Supermoon-Hook-Audit-20261028` directory. They are not public release inputs.
+Private executable comparisons, native fixtures, raw reviewer/test receipts and
+runtime captures are retained outside the public repository. They are not required
+to compile the mod and must not be added to public source archives.
 
-See MIGRATION_STATUS.md for the adaptation matrix and actual evidence. Current status: built, offline tested, installed and live accepted. Owner confirmed playback, automatic advancement, teleport/warp recovery and playback after relaunch. First session exited with code 0. Warm activation took 0.651 seconds. No new four-hour endurance qualification is claimed.
+The updated pair is built, reproduced and live-tested. Existing accepted findings
+remain documented. A new four-hour endurance test has not been performed.

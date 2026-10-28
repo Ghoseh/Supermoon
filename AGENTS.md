@@ -5,4 +5,4 @@
 - Preserve executable/site/payload identity gates. Unknown builds must refuse activation.
 - Keep game executables, native instruction dumps, private fixture data and personal music outside this repository.
 - Record actual builds, tests and live results in docs/MIGRATION_STATUS.md. Never claim unperformed checks or transfer the original release's endurance result to this pair.
-- No public release or remote push is part of this repair task.
+- Readiness checks and local packaging do not authorize a remote push or public release. Publish only on the owner's explicit instruction.

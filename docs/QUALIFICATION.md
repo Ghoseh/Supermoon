@@ -1,3 +1,14 @@
+# Version 1.0.1 qualification
+
+The updated DLL pair supports Steam build 26271400. It passed native-profile
+review, updated-native and portable regressions, focused UI tests normally and
+with UBSan, a second identical build, and owner-operated live acceptance.
+Custom music, Next, automatic advancement, teleport/warp manual recovery, normal
+exit and playback after relaunch were confirmed. Warm activation took 0.651 seconds.
+
+See [migration evidence](MIGRATION_STATUS.md) for exact scope and diagnostic limits.
+Existing accepted findings remain. No new four-hour endurance test was performed.
+
 # Original release qualification (historical)
 
 These results apply to the original v1.0.0 pair. For the build 26271400 repair and its current live acceptance status, see MIGRATION_STATUS.md.
