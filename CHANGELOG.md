@@ -1,3 +1,7 @@
+# NMS build 26271400 compatibility repair — 2026-10-28
+
+Updated native function, cell, global, return-site, relocation and executable profiles. Preserved music, playlist, normalization, controls and recovery behavior. Built and passed offline regressions. Owner-confirmed custom playback, Next, full-song advancement, teleport/warp recovery and warm relaunch passed.
+
 # Changelog
 
 ## 1.0.0 — prepared 2026-10-16

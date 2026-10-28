@@ -1,3 +1,7 @@
+# Original release qualification (historical)
+
+These results apply to the original v1.0.0 pair. For the build 26271400 repair and its current live acceptance status, see MIGRATION_STATUS.md.
+
 # Qualification summary for the exact shipped pair
 
 Comprehensive independent review found no confirmed Critical or High blocker.

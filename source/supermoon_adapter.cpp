@@ -315,7 +315,7 @@ extern "C" void AdapterBefore(void* component,void* controller,void* playlist,co
     AdapterRecord r{};r.kind=selection;r.component=reinterpret_cast<uintptr_t>(component);r.stream=r.component+0x28;
     if(pending.valid){observed_fault(reentry_fault);r.faults|=reentry_fault;}
     pending={};pending.component=r.component;
-    pending.personal=component&&key&&reinterpret_cast<uintptr_t>(controller)==r.component+0x7D5C&&reinterpret_cast<uintptr_t>(playlist)==native_base+0x6EB1430;
+    pending.personal=component&&key&&reinterpret_cast<uintptr_t>(controller)==r.component+0x7D5C&&reinterpret_cast<uintptr_t>(playlist)==native_base+0x6F84550;
     // Selected key is a native resolver argument: valid borrowed 16-byte identifier.
     if(key){memcpy(pending.key.data(),key,16);memcpy(r.key,key,16);pending.valid=true;}
     else r.faults|=key_fault;
@@ -414,7 +414,7 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
         for(const auto& pin:bytebeat::recovery::native_pins)if(!memory_digest(base+pin.rva,pin.size,pin.sha))return 14;
         if(!bytebeat::recovery::validate(base,module))return 15;
 #endif
-        const uint32_t slots[]={0x4AB89E8,0x4AB8A00,0x4AB8A80,0x4AB7DC8,0x4AB7DD0};const uint32_t targets[]={0xF6C640,0xF6BBA0,0xF6C1B0,0xFA1E70,0xFA1DD0};
+        const uint32_t slots[]={0x4B7B4C0,0x4B7B408,0x4B7B488,0x4B7A828,0x4B7A830};const uint32_t targets[]={0xF87690,0xF86BF0,0xF87200,0xFBBCD0,0xFBBC30};
         DWORD slot_protection{};
         for(size_t n=0;n<5;++n){MEMORY_BASIC_INFORMATION info{};auto slot=reinterpret_cast<void* volatile*>(base+slots[n]);if(!VirtualQuery(const_cast<void**>(slot),&info,sizeof(info))||info.State!=MEM_COMMIT||info.Type!=MEM_IMAGE||info.AllocationBase!=module||(info.Protect&(PAGE_GUARD|PAGE_NOACCESS))||*slot!=base+targets[n])return 4;if(n==0)slot_protection=info.Protect;else if(info.Protect!=slot_protection)return 4;}
         HMODULE self{};
@@ -466,7 +466,7 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
         // original protections above so restoring one saved protection cannot
         // accidentally change a page that previously had different permissions.
         // Only the pointer cells are written; native instruction bytes stay intact.
-        DWORD old{};auto first=base+0x4AB7DC8;constexpr size_t span=0xCC0;
+        DWORD old{};auto first=base+0x4B7A828;constexpr size_t span=0xCA0;
         if(!VirtualProtect(first,span,PAGE_READWRITE,&old))return 9;
         void* replacements[]={reinterpret_cast<void*>(&adapter_provider),clone.function(1),clone.function(4),clone.function(5),clone.function(6)};
         // A component vtable redirect does not catch a pool's direct CALL.

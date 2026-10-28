@@ -82,7 +82,7 @@ bool start(unsigned char* base,bytebeat::playlist::Engine* engine,const unsigned
     for(const auto& p:profile::ranges)if(!image_range(base,p.rva,p.size)||!digest(base+p.rva,p.size,p.sha))return false;
     for(const auto& p:time_profile::ranges)if(!image_range(base,p.rva,p.size)||!digest(base+p.rva,p.size,p.sha))return false;
     for(const auto& p:register_profile::ranges)if(!image_range(base,p.rva,p.size)||!digest(base+p.rva,p.size,p.sha))return false;
-    for(auto rva:{0x4a50bd0u,0x4a47228u})if(!image_range(base,rva,8))return false;
+    for(auto rva:{0x4B13108u,0x4B091C0u})if(!image_range(base,rva,8))return false;
     if(!image_range(base,profile::slot,8)||!image_range(base,profile::library_slot,8))return false;
     auto cell=reinterpret_cast<void* volatile*>(base+profile::slot);
     auto expected=base+profile::formatter;

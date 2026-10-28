@@ -36,9 +36,9 @@ struct Harness {
         mapping=CreateFileMappingW(file,nullptr,PAGE_READONLY|SEC_IMAGE,0,0,nullptr);
         image=static_cast<unsigned char*>(MapViewOfFile(mapping,FILE_MAP_READ,0,0,0));require(image,"SEC_IMAGE fixture failed");
         // Private copy-on-write data values, not disk writes or a game process.
-        DWORD old{},ignored{};require(VirtualProtect(image+0x4f77568,8,PAGE_WRITECOPY,&old)!=0,"Fixture globals COW failed");
-        put<float>(image,0x4f77568,.125f);put<uint32_t>(image,0x4f7756c,4);
-        require(VirtualProtect(image+0x4f77568,8,old,&ignored)!=0,"Fixture global protection restore failed");
+        DWORD old{},ignored{};require(VirtualProtect(image+0x5045E18,8,PAGE_WRITECOPY,&old)!=0,"Fixture globals COW failed");
+        put<float>(image,0x5045E18,.125f);put<uint32_t>(image,0x5045E1C,4);
+        require(VirtualProtect(image+0x5045E18,8,old,&ignored)!=0,"Fixture global protection restore failed");
         void* bridges[]={reinterpret_cast<void*>(&AdapterFrameBridge),reinterpret_cast<void*>(&AdapterBeforeBridge),reinterpret_cast<void*>(&AdapterAfterBridge),reinterpret_cast<void*>(&AdapterCommitBridge),reinterpret_cast<void*>(&AdapterRetireBridge),reinterpret_cast<void*>(&AdapterCarrierBridge)};
         clone.prepare(image,bridges);
         // Fixture only: replace the three native lock calls in private clone
@@ -47,7 +47,7 @@ struct Harness {
         auto mem=const_cast<unsigned char*>(clone.memory());require(VirtualProtect(mem,layout::allocation_size,PAGE_READWRITE,&old)!=0,"Fixture clone write failed");
         uint32_t stub=layout::allocation_size-32;
         for(unsigned k=0;k<2;++k){auto p=mem+stub+k*16;p[0]=0xff;p[1]=0x25;memset(p+2,0,4);void* fn=k?reinterpret_cast<void*>(&fixture_unlock):reinterpret_cast<void*>(&fixture_lock);memcpy(p+6,&fn,8);}
-        for(const auto& i:layout::instructions)if(i.rva==0xf6c686||i.rva==0xf6c699||i.rva==0xf6d6bc){int32_t rel=int32_t(stub+(i.rva==0xf6c686?0:16)-i.offset-i.size);put<int32_t>(mem,i.offset+i.field,rel);}
+        for(const auto& i:layout::instructions)if(i.rva==0xF876D6||i.rva==0xF876E9||i.rva==0xF8870C){int32_t rel=int32_t(stub+(i.rva==0xF876D6?0:16)-i.offset-i.size);put<int32_t>(mem,i.offset+i.field,rel);}
         require(VirtualProtect(mem,layout::allocation_size,old,&ignored)!=0,"Fixture clone RX failed");FlushInstructionCache(GetCurrentProcess(),mem,layout::allocation_size);
         auto fn=clone.function(0);memcpy(&native,&fn,sizeof(native));
         InitializeCriticalSection(reinterpret_cast<CRITICAL_SECTION*>(object.data()+0x7d30));
@@ -59,7 +59,7 @@ struct Harness {
         put<uint32_t>(stream(),0x10,clock);put<uint8_t>(stream(),0x14,1);put<uint8_t>(stream(),0x15,1);put<uint8_t>(stream(),0x834,120);put<float>(stream(),0x18,1);put<uint32_t>(stream(),0x1c,0);put<uint8_t>(stream(),0x20,0);
         memcpy(catalog.data()+0x20,key.data(),16);
         auto controller=object.data()+(personal?0x7d5c:0x7d50);
-        FixtureControl(0,object.data(),controller,reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(image)+0x6eb1430),key.data());
+        FixtureControl(0,object.data(),controller,reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(image)+0x6F84550),key.data());
         FixtureControl(1,object.data(),controller,nullptr,catalog.data());FixtureControl(2,object.data(),controller,nullptr,catalog.data()+0x40);
     }
     uint32_t call(float* out,uint32_t n){uint32_t produced=0;AdapterTestProvider(stream(),out,n,&produced);require(!lock_depth,"Lock leaked");return produced;}

@@ -76,7 +76,7 @@ static const char* select(void* object,const Context& c) noexcept {
     uintptr_t vtable{},definition{},parent{};unsigned char role[16]{};
     constexpr unsigned char expected[16]={'T','I','M','E'};
     auto p=reinterpret_cast<uintptr_t>(object);
-    if(!field(p,0,&vtable,8)||vtable!=image+0x4a47198||!field(p,0x48,&definition,8)||
+    if(!field(p,0,&vtable,8)||vtable!=image+0x4B09130||!field(p,0x48,&definition,8)||
        !field(definition,0x48,role,16)||memcmp(role,expected,16)||!field(p,0x40,&parent,8)){fallbacks++;return original;}
     uintptr_t visited[8]{};bool matched=false;
     for(unsigned i=0;i<8&&parent;++i){bool cycle=false;for(unsigned j=0;j<i;++j)cycle|=visited[j]==parent;if(cycle)break;
@@ -91,7 +91,7 @@ static const char* select(void* object,const Context& c) noexcept {
 static uint64_t progress_token(const Context& c,const char* selected) noexcept {
     auto slot=eligible();if(!slot||!slot->valid||slot->phase!=2||selected!=slot->value.caption.data()||c.site!=time_return||c.frame!=slot->frame||c.member!=slot->member||c.keys!=slot->keys||!core||core->ui_bound_stream()!=slot->stream)return 0;
     uintptr_t record{};char catalog[64]{};int loops{},again{};unsigned char tempo{},hash[32]{};
-    if(c.frame<0x60||!safe_read(c.frame-0x60,&record,8)||record>UINTPTR_MAX-0x40||!field(record,0x40,catalog,sizeof(catalog))||catalog[60]||!safe_read(image+0x4f7756c,&loops,4)||!field(slot->stream,0x834,&tempo,1)||tempo!=120)return 0;
+    if(c.frame<0x60||!safe_read(c.frame-0x60,&record,8)||record>UINTPTR_MAX-0x40||!field(record,0x40,catalog,sizeof(catalog))||catalog[60]||!safe_read(image+0x5045E1C,&loops,4)||!field(slot->stream,0x834,&tempo,1)||tempo!=120)return 0;
     BCRYPT_ALG_HANDLE alg{};BCRYPT_HASH_HANDLE digest{};
     bool ok=BCryptOpenAlgorithmProvider(&alg,BCRYPT_SHA256_ALGORITHM,nullptr,0)>=0;
     if(ok)ok=BCryptCreateHash(alg,&digest,nullptr,0,nullptr,0,0)>=0;
@@ -99,19 +99,19 @@ static uint64_t progress_token(const Context& c,const char* selected) noexcept {
     if(ok)ok=BCryptFinishHash(digest,hash,32,0)>=0;
     if(digest)BCryptDestroyHash(digest);if(alg)BCryptCloseAlgorithmProvider(alg,0);
     float elapsed{};
-    if(!ok||memcmp(hash,register_profile::catalog_sha,32)||!safe_read(image+0x4f7756c,&again,4)||again!=loops||!eligible()||core->ui_bound_stream()!=slot->stream||!register_progress::value(slot->value.snapshot.position,slot->value.snapshot.length,loops,elapsed))return 0;
+    if(!ok||memcmp(hash,register_profile::catalog_sha,32)||!safe_read(image+0x5045E1C,&again,4)||again!=loops||!eligible()||core->ui_bound_stream()!=slot->stream||!register_progress::value(slot->value.snapshot.position,slot->value.snapshot.length,loops,elapsed))return 0;
     return register_progress::token(elapsed);
 }
 bool prepare(unsigned char* base,bytebeat::playlist::Engine* e,bytebeat::SupermoonCore* c,const unsigned char* key,const FilenameTitles* names) noexcept {
     if(enabled.load()||TimeOriginals[0]||!base||!e||!c||!key||!names)return false;
-    constexpr uint32_t cells[]={0x4a50bd0,0x4a47228};constexpr uint32_t targets[]={0x33a400,0x2048d0};
+    constexpr uint32_t cells[]={0x4B13108,0x4B091C0};constexpr uint32_t targets[]={0x341690,0x1FEF50};
     for(unsigned i=0;i<2;++i)if(*reinterpret_cast<void**>(base+cells[i])!=base+targets[i])return false;
-    image=reinterpret_cast<uintptr_t>(base);now_return=image+profile::now_return;time_return=image+0xf6e002;keys_address=image+profile::personal_keys;
+    image=reinterpret_cast<uintptr_t>(base);now_return=image+profile::now_return;time_return=image+0xF89053;keys_address=image+profile::personal_keys;
     engine=e;core=c;filenames=names;memcpy(carrier_key,key,16);
     for(unsigned i=0;i<2;++i)TimeOriginals[i]=base+targets[i];return true;
 }
 bool publish(unsigned char* base) noexcept {
-    constexpr uint32_t cells[]={0x4a50bd0,0x4a47228};void* wrappers[]={reinterpret_cast<void*>(TimeSimulation),reinterpret_cast<void*>(TimeSetterBridge)};
+    constexpr uint32_t cells[]={0x4B13108,0x4B091C0};void* wrappers[]={reinterpret_cast<void*>(TimeSimulation),reinterpret_cast<void*>(TimeSetterBridge)};
     for(unsigned i=0;i<2;++i)if(redirect(reinterpret_cast<void* volatile*>(base+cells[i]),TimeOriginals[i],wrappers[i])!=Redirect::changed){cancel();return false;}
     enabled.store(true,std::memory_order_release);return true;
 }

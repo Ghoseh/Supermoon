@@ -1,3 +1,5 @@
+> This branch targets Steam build 26271400. The repair build and offline tests ran on 2026-10-28; see MIGRATION_STATUS.md. Historical packaging notes below describe the original F6 work.
+
 # Portable build and provenance
 
 ## Supported inputs
@@ -13,8 +15,8 @@ Expected zig.exe SHA-256:
 The actual cc driver reports Clang 20.1.2; target x86_64-unknown-windows-gnu.
 The toolchain is not bundled; keep its own complete licenses when redistributing it.
 
-The only supported NMS.exe profile in this release is 88,560,712 bytes, SHA-256:
-`13d5060d4efb9d2a6a6b1b349bc4257231056cc2a055df4bb15d816262cc3499`.
+The only supported NMS.exe profile in this release is 89,491,528 bytes, SHA-256:
+`d1c7155764271eff0733c37d1849e685a11da3d54a41d685d7898fc0aad83a87`.
 A numeric game release label was not independently established. Startup verifies
 the executable and native sites; do not change pins to force a game update to load.
 No game SDK, game executable or additional downloaded library is required to compile.
@@ -44,7 +46,7 @@ hashes, refusing an unexpected result rather than silently rewriting source pins
 No output is installed or copied over a release. Keep private compiler PDBs and
 command receipts out of public releases even if a local linker creates them.
 
-The exact F6 pair was previously reproduced in separate native builds and independently
+The original F6 pair was previously reproduced in separate native builds and independently
 verified. This public packaging pass does not rebuild it: the portable wrapper's
 commands, input closure and dry-run are checked, with compiler preprocessing of all
 24 production units to verify copyright-comment equivalence. A fresh full build

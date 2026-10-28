@@ -72,12 +72,12 @@ bool image_read(uintptr_t base,uint32_t rva,void* out,size_t size) noexcept {
 }
 bytebeat::startup::Readiness readiness(uintptr_t base) noexcept {
     uintptr_t values[3]{};
-    if(!image_read(base,0x6E06300,values,sizeof(values)))return bytebeat::startup::Readiness::conflict;
+    if(!image_read(base,0x6ED93C0,values,sizeof(values)))return bytebeat::startup::Readiness::conflict;
     return bytebeat::startup::classify(base,values[0],values[1],values[2]);
 }
 bool readiness_code_matches(uintptr_t base) noexcept {
     uint8_t bytes[32]{},digest[32]{};
-    if(!image_read(base,0x3135540,bytes,sizeof(bytes)))return false;
+    if(!image_read(base,0x31A85A0,bytes,sizeof(bytes)))return false;
     BCRYPT_ALG_HANDLE alg{};
     if(BCryptOpenAlgorithmProvider(&alg,BCRYPT_SHA256_ALGORITHM,nullptr,0)<0)return false;
     bool ok=BCryptHash(alg,nullptr,0,bytes,sizeof(bytes),digest,sizeof(digest))>=0;

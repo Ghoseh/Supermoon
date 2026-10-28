@@ -35,5 +35,5 @@ def main():
     run(commands['proxy'],'proxy',work,env);normalize(proxy)
     for path in [payload,proxy]:
         if digest(path)!=data['DLLs'][path.name]['sha256']:raise ValueError('Reproducibility mismatch: '+path.name)
-    print('PASS: both normalized DLL hashes match the endurance-tested pair. Nothing installed.')
+    print('PASS: both normalized DLL hashes match the pinned pair. See qualification documentation. Nothing installed.')
 if __name__=='__main__':main()
