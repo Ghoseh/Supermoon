@@ -1,9 +1,9 @@
 # Build and provenance
 
-Supermoon **1.0.1** supports Windows x64 and NMS Steam build **26271400** only.
-The supported `NMS.exe` is 89,491,528 bytes, SHA-256:
+Supermoon **1.0.2 candidate** targets Windows x64 and NMS Steam build **26295378** only.
+The supported `NMS.exe` is 89,489,480 bytes, SHA-256:
 
-`d1c7155764271eff0733c37d1849e685a11da3d54a41d685d7898fc0aad83a87`
+`d393c6782d29e1915854c0d5cf42505c8093740c05dc53705dbed7e0d1d4ac37`
 
 Startup verifies the executable, loaded native sites and payload separately.
 A matching general game version label is insufficient. Do not change identity
@@ -43,16 +43,16 @@ timestamps while preserving runtime PE directories. The wrapper checks the exist
 payload pin and both final hashes; it does not rewrite source pins or install its
 output. Keep private debug files and command receipts out of distributions.
 
-The 1.0.1 pair was built and reproduced with the portable wrapper in a second
-disposable directory. Both builds matched the installed, live-tested pair listed
-in `RELEASE_DLL_SHA256SUMS` and `build/recipe.json`.
+The candidate pair was built and reproduced with the portable wrapper in a
+second disposable directory. Both builds matched RELEASE_DLL_SHA256SUMS and
+build/recipe.json. The pair is staged separately and has not been installed.
 
 ## Verification scope
 
-The native profile was adapted from v1.0.0 against the new owned executable.
-Relocation, unwind, bridge, allocation/lifecycle and UI contracts were checked;
-native-fixture and public regressions passed. The owner confirmed playback,
-automatic advancement, teleport/warp recovery and playback after relaunch.
+The native profile was adapted from the published v1.0.1 integration against
+the new owned executable, preserving the v1.0.0 behavior reference. Independent
+relocation, unwind, bridge, allocation/lifecycle and UI reviews passed, together
+with native-fixture and public regressions. Live acceptance is pending.
 See [qualification](QUALIFICATION.md) and [migration evidence](MIGRATION_STATUS.md).
 
 `PUBLIC_FILE_MANIFEST.json` and `SHA256SUMS` describe the selected source package.

@@ -40,16 +40,16 @@
   "DLLs": {
     "supermoon_playlist.dll": {
       "bytes": 6138880,
-      "sha256": "cf696f0e60bc7ec566b422edf25853a62b4c497ad3a11afe1f3890bac4742471"
+      "sha256": "6c5968fb1c3222a7bc0dec783abc73a541506238583923fa5c045b18a24d31a6"
     },
     "winmm.dll": {
       "bytes": 937984,
-      "sha256": "78058686189c74902a2a7bd092a351f75990b564c62166f1e6e7cdb414d5efbd"
+      "sha256": "94a8e542e67c754b55fdc317455b2744ad2c0f6ff60243cf19465fb2f6e88b04"
     }
   },
-  "game_executable_sha256": "d1c7155764271eff0733c37d1849e685a11da3d54a41d685d7898fc0aad83a87",
-  "game_executable_bytes": 89491528,
-  "steam_build_id": 26271400,
-  "qualification": "Build reproduced; offline and live compatibility checks passed; see docs/MIGRATION_STATUS.md",
-  "version": "1.0.1"
+  "game_executable_sha256": "d393c6782d29e1915854c0d5cf42505c8093740c05dc53705dbed7e0d1d4ac37",
+  "game_executable_bytes": 89489480,
+  "steam_build_id": 26295378,
+  "qualification": "Offline checks and reproducible build passed; not installed; live acceptance pending",
+  "version": "1.0.2"
 }

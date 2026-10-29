@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2 - Unreleased candidate
+
+- Adapt native audio, lifecycle, allocator, global and UI profiles to NMS Steam build **26295378** (7.11).
+- Refresh executable, native-code, readiness and payload identities while preserving unknown-build refusal.
+- Preserve playlist, normalization, controls, filename/time/progress and manual recovery behavior.
+- Offline checks and a reproducible build passed. Installation and live acceptance are pending.
+
 ## 1.0.1 - 2026-10-28
 
 - Restore compatibility with NMS Steam build **26271400** by updating native function, dispatch, lifecycle, allocator, global and UI hook profiles.

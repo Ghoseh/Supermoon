@@ -1,44 +1,51 @@
-# Version 1.0.1: NMS build 26271400
+# Version 1.0.2 candidate: NMS build 26295378
+
+Status: implemented and offline-tested; not installed or live-tested. The owner
+is playing with friends. Do not interrupt the game to finish acceptance.
 
 The behavior reference is Supermoon v1.0.0, commit `d5ff3ca`, under the existing
-MIT, dependency and asset terms. This compatibility update preserves playlist,
-audio preparation, normalization, control and manual recovery behavior.
+MIT, dependency and owner-created notification asset terms. This update starts
+from published v1.0.1 commit `5ff0801e33485413494f41cf7860c21925c6008d`.
 
-Target: Steam build 26271400, executable size 89,491,528 bytes, SHA-256
-`d1c7155764271eff0733c37d1849e685a11da3d54a41d685d7898fc0aad83a87`.
+Target: Steam build 26295378, executable size 89,489,480 bytes, SHA-256
+`d393c6782d29e1915854c0d5cf42505c8093740c05dc53705dbed7e0d1d4ac37`.
 
-| Area | Change | Verification |
+| Area | Adaptation | Performed verification |
 | --- | --- | --- |
-| Native provider/update/setter/pool clones | Function and relocation profiles | 2,380 instruction contracts and 500 relative fields checked |
-| Bridges and unwind | Updated sites; preserved contracts | Seven bridges and 40 native unwind records/chains checked |
-| Allocator/source/parameter/owner lifecycle | Cells, native targets and factory callers | 90,928 recovery checks, 120 native cycles and 45 publication failure boundaries passed |
-| Filename/time/progress | Cells, globals, exact CALL returns and code pins | 40 static contract checks; focused normal and UBSan suites passed |
-| Startup | Exact executable/native/payload identities | Startup/parser/forwarding/compatibility checks passed |
-| Playlist/decoding/normalization/controls | Behavior preserved | Full portable regression selection passed |
-| Live behavior | Updated pair installed and exercised | Owner confirmed music, Next, automatic advancement, teleport/warp recovery and playback after relaunch |
+| Native copied functions | Address/relative-target profiles and hashes | 12 functions, 2,380 instruction contracts, 500 relative references |
+| Bridges/unwind | Relocated sites; retained clone-local contracts | Seven bridges; 40 raw unwind records and 40 emitted associations |
+| Allocator/source/parameter/owner lifecycle | Targets, cells and exact allocation CALL returns | Independent helper/table review; 90,929 native recovery checks; 120 native cycles |
+| Hook publication | Updated cells and protection span | 45 injected failure boundaries, success and threaded paths passed |
+| Filename/time/progress | Code pins, cells, globals and exact CALL returns | Independent 3,281-assertion mapping review plus 55 final source checks; all 15 full UI/time/register ranges covered |
+| Startup | New executable/readiness/payload identities | Startup/compatibility/forwarding suites; exact executable accepted, five invalid/missing cases refused |
+| Playlist/audio/cache/controls | Behavior retained | All 11 public suites and 585-case F1 guard-page corpus passed |
+| UI integration | Behavior retained | Normal and UBSan UI/progress and writer coverage suites passed |
+| DLL pair | Payload pin refreshed before proxy build | Second disposable portable build reproduced both DLL hashes |
+| Live behavior | Pending | No installation, activation, playback, travel or relaunch test performed for this pair |
 
-The renderer includes reordered instructions. Title/time/row CALL returns,
-R15/R12/RBP, stack outputs, widget role/parent, catalog and XMM6 contracts were
-checked separately. Changed native widget-state offsets are not accessed by the
-mod. Auxiliary pins cover complete corresponding new functions.
+The five audio dispatch cells now span 0x850 bytes; the protection range was
+updated accordingly. Runtime changes otherwise replace reviewed addresses and
+identity pins. Clone-local offsets, inserted bridges, transformed unwind bytes,
+allocation size, object fields and UI catalog mismatch guard remain intact.
 
-The exact DLL pair was reproduced in a second disposable build. Portable tests
-included the 585-case F1 guard-page corpus. Focused UI normal and UBSan runs each
-passed approximately 360,765 checks, with an integrated preparation/Engine/UI
-path exercising 168,010 PCM calls. Private native fixtures and raw receipts are
-retained outside the repository.
+Focused normal and UBSan UI runs each exercised 168,010 PCM calls through the
+integrated preparation/Engine/UI path. Their reported progress checks were
+360,755 and 360,763 respectively; these are synthetic own-process tests.
 
-The first live session recorded 12,944,384 substituted frames, zero callback
-faults/exceptions, zero stale-available frames and no failed tracks, then exited
-normally with code 0. Nine isolated 512-frame revision-empty blocks occurred
-around navigation/rebinding (4,608 frames total; maximum consecutive 512).
-The captured automatic EOF transition added no empty block. These counters are
-finite diagnostic observations, not an audible-gap measurement.
+Private native instructions, fixtures, full executable snapshots and raw receipts
+remain outside the repository. The previous full executable was not retained;
+comparison uses hash-checked v1.0.1 copied-function fixtures plus the original
+private image and retained prior review. Two previously changed-shape UI helpers
+were corroborated by current call graph, complete ranges and prior review rather
+than a full previous-image byte comparison. Runtime-initialized readiness values
+and catalog contents are not established by static analysis.
 
-Preparation reused all 27 entries of the test library and rebuilt none. First
-activation took 116.877 seconds; warm activation took 0.651 seconds. Timings are
-specific observations, not performance guarantees. Warm playback was confirmed
-by the owner and by fresh callback, commit and substituted-PCM evidence.
+Existing accepted findings and unverified contracts remain. Neither v1.0.1 live
+acceptance nor the v1.0.0 four-hour endurance result qualifies this pair. No new
+endurance or multiplayer compatibility claim is made.
 
-Existing accepted findings and unverified native contracts remain. No new
-four-hour endurance test was performed; the v1.0.0 result is historical.
+Next task, when the owner is ready: exit NMS normally, back up and install only
+the staged matching DLL pair while retaining Music, playlist.ini, Cache and State,
+then verify custom music/title/time/progress, Next, automatic EOF advancement,
+manual Play after travel, normal exit and warm relaunch. Record actual results
+before a public release. See V1_0_1_MIGRATION_STATUS.md for historical results.

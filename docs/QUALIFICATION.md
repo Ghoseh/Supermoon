@@ -1,17 +1,18 @@
-# Version 1.0.1 qualification
+# Version 1.0.2 candidate qualification
 
-The updated DLL pair supports Steam build 26271400. It passed native-profile
-review, updated-native and portable regressions, focused UI tests normally and
-with UBSan, a second identical build, and owner-operated live acceptance.
-Custom music, Next, automatic advancement, teleport/warp manual recovery, normal
-exit and playback after relaunch were confirmed. Warm activation took 0.651 seconds.
+The candidate targets Steam build 26295378. Independent static/native-profile
+reviews, current-native fixture tests, public regressions, normal and UBSan UI
+tests, executable identity cases and a second identical build passed.
 
-See [migration evidence](MIGRATION_STATUS.md) for exact scope and diagnostic limits.
-Existing accepted findings remain. No new four-hour endurance test was performed.
+It has not been installed or live-tested. Playback, UI rendering, travel recovery,
+normal exit and warm relaunch remain pending. It is staged for later owner testing
+and is not qualified for public release. See MIGRATION_STATUS.md for evidence and
+limits. Historical v1.0.1 evidence is retained in V1_0_1_MIGRATION_STATUS.md and
+V1_0_1_PACKAGING_VERIFICATION.json. Existing accepted findings remain.
 
 # Original release qualification (historical)
 
-These results apply to the original v1.0.0 pair. For the build 26271400 repair and its current live acceptance status, see MIGRATION_STATUS.md.
+These results apply to the original v1.0.0 pair. For the historical build 26271400 repair, see V1_0_1_MIGRATION_STATUS.md. Current candidate status is in MIGRATION_STATUS.md.
 
 # Qualification summary for the exact shipped pair
 

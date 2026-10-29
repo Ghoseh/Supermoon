@@ -26,5 +26,5 @@ suite. MP3 known-good licensed/private fixtures, actual-game copied-function tes
 live audits and raw diagnostic archives are not redistributed. The full retained
 source includes legacy test/support mains which are not production DLL entry points;
 the safe wrapper selects its inputs explicitly.
-The public wrapper was packaging-checked without rebuilding the runtime. See
+The current candidate was rebuilt and the public wrapper executed. See
 docs/PACKAGING_VERIFICATION.json for which commands were executed in this pass.

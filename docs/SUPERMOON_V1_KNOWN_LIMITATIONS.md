@@ -1,4 +1,4 @@
-> These limitations remain applicable to v1.0.1. Its current verification is in QUALIFICATION.md; the four-hour F6 result below applies only to v1.0.0.
+> These limitations remain applicable to v1.0.2 candidate. Its current verification is in QUALIFICATION.md; the four-hour F6 result below applies only to v1.0.0.
 
 # Supermoon v1.0 — known limitations and qualification status
 
