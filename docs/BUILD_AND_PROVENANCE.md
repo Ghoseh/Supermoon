@@ -1,6 +1,6 @@
 # Build and provenance
 
-Supermoon **1.0.2 candidate** targets Windows x64 and NMS Steam build **26295378** only.
+Supermoon **1.0.2** targets Windows x64 and NMS Steam build **26295378** only.
 The supported `NMS.exe` is 89,489,480 bytes, SHA-256:
 
 `d393c6782d29e1915854c0d5cf42505c8093740c05dc53705dbed7e0d1d4ac37`
@@ -43,16 +43,17 @@ timestamps while preserving runtime PE directories. The wrapper checks the exist
 payload pin and both final hashes; it does not rewrite source pins or install its
 output. Keep private debug files and command receipts out of distributions.
 
-The candidate pair was built and reproduced with the portable wrapper in a
+The DLL pair was built and reproduced with the portable wrapper in a
 second disposable directory. Both builds matched RELEASE_DLL_SHA256SUMS and
-build/recipe.json. The pair is staged separately and has not been installed.
+build/recipe.json. These hashes match the installed, owner live-tested pair.
 
 ## Verification scope
 
 The native profile was adapted from the published v1.0.1 integration against
 the new owned executable, preserving the v1.0.0 behavior reference. Independent
 relocation, unwind, bridge, allocation/lifecycle and UI reviews passed, together
-with native-fixture and public regressions. Live acceptance is pending.
+with native-fixture and public regressions. Owner live acceptance also passed,
+including music after travel and Steam relaunch, with a normal first-session exit.
 See [qualification](QUALIFICATION.md) and [migration evidence](MIGRATION_STATUS.md).
 
 `PUBLIC_FILE_MANIFEST.json` and `SHA256SUMS` describe the selected source package.

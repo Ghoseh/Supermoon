@@ -1,4 +1,4 @@
-> These limitations remain applicable to v1.0.2 candidate. Its current verification is in QUALIFICATION.md; the four-hour F6 result below applies only to v1.0.0.
+> These limitations remain applicable to v1.0.2. Its current verification is in QUALIFICATION.md; the four-hour F6 result below applies only to v1.0.0.
 
 # Supermoon v1.0 — known limitations and qualification status
 
@@ -9,6 +9,14 @@ custom music. NMS uses ByteBeat audio-level-dependent attenuation, which can
 release as custom audio gets quieter. The exact audible source and its full runtime
 gain have not been conclusively identified. This remains an accepted v1.0 limitation;
 v1.0 does not include a soundtrack-suppression fix.
+
+## Menu-related interruption
+
+The owner reports that opening Discovery or the pause menu can intermittently
+interrupt custom audio and make native game music audible. Custom audio resumes
+when the menu closes without another Play command. This is reproducible but not
+every time. Its connection to background soundtrack overlap is under investigation;
+v1.0.2 does not include a menu-audio fix.
 
 ## Native lifecycle and manual playback
 

@@ -1,4 +1,4 @@
-# Supermoon v1.0.2 candidate
+# Supermoon v1.0.2
 
 Play your own supported WAV and MP3 music through the personal ByteBeat player's
 Supermoon track in No Man's Sky. Supermoon prepares a disk-backed playlist,
@@ -41,11 +41,14 @@ embedded notification cues, not extra selectable songs.
 - [Build instructions](docs/BUILD_AND_PROVENANCE.md), [developer guide](docs/DEVELOPER_GUIDE.md), [tests](tests/README.md).
 - [Dependency inventory](docs/DEPENDENCIES.md), [licensing](LICENSING.md), [changelog](CHANGELOG.md).
 
-This candidate targets NMS Steam build 26295378. It passed independent static
-profile review, offline regressions and a second identical build. It has not
-been installed or live-tested. Live acceptance is the remaining qualification
-step; see docs/MIGRATION_STATUS.md. Previous playback and endurance results apply
-only to their original DLL pairs. Accepted findings remain documented.
+This version targets NMS Steam build 26295378. Independent native-profile
+reviews, offline regressions and a second identical build passed. The owner
+confirmed custom playback, Next, UI, fast-travel recovery and playback after
+Steam relaunch. Logs confirm automatic song advancement and normal exit code 0.
+See docs/MIGRATION_STATUS.md for the finite test scope and diagnostics. The
+original four-hour endurance result applies only to its original DLL pair.
+Existing accepted findings remain documented. Temporary Discovery/pause-menu
+interruption and native soundtrack overlap are unresolved in this hook update.
 
 ## Credits and license
 

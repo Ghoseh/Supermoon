@@ -1,11 +1,14 @@
 # Changelog
 
-## 1.0.2 - Unreleased candidate
+## 1.0.2 - 2026-11-01
 
 - Adapt native audio, lifecycle, allocator, global and UI profiles to NMS Steam build **26295378** (7.11).
 - Refresh executable, native-code, readiness and payload identities while preserving unknown-build refusal.
 - Preserve playlist, normalization, controls, filename/time/progress and manual recovery behavior.
-- Offline checks and a reproducible build passed. Installation and live acceptance are pending.
+- Pass native/public/UI/identity checks and reproduce the exact installed DLL pair.
+- Confirm custom music, Next, UI, logged automatic song advancement, fast-travel recovery, normal exit and playback after Steam relaunch. Warm activation took 0.605 seconds on the test machine.
+- Retain the existing accepted findings and limits; no new four-hour endurance test is claimed.
+- Menu-related temporary playback interruption and native soundtrack overlap remain unresolved. This release updates hook compatibility.
 
 ## 1.0.1 - 2026-10-28
 

@@ -1,7 +1,7 @@
 {
-  "result": "PASS_OFFLINE_LIVE_PENDING",
-  "version": "1.0.2-candidate",
-  "date": "2026-10-29",
+  "result": "PASS",
+  "version": "1.0.2",
+  "date": "2026-11-01",
   "steam_build_id": 26295378,
   "game_executable_sha256": "d393c6782d29e1915854c0d5cf42505c8093740c05dc53705dbed7e0d1d4ac37",
   "DLLs": {
@@ -25,14 +25,28 @@
   "independent_final_audio_and_UI_source_reviews": "PASS",
   "executable_identity_positive_cases": 1,
   "executable_identity_negative_cases": 5,
-  "installed": false,
-  "live_acceptance": [],
-  "live_acceptance_status": "PENDING_OWNER_READINESS",
+  "installed": true,
+  "live_acceptance": [
+    "custom playback",
+    "Next",
+    "title/time UI owner acceptance",
+    "automatic EOF advancement (logged)",
+    "fast-travel playback recovery",
+    "normal exit code 0",
+    "playback after Steam relaunch"
+  ],
+  "live_acceptance_status": "PASS_OWNER_AND_LOG_EVIDENCE",
   "new_four_hour_endurance_performed": false,
   "published": false,
   "private_fixtures_and_raw_receipts_shipped": false,
   "historical_verification": [
     "V1_0_0_PACKAGING_VERIFICATION.json",
     "V1_0_1_PACKAGING_VERIFICATION.json"
-  ]
+  ],
+  "warm_activation_seconds": 0.605,
+  "first_exit_code": 0,
+  "first_substituted_frames": 8400384,
+  "first_empty_frames": 1024,
+  "warm_snapshot_substituted_frames": 573440,
+  "warm_snapshot_empty_frames": 0
 }

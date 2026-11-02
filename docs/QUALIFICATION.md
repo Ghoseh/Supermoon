@@ -1,18 +1,24 @@
-# Version 1.0.2 candidate qualification
+# Version 1.0.2 qualification
 
-The candidate targets Steam build 26295378. Independent static/native-profile
+The DLL pair targets Steam build 26295378. Independent static/native-profile
 reviews, current-native fixture tests, public regressions, normal and UBSan UI
 tests, executable identity cases and a second identical build passed.
 
-It has not been installed or live-tested. Playback, UI rendering, travel recovery,
-normal exit and warm relaunch remain pending. It is staged for later owner testing
-and is not qualified for public release. See MIGRATION_STATUS.md for evidence and
-limits. Historical v1.0.1 evidence is retained in V1_0_1_MIGRATION_STATUS.md and
-V1_0_1_PACKAGING_VERIFICATION.json. Existing accepted findings remain.
+The exact pair was installed with backups and live-tested by the owner. Custom
+music, Next, UI, fast-travel recovery and music after Steam relaunch passed.
+Logs confirm a natural EOF transition and normal first-session exit code 0.
+Warm activation took 0.605 seconds from activation attempt to return.
+
+See MIGRATION_STATUS.md for counters and limits. Two isolated 512-frame
+revision-empty blocks were recorded around navigation/travel; no audible-gap
+measurement or new four-hour endurance result is claimed. The warm session
+remains active. Existing accepted findings remain, including soundtrack overlap
+and intermittent menu interruption; neither is fixed by this hook update. Historical v1.0.1 evidence
+is retained in V1_0_1_MIGRATION_STATUS.md and V1_0_1_PACKAGING_VERIFICATION.json.
 
 # Original release qualification (historical)
 
-These results apply to the original v1.0.0 pair. For the historical build 26271400 repair, see V1_0_1_MIGRATION_STATUS.md. Current candidate status is in MIGRATION_STATUS.md.
+These results apply to the original v1.0.0 pair. For the historical build 26271400 repair, see V1_0_1_MIGRATION_STATUS.md. Current version status is in MIGRATION_STATUS.md.
 
 # Qualification summary for the exact shipped pair
 

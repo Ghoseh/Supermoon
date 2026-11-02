@@ -50,6 +50,6 @@
   "game_executable_sha256": "d393c6782d29e1915854c0d5cf42505c8093740c05dc53705dbed7e0d1d4ac37",
   "game_executable_bytes": 89489480,
   "steam_build_id": 26295378,
-  "qualification": "Offline checks and reproducible build passed; not installed; live acceptance pending",
+  "qualification": "Build reproduced; offline and owner live acceptance passed; see docs/MIGRATION_STATUS.md",
   "version": "1.0.2"
 }

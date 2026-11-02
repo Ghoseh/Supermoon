@@ -6,4 +6,5 @@
 - Keep game executables, native instruction dumps, private fixture data and personal music outside this repository.
 - Record actual builds, tests and live results in docs/MIGRATION_STATUS.md. Never claim unperformed checks or transfer the original release's endurance result to this pair.
 - Readiness checks and local packaging do not authorize a remote push or public release. Publish only on the owner's explicit instruction.
-- The owner is playing with friends. Complete offline preparation only; do not install, attach to, close or launch the game. Live acceptance is pending until the owner is ready.
+- The owner completed the live acceptance checks on 2026-11-01. Preserve the installed matching pair and leave the current game session running. Keep private test evidence outside this repository; publication remains a separate owner instruction.
+- The owner authorized publishing v1.0.2 as the hook compatibility update, then investigating menu interruption and soundtrack overlap. Keep those follow-up behavior changes separate from this tested pair.
