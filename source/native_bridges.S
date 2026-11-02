@@ -44,7 +44,7 @@
     movdqu [rsp+176],xmm5
     stmxcsr [rsp+192]
 .endm
-.macro RESTORE
+.macro RESTORE target=
     // Restore the native floating-point mode as well as register values. The
     // final LEA/POP/RET epilog does not overwrite the restored condition flags.
     ldmxcsr [rsp+192]
@@ -65,7 +65,11 @@
     mov rax,[rsp+232]
     lea rsp,[rbp+112]
     pop rbp
+    .ifnb \target
+    jmp qword ptr [rip+\target]
+    .else
     ret
+    .endif
     .seh_endproc
 .endm
 SAVE AdapterFrameBridge
@@ -115,3 +119,47 @@ SAVE RecoveryPostedBridge
 RESTORE
 
 #endif
+
+// Private diagnostic wrapper for the provider's existing native lock CALL.
+// Lock gets exactly its original arguments. Preserve its post-call state while
+// the passive helper samples the enable byte; return to unchanged clone code.
+.p2align 4
+.globl AdapterStateLockBridge
+.seh_proc AdapterStateLockBridge
+AdapterStateLockBridge:
+    sub rsp,40
+    .seh_stackalloc 40
+    .seh_endprologue
+    call qword ptr [rip+StateNativeLock]
+    add rsp,40
+    jmp AdapterStateAfterLockBridge
+    .seh_endproc
+SAVE AdapterStateAfterLockBridge
+    mov rcx,r15
+    call AdapterObserveState
+RESTORE
+
+// Existing normal player Update/commit/cleanup CALLs only. Never Execute,
+// provider, Format, worker or DllMain. Native unlock executes once first.
+.p2align 4
+.globl FloorControlUnlockBridge
+.seh_proc FloorControlUnlockBridge
+FloorControlUnlockBridge:
+    push rbp
+    .seh_pushreg rbp
+    sub rsp,32
+    .seh_stackalloc 32
+    lea rbp,[rsp+32]
+    .seh_setframe rbp,32
+    .seh_endprologue
+    call qword ptr [rip+FloorNativeUnlock]
+.globl FloorUnlockReturned
+FloorUnlockReturned:
+    // Canonical frame-pointer epilog preserves native post-call flags.
+    lea rsp,[rbp]
+    pop rbp
+    jmp FloorControlAfterUnlockBridge
+    .seh_endproc
+SAVE FloorControlAfterUnlockBridge
+    call FloorBeforeAudioUpdate
+RESTORE

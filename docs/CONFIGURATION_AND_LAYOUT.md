@@ -1,6 +1,6 @@
 # Portable configuration and installation layout
 
-This describes the exact audited and endurance-tested v1.0 runtime. `<game-executable-directory>` means the directory
+This describes the current portable runtime layout. Current qualification is in QUALIFICATION.md. `<game-executable-directory>` means the directory
 containing NMS.exe, independent of the Steam library/drive or developer workspace.
 
 ```text
@@ -11,11 +11,19 @@ containing NMS.exe, independent of the Steam library/drive or developer workspac
   SETTINGS/GCMODSETTINGS.MXML
   Supermoon/
     supermoon_playlist.dll
+    tools/prepare_audio.py
+    tools/audio_patch.json
+    build/recipe.json
     Music/
     playlist.ini          (optional)
     Cache/                (managed preparation data)
     State/                (preferences and compatibility/attempt ownership)
 ```
+
+Version 1.0.3 also requires the locally derived override at
+`<game>/GAMEDATA/MODS/Supermoon_MenuAudio_Test/audio/windows/init.bnk`.
+The setup tool, patch plan and recipe must retain the relative paths shown above.
+See INSTALL.md for generation, backup, conflict handling and removal.
 
 The existing enable-marker filename is intentional runtime data, despite its
 experimental label. Its required contents are exactly

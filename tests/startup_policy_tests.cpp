@@ -10,13 +10,13 @@ void check(bool ok){++checks;if(!ok){fprintf(stderr,"FAIL check %d\n",checks);ex
 int main(){
     for(uintptr_t base:{uintptr_t(0x140000000),uintptr_t(0x7FF600000000)}) {
         check(classify(base,0,0,0)==Readiness::waiting);
-        check(classify(base,base+0x2EA1EF0,0,0)==Readiness::waiting);
-        check(classify(base,0,base+0x2EA1F70,0)==Readiness::waiting);
-        check(classify(base,base+0x2EA1EF0,base+0x2EA1F70,0)==Readiness::ready);
-        check(classify(base,base+0x2EA1EF0,base+0x2EA1F70,1)==Readiness::conflict);
+        check(classify(base,base+0x2ea6e60,0,0)==Readiness::waiting);
+        check(classify(base,0,base+0x2ea6ee0,0)==Readiness::waiting);
+        check(classify(base,base+0x2ea6e60,base+0x2ea6ee0,0)==Readiness::ready);
+        check(classify(base,base+0x2ea6e60,base+0x2ea6ee0,1)==Readiness::conflict);
         check(classify(base,1,0,0)==Readiness::conflict);
         check(classify(base,0,1,0)==Readiness::conflict);
-        check(classify(base,base+0x2EA1EF0+1,base+0x2EA1F70,0)==Readiness::conflict);
+        check(classify(base,base+0x2ea6e60+1,base+0x2ea6ee0,0)==Readiness::conflict);
     }
     auto wrap=[](const std::string& property){return "<?xml version=\"1.0\"?><Data template=\"GcModSettings\">"+property+"</Data>";};
     const std::string enabled="<Property name=\"DisableAllMods\" value=\"false\" />";
@@ -44,5 +44,13 @@ int main(){
     check(!mods_enabled("<Data template=\"GcModSettings\">"+enabled));
     check(!mods_enabled(wrap("")+enabled));
     check(!mods_enabled(enabled+wrap("")));
+    const std::string mod="<Property name='Data'><Property name='Data' value='GcModSettingsInfo' _index='0'><Property name='Name' value='MENU_AUDIO_TEST'/><Property name='Enabled' value='true'/><Property name='Dependencies'/></Property></Property>";
+    check(mods_enabled(wrap(enabled+mod)));
+    check(!mods_enabled(wrap("<Property name='DisableAllMods' value='true'/>"+mod)));
+    check(!mods_enabled(wrap(enabled+"<Property name='Data' value='GcModSettingsInfo' _index='0'><Property name='DisableAllMod&#115;' value='true'/></Property>")));
+    for(const std::string& index:{"","-1","+1","1.0","4294967296","00000000000","&#48;"})
+        check(!mods_enabled(wrap(enabled+"<Property name='Data' value='GcModSettingsInfo' _index='"+index+"'/>")));
+    check(mods_enabled(wrap(enabled+"<Property name='Data' value='GcModSettingsInfo' _index='4294967295'/>")));
+    check(!mods_enabled(wrap(enabled+"<Property name='Data' _index='0' _index='1'/>")));
     printf("PASS %d startup readiness/disable-policy checks; no game loaded\n",checks);
 }

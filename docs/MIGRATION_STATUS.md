@@ -1,73 +1,55 @@
-# Version 1.0.2: NMS build 26295378
+# Version 1.0.3: NMS build 26385139
 
-Status: built, reproduced and owner live-tested on 2026-11-01 (local time;
-2026-11-02 UTC). The current warm session remains running. The owner authorized
-publication of this hook compatibility update.
+Status: qualified and prepared for the owner-authorized combined hook/audio release
+on 2026-11-02. The exact owner-tested pair remains installed; NMS is closed.
+This release starts from published v1.0.2 commit
+`356f6d07cc9535d19577d34610018884a5526d44` and preserves the original MIT,
+dependency and owner-created notification terms.
 
-The behavior reference is Supermoon v1.0.0, commit `d5ff3ca`, under the existing
-MIT, dependency and owner-created notification asset terms. This update starts
-from published v1.0.1 commit `5ff0801e33485413494f41cf7860c21925c6008d`.
+Target: Steam build 26385139, executable size 89,535,560 bytes, SHA-256
+`a77fc29877789c3da9181afeb5941b9b85a27d3df24919a24403cf8e194c6109`.
 
-Target: Steam build 26295378, executable size 89,489,480 bytes, SHA-256
-`d393c6782d29e1915854c0d5cf42505c8093740c05dc53705dbed7e0d1d4ac37`.
+| Area | Performed verification |
+| --- | --- |
+| Native profile | 12 copied functions; 2,452 instruction, 4,397 operand and 519 relative-field comparisons; 40 unwind records and seven bridge contracts |
+| UI/time/register | Independent 3,777-instruction mapping, 258 contracts, 43 unwind records and 15 complete code pins; normal and UBSan integrated UI/writer tests |
+| Recovery | 1,793-instruction mapping and 13 unwind records; 90,927 fixture checks, 120 cycles; 45 injected publication failure boundaries plus success/threaded paths; explicit bridge unwind checks |
+| Identity | Exact current executable accepted; prior, changed, truncated, empty and missing executables refused |
+| Public regression | All eleven suites and indexed-settings guard-page corpus; startup/parser UBSan tests passed |
+| Music controller | 116 actual bridge checks, 24 adapter integration checks; 16,671 current-native SDK packet checks; 12 EOF and three shuffle streaming fixture cycles |
+| Audio preparation | Native archive and bank unchanged by the update; locally derived output matches exact tested bank; reverse patch and negative-input checks; eight actual CLI derivation/install/conflict/identity cases |
+| Build | Two portable builds reproduce both owner-tested hashes in build/recipe.json and RELEASE_DLL_SHA256SUMS |
+| Owner acceptance | Native music before Play and after Stop, quiet-passage suppression, repeated Discoveries persistence, Next, travel and reload recovery passed |
 
-| Area | Adaptation | Performed verification |
-| --- | --- | --- |
-| Native copied functions | Address/relative-target profiles and hashes | 12 functions, 2,380 instruction contracts, 500 relative references |
-| Bridges/unwind | Relocated sites; retained clone-local contracts | Seven bridges; 40 raw unwind records and 40 emitted associations |
-| Allocator/source/parameter/owner lifecycle | Targets, cells and exact allocation CALL returns | Independent helper/table review; 90,929 native recovery checks; 120 native cycles |
-| Hook publication | Updated cells and protection span | 45 injected failure boundaries, success and threaded paths passed |
-| Filename/time/progress | Code pins, cells, globals and exact CALL returns | Independent 3,281-assertion mapping review plus 55 final source checks; all 15 full UI/time/register ranges covered |
-| Startup | New executable/readiness/payload identities | Startup/compatibility/forwarding suites; exact executable accepted, five invalid/missing cases refused |
-| Playlist/audio/cache/controls | Behavior retained | All 11 public suites and 585-case F1 guard-page corpus passed |
-| UI integration | Behavior retained | Normal and UBSan UI/progress and writer coverage suites passed |
-| DLL pair | Payload pin refreshed before proxy build | Second disposable portable build reproduced both DLL hashes |
-| Live behavior | Exact candidate pair installed with backups | Custom playback, Next, UI and fast-travel recovery owner-confirmed; automatic EOF advancement and normal exit 0 logged; warm playback confirmed |
+The dispatch protection span is now 0x908 bytes. Native small-field layouts,
+allocation contracts, clone-local bridges, transformed unwind and catalog guard
+remain qualified; the current catalog fixture was independently checked.
 
-The five audio dispatch cells now span 0x850 bytes; the protection range was
-updated accordingly. Runtime changes otherwise replace reviewed addresses and
-identity pins. Clone-local offsets, inserted bridges, transformed unwind bytes,
-allocation size, object fields and UI catalog mismatch guard remain intact.
+The menu fix derives a ByteBeat Frontend-state volume change from the owner's
+native bank. It affects native ByteBeat tracks in that state as well. The floor
+fix adds a dedicated numeric parameter and copied Music-child curves. A fresh
+accepted custom carrier enables suppression; sampled native enable/init state
+can only clear owned intent. Controller calls occur after four existing control
+unlocks, preserving the original unlock and register/unwind contracts. Provider
+observation stays under its existing lock; no provider-thread SDK call or native
+host-vtable hook is introduced. Stop/retirement sends the neutral setting. User
+Music-volume settings and PCM silence are not modified.
 
-Focused normal and UBSan UI runs each exercised 168,010 PCM calls through the
-integrated preparation/Engine/UI path. Their reported progress checks were
-360,755 and 360,763 respectively; these are synthetic own-process tests.
+The owner's approximately twelve-minute session recorded 33,890 provider/state
+pairs, 13,029,425 consumed custom frames, two natural EOF
+transitions and twelve accepted music-control commands across three owned source
+incarnations. There were no exceptions, callback faults, failed tracks, stale
+frames or dropped diagnostics. There were 20,943 empty frames during manual
+restart/navigation transitions, at most 512 consecutive. The existing Engine
+restart invalidates queued PCM before refill; this was reproduced without the
+floor controller and remains a limitation. These counters do not measure audible
+gap duration or establish all native schedules. An early snapshot labelled
+before-play already contained custom playback; native-before-Play acceptance
+comes from the owner's listening response, not that snapshot label.
 
-Private native instructions, fixtures, full executable snapshots and raw receipts
-remain outside the repository. The previous full executable was not retained;
-comparison uses hash-checked v1.0.1 copied-function fixtures plus the original
-private image and retained prior review. Two previously changed-shape UI helpers
-were corroborated by current call graph, complete ranges and prior review rather
-than a full previous-image byte comparison. Runtime-initialized readiness values
-and catalog contents are not established by static analysis.
-
-Existing accepted findings and unverified contracts remain. Neither v1.0.1 live
-acceptance nor the v1.0.0 four-hour endurance result qualifies this pair. No new
-endurance or multiplayer compatibility claim is made.
-
-Live evidence for this pair:
-
-- Installed DLL hashes match the pair reproduced offline. Installation preserved
-  Music, Cache, playlist.ini and game settings. The saved unsupported-build No
-  entry for this exact executable was backed up and cleared after owner testing
-  authorization; executable, native-site and payload checks remained enforced.
-- The first session recorded 8,400,384 substituted frames, zero callback
-  fault records, zero exceptions, zero stale-available frames and zero failed
-  tracks. It exited normally with code 0.
-- Two isolated 512-frame revision-empty blocks (1,024 frames total) occurred
-  around navigation and travel rebinding. Maximum observed consecutive empty
-  frames were 512. The captured natural EOF transition added no empty block.
-  These finite counters are not an audible-gap measurement.
-- The owner confirmed music again after Steam relaunch. The retained warm
-  snapshot recorded 573,440 substituted frames, zero empty PCM, zero callback
-  fault records, zero exceptions and zero failed tracks.
-- Both preparations reused all 27 cached tracks and rebuilt none. Activation
-  attempt-to-return spans were 0.596 seconds initially and 0.605 seconds on
-  relaunch, excluding the wait for native audio registration. These observations
-  are system/library-specific and are not startup performance guarantees.
-
-No worker-drain, race-freedom, multiplayer certification or new endurance claim
-is inferred. Raw logs and music names remain private. Historical v1.0.1 evidence
-is in V1_0_1_MIGRATION_STATUS.md. The Discovery/pause-menu interruption and
-background soundtrack overlap remain unresolved and are follow-up investigations,
-separate from this compatibility release.
+No universal native draining, safe hot unload, race-freedom, multiplayer or new
+four-hour endurance claim is made. Raw game instructions, fixtures, music names,
+logs, saves, settings and private evidence remain outside the repository.
+Historical v1.0.1 status is retained in V1_0_1_MIGRATION_STATUS.md. Version 1.0.2
+qualification is preserved in its published tag; its unresolved menu/floor
+observations are the issues addressed here, not current acceptance failures.

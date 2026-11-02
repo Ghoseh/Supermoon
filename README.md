@@ -1,4 +1,4 @@
-# Supermoon v1.0.2
+# Supermoon v1.0.3
 
 Play your own supported WAV and MP3 music through the personal ByteBeat player's
 Supermoon track in No Man's Sky. Supermoon prepares a disk-backed playlist,
@@ -11,10 +11,13 @@ shortcuts. Audio is rendered as 24 kHz mono, with stereo inputs downmixed.
   This release checks its SHA-256; a matching general game version name is insufficient.
 - Enable game mods through NMS's own settings. Unknown executables or malformed/disabled
   mod settings refuse activation. No extra mod loader is bundled.
+- Python 3.10+ is needed once to generate the audio override during installation.
+  The setup tool uses your own installed bank; game audio is not included.
 - Use the personal ByteBeat player and select the native Supermoon track.
   Other tracks retain native audio; arbitrary base-speaker routing is not guaranteed.
 - Another mod using Binaries/winmm.dll conflicts unless independently integrated;
   proxy chaining is not supplied. Multiplayer/other-mod compatibility is not certified.
+- Other mods replacing `audio/windows/init.bnk` may conflict with the audio override.
 
 ## Install and use
 
@@ -41,14 +44,14 @@ embedded notification cues, not extra selectable songs.
 - [Build instructions](docs/BUILD_AND_PROVENANCE.md), [developer guide](docs/DEVELOPER_GUIDE.md), [tests](tests/README.md).
 - [Dependency inventory](docs/DEPENDENCIES.md), [licensing](LICENSING.md), [changelog](CHANGELOG.md).
 
-This version targets NMS Steam build 26295378. Independent native-profile
-reviews, offline regressions and a second identical build passed. The owner
-confirmed custom playback, Next, UI, fast-travel recovery and playback after
-Steam relaunch. Logs confirm automatic song advancement and normal exit code 0.
-See docs/MIGRATION_STATUS.md for the finite test scope and diagnostics. The
-original four-hour endurance result applies only to its original DLL pair.
-Existing accepted findings remain documented. Temporary Discovery/pause-menu
-interruption and native soundtrack overlap are unresolved in this hook update.
+This version targets NMS Steam build **26385139**. It keeps ByteBeat playing
+through Discoveries/menu transitions and suppresses the native soundtrack while
+the custom playlist is playing, including quiet passages. Stop releases the
+suppression. The owner confirmed these behaviors and custom recovery after
+fast travel and save reload. Independent profile reviews, native/public/UI
+tests and an identical rebuild passed. See docs/MIGRATION_STATUS.md for scope
+and the existing brief restart/Next buffer gaps. No new four-hour endurance
+or universal native shutdown/unload qualification is claimed.
 
 ## Credits and license
 

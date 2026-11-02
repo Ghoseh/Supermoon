@@ -5,7 +5,14 @@
 // PCM/Core access remains gated until the prepared resident Engine is adopted.
 #define ADAPTER_BUILD
 #include "supermoon_adapter_api.hpp"
+extern "C" void AdapterStateLockBridge();
+extern "C" { void* StateNativeLock=nullptr; }
+
 #include "supermoon_core.hpp"
+#include "music_control_prototype.hpp"
+extern "C" void FloorControlUnlockBridge();
+extern "C" { void* FloorNativeUnlock=nullptr; }
+
 #include "native_clone.hpp"
 #include "pinned_build.hpp"
 #include <atomic>
@@ -29,6 +36,19 @@ namespace bytebeat::playback {inline bool location_matches(const wchar_t*){retur
 
 namespace {
 constexpr uint32_t capacity=262144;
+supermoon::floor_prototype::MusicControl floor_control;
+bytebeat::CompositionKey floor_carrier_key{};
+HANDLE floor_bank_handle=INVALID_HANDLE_VALUE;
+uint32_t floor_index(uintptr_t token) noexcept {
+#ifdef ADAPTER_RECOVERY_BUILD
+    auto s=bytebeat::recovery::registry.source(reinterpret_cast<void*>(token));
+    if(s)return uint32_t(s-bytebeat::recovery::registry.sources);
+#else
+    (void)token;
+#endif
+    return UINT32_MAX;
+}
+
 enum Kind:uint32_t { callback=1,selection=2,resolved=3,commit_event=4,retire_event=5 };
 enum Fault:uint32_t { context_fault=1,key_fault=2,scope_fault=4,clock_fault=8,reentry_fault=16,production_fault=32,binding_fault=64 };
 struct Slot {AdapterRecord value{};std::atomic<bool> ready{false};};
@@ -148,6 +168,46 @@ bool memory_digest(unsigned char* bytes,uint32_t length,const uint8_t* expected)
     if(hash)BCryptDestroyHash(hash);if(algorithm)BCryptCloseAlgorithmProvider(algorithm,0);
     return ok&&!memcmp(digest,expected,32);
 }
+
+bool floor_live(uint32_t index) noexcept {
+#ifdef ADAPTER_RECOVERY_BUILD
+    auto engine=engine_log.load(std::memory_order_acquire);
+    return engine_ready.load(std::memory_order_acquire)&&index<bytebeat::recovery::source_capacity&&
+        bytebeat::recovery::Registry::live(&bytebeat::recovery::registry.sources[index])&&
+        !core->faulted()&&engine&&engine->healthy();
+#else
+    (void)index;return false;
+#endif
+}
+void floor_log(uint64_t word,bool desired,int result) noexcept {
+    AdapterRecord r{};r.kind=9;r.generation=word>>14;r.component=supermoon::floor_prototype::PlaybackIntent::source_index(word)+1;
+    r.requested=desired;r.produced=uint32_t(result);append(r);
+}
+bool floor_preflight(unsigned char* base,HMODULE module,const wchar_t* executable) {
+    (void)module;
+    {const uint8_t expected[]={0xff,0xac,0x6b,0xf1,0xc0,0x1f,0xae,0x4c,0x3a,0x2d,0xf2,0x0e,0x05,0xc2,0x0c,0x1d,0xe1,0xaa,0x97,0x60,0x25,0x1c,0x52,0xa6,0x45,0xbf,0xcf,0x8f,0x4e,0xc7,0xdb,0x76};if(!memory_digest(base+46634544,7,expected))return false;}
+    {const uint8_t expected[]={0x34,0xf4,0x80,0x00,0x31,0xd1,0xe0,0xa4,0x21,0xde,0x8f,0xbf,0x9d,0xe0,0x1f,0x95,0xa2,0xda,0x09,0x70,0xf5,0x7d,0x34,0x1d,0x28,0x34,0x0e,0x95,0x8b,0x31,0xf3,0xeb};if(!memory_digest(base+52538576,39,expected))return false;}
+    {const uint8_t expected[]={0x27,0x04,0xcd,0x72,0x22,0x4b,0x88,0x4b,0xe7,0x1b,0x80,0xb8,0x9f,0x1b,0x26,0x94,0x47,0x61,0x2f,0x9e,0x42,0xc4,0xdd,0x97,0x86,0x1a,0xa9,0x35,0x30,0xc0,0x0c,0x2e};if(!memory_digest(base+52549312,254,expected))return false;}
+    {const uint8_t expected[]={0xe6,0x3f,0x8b,0xe6,0x36,0xbf,0x0b,0xc2,0x0d,0x0f,0x5b,0xd9,0xa4,0x47,0xbf,0x15,0x44,0x8e,0x84,0x22,0x02,0x3c,0x73,0x15,0x00,0xa6,0xd8,0x5a,0x5a,0xab,0x56,0x2b};if(!memory_digest(base+52508160,8,expected))return false;}
+
+    auto bank=std::filesystem::path(executable).parent_path().parent_path()/L"GAMEDATA/MODS/Supermoon_MenuAudio_Test/audio/windows/init.bnk";
+    HANDLE file=CreateFileW(bank.c_str(),GENERIC_READ,FILE_SHARE_READ,nullptr,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr);
+    if(file==INVALID_HANDLE_VALUE)return false;
+    LARGE_INTEGER size{};DWORD got{};std::vector<unsigned char> data(36017);
+    const uint8_t expected[]={ 0x65,0xbc,0xbd,0xd3,0xcd,0x9a,0xaa,0xe5,0x13,0xd2,0x18,0x65,0xe5,0x04,0xf1,0x94,0xaf,0xba,0x58,0x4e,0xe0,0x12,0xf9,0xd3,0xd5,0x58,0xe9,0xc0,0x4f,0x71,0xa5,0x4f };
+    bool ok=GetFileSizeEx(file,&size)&&size.QuadPart==36017&&ReadFile(file,data.data(),DWORD(data.size()),&got,nullptr)&&got==data.size()&&memory_digest(data.data(),DWORD(data.size()),expected);
+    if(!ok){CloseHandle(file);return false;}
+    floor_bank_handle=file; // retain a read-only handle until ordinary process exit
+#ifdef ADAPTER_PLAYBACK_BUILD
+    floor_carrier_key=bytebeat::playback::configuration.carrier;
+#endif
+    FloorNativeUnlock=base+0x2c79630;
+    floor_control.prepare(658155624,reinterpret_cast<supermoon::floor_prototype::MusicControl::Set>(base+0x321acd0),reinterpret_cast<supermoon::floor_prototype::MusicControl::Initialized>(base+0x3213600),&floor_live,&floor_log);
+    return true;
+}
+bool floor_publish(unsigned char* base) noexcept {
+    (void)base;floor_control.enable();return true;
+}
 uint64_t diagnostic_bytes{};bool diagnostic_limit{},diagnostic_io=true;
 void write_line(const char* line) {
     constexpr uint64_t limit=64ull*1024*1024;
@@ -251,6 +311,38 @@ DWORD WINAPI writer(void*) {
     FlushFileBuffers(log_file);CloseHandle(log_file);log_file=INVALID_HANDLE_VALUE;return 0;
 }
 }
+// Private passive diagnostic. Runs only after the original native lock call.
+// Reads current invocation's borrowed stream while its native lock is held.
+// Kind 8: requested=enable byte, produced=initialized byte. No audio writes,
+// retained native pointers or gain writes; samples can only clear owned intent.
+extern "C" void FloorBeforeAudioUpdate() noexcept {
+    auto saved=GetLastError();
+    static std::atomic<uint64_t> entries{0};[[maybe_unused]] auto entry=entries.fetch_add(1,std::memory_order_relaxed);
+#ifdef ADAPTER_RECOVERY_BUILD
+    if(entry==0){AdapterRecord r{};r.kind=10;r.requested=engine_ready.load(std::memory_order_acquire);append(r);}
+    if(engine_ready.load(std::memory_order_acquire))floor_control.pump();
+#endif
+    SetLastError(saved);
+}
+extern "C" void AdapterObserveState(void* stream) noexcept {
+#ifdef ADAPTER_RECOVERY_BUILD
+    if(!engine_ready.load(std::memory_order_acquire))return;
+#endif
+    if(!current||current->stream!=stream)return;
+    AdapterRecord record{};record.kind=8;record.call=current->summary.call;
+    record.stream=reinterpret_cast<uintptr_t>(stream);
+    record.component=current->endpoint;
+    auto index=floor_index(current->endpoint);
+    auto captured=floor_control.intent.capture(index); // before the native read
+    record.requested=read<uint8_t>(stream,0x14);
+    record.produced=read<uint8_t>(stream,0x15);
+    (void)floor_control.intent.observe(index,captured,uint8_t(record.requested),uint8_t(record.produced));
+#ifdef ADAPTER_STATE_FIXTURE
+    extern void StateFixtureProbe(uint32_t,uint32_t);
+    StateFixtureProbe(record.requested,record.produced);
+#endif
+    append(record);
+}
 extern "C" bool AdapterCarrier(void* stream) noexcept {
 #ifdef ADAPTER_RECOVERY_BUILD
     if(!engine_ready.load(std::memory_order_acquire))return false;
@@ -315,7 +407,7 @@ extern "C" void AdapterBefore(void* component,void* controller,void* playlist,co
     AdapterRecord r{};r.kind=selection;r.component=reinterpret_cast<uintptr_t>(component);r.stream=r.component+0x28;
     if(pending.valid){observed_fault(reentry_fault);r.faults|=reentry_fault;}
     pending={};pending.component=r.component;
-    pending.personal=component&&key&&reinterpret_cast<uintptr_t>(controller)==r.component+0x7D5C&&reinterpret_cast<uintptr_t>(playlist)==native_base+0x6F83590;
+    pending.personal=component&&key&&reinterpret_cast<uintptr_t>(controller)==r.component+0x7D5C&&reinterpret_cast<uintptr_t>(playlist)==native_base+0x6f8ef30;
     // Selected key is a native resolver argument: valid borrowed 16-byte identifier.
     if(key){memcpy(pending.key.data(),key,16);memcpy(r.key,key,16);pending.valid=true;}
     else r.faults|=key_fault;
@@ -362,9 +454,9 @@ extern "C" void AdapterCommit(void* component,void* payload) noexcept {
     if(matched)memcpy(r.key,pending.key.data(),16);
 #ifdef ADAPTER_RECOVERY_BUILD
     auto endpoint=bytebeat::recovery::control_endpoint(r.stream);
-    if(!bytebeat::recovery::enabled()||!matched||!pending.personal||!endpoint||!core->commit_endpoint(reinterpret_cast<uintptr_t>(endpoint),r.stream,pending.key,read<uint32_t>(component,0x38),&r.generation)) {
-        r.faults|=scope_fault;if(endpoint)AdapterRecoveryRetire(reinterpret_cast<uintptr_t>(endpoint));
-    }
+    bool accepted=bytebeat::recovery::enabled()&&matched&&pending.personal&&endpoint&&core->commit_endpoint(reinterpret_cast<uintptr_t>(endpoint),r.stream,pending.key,read<uint32_t>(component,0x38),&r.generation);
+    if(!accepted){r.faults|=scope_fault;if(endpoint)AdapterRecoveryRetire(reinterpret_cast<uintptr_t>(endpoint));}
+    if(endpoint&&r.generation)(void)floor_control.intent.commit(floor_index(reinterpret_cast<uintptr_t>(endpoint)),r.generation,accepted&&pending.key==floor_carrier_key);
 #else
     if(!matched||!pending.personal||!core->commit(r.stream,pending.key,matched&&pending.personal,read<uint32_t>(component,0x38),&r.generation)) {r.faults|=scope_fault;core->retire(r.stream);}
 #endif
@@ -414,7 +506,8 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
         for(const auto& pin:bytebeat::recovery::native_pins)if(!memory_digest(base+pin.rva,pin.size,pin.sha))return 14;
         if(!bytebeat::recovery::validate(base,module))return 15;
 #endif
-        const uint32_t slots[]={0x4B7A480,0x4B7A3C8,0x4B7A448,0x4B79C38,0x4B79C40};const uint32_t targets[]={0xF876C0,0xF86C20,0xF87230,0xFBBD00,0xFBBC60};
+        if(!floor_preflight(base,module,path))return 17;
+        const uint32_t slots[]={0x4b845b0,0x4b844f8,0x4b84578,0x4b83cb0,0x4b83cb8};const uint32_t targets[]={0xf8abb0,0xf8a110,0xf8a720,0xfbf1f0,0xfbf150};
         DWORD slot_protection{};
         for(size_t n=0;n<5;++n){MEMORY_BASIC_INFORMATION info{};auto slot=reinterpret_cast<void* volatile*>(base+slots[n]);if(!VirtualQuery(const_cast<void**>(slot),&info,sizeof(info))||info.State!=MEM_COMMIT||info.Type!=MEM_IMAGE||info.AllocationBase!=module||(info.Protect&(PAGE_GUARD|PAGE_NOACCESS))||*slot!=base+targets[n])return 4;if(n==0)slot_protection=info.Protect;else if(info.Protect!=slot_protection)return 4;}
         HMODULE self{};
@@ -424,7 +517,9 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
 #ifdef ADAPTER_RECOVERY_BUILD
             ,reinterpret_cast<void*>(&RecoveryPostedBridge)
 #endif
+            ,reinterpret_cast<void*>(&AdapterStateLockBridge),reinterpret_cast<void*>(&FloorControlUnlockBridge)
         };
+        StateNativeLock=base+0x2c772f0;
         clone.prepare(base,bridges);void* original=clone.function(0);memcpy(&provider,&original,sizeof(provider));
 #ifdef ADAPTER_RECOVERY_BUILD
         // Capture owner/source births BEFORE potentially long cold preparation.
@@ -466,7 +561,7 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
         // original protections above so restoring one saved protection cannot
         // accidentally change a page that previously had different permissions.
         // Only the pointer cells are written; native instruction bytes stay intact.
-        DWORD old{};auto first=base+0x4B79C38;constexpr size_t span=0x850;
+        DWORD old{};auto first=base+0x4b83cb0;constexpr size_t span=0x908;
         if(!VirtualProtect(first,span,PAGE_READWRITE,&old))return 9;
         void* replacements[]={reinterpret_cast<void*>(&adapter_provider),clone.function(1),clone.function(4),clone.function(5),clone.function(6)};
         // A component vtable redirect does not catch a pool's direct CALL.
@@ -502,6 +597,7 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
         // Optional diagnostic failure leaves successful playback activation intact.
         supermoon::ui::start(base,&resident->engine,bytebeat::playback::configuration.carrier.data(),&resident->core,&resident->filenames);
 #endif
+        if(!floor_publish(base))return 18;
         return 0;
     }catch(...){return 11;} // Local payload RAII joins its worker; earlier exposed hooks/adopted state stay resident.
 }
@@ -557,9 +653,12 @@ bool AdapterTestStopWriter(HANDLE thread){
 #ifdef ADAPTER_RECOVERY_BUILD
 extern "C" void AdapterRecoveryRetire(uintptr_t ticket) noexcept {
     if(!engine_ready.load(std::memory_order_acquire))return;
+    auto index=floor_index(ticket);auto captured=floor_control.intent.capture(index);
+    (void)floor_control.intent.observe(index,captured,0,1);
     if(!core->retire_endpoint(ticket))deferred_retirement.store(ticket,std::memory_order_release);
 }
 extern "C" void AdapterRecoverySource(uintptr_t ticket,uint32_t id,uint32_t phase,uintptr_t stream) noexcept {
+    if(phase==bytebeat::recovery::retired)floor_control.intent.retire(floor_index(ticket));
     AdapterRecord value{};value.kind=phase==bytebeat::recovery::ready?6u:7u;value.component=ticket;value.stream=stream;value.requested=id;value.produced=phase;append(value);
 }
 #endif

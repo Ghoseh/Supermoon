@@ -1,9 +1,9 @@
 # Build and provenance
 
-Supermoon **1.0.2** targets Windows x64 and NMS Steam build **26295378** only.
-The supported `NMS.exe` is 89,489,480 bytes, SHA-256:
+Supermoon **1.0.3** targets Windows x64 and NMS Steam build **26385139** only.
+The supported `NMS.exe` is 89,535,560 bytes, SHA-256:
 
-`d393c6782d29e1915854c0d5cf42505c8093740c05dc53705dbed7e0d1d4ac37`
+`a77fc29877789c3da9181afeb5941b9b85a27d3df24919a24403cf8e194c6109`
 
 Startup verifies the executable, loaded native sites and payload separately.
 A matching general game version label is insufficient. Do not change identity
@@ -49,12 +49,21 @@ build/recipe.json. These hashes match the installed, owner live-tested pair.
 
 ## Verification scope
 
-The native profile was adapted from the published v1.0.1 integration against
-the new owned executable, preserving the v1.0.0 behavior reference. Independent
-relocation, unwind, bridge, allocation/lifecycle and UI reviews passed, together
-with native-fixture and public regressions. Owner live acceptance also passed,
-including music after travel and Steam relaunch, with a normal first-session exit.
-See [qualification](QUALIFICATION.md) and [migration evidence](MIGRATION_STATUS.md).
+The native profile was adapted from published v1.0.2 for build 26385139, with
+the menu, soundtrack-suppression and indexed-settings fixes documented in the
+changelog. Independent native, UI and recovery reviews, current-native fixtures,
+public regressions and a second portable build passed. Both DLL hashes reproduce
+the exact installed pair accepted by the owner on 2026-11-02. Owner listening
+covered native music before playback and after Stop, suppression through quiet
+passages, repeated Discoveries transitions, Next, fast travel and save reload.
+The session is closed. No new endurance or universal clean-shutdown result is
+claimed. See [qualification](QUALIFICATION.md) and [migration evidence](MIGRATION_STATUS.md).
+
+The required audio override is generated from the user's supported native bank
+using tools/prepare_audio.py and tools/audio_patch.json. Python 3.10+ needs no
+additional packages. The installation layout retains those two files under
+Supermoon/tools and the recipe under Supermoon/build. The native archive is not
+modified; neither native nor generated bank is distributed. See INSTALL.md.
 
 `PUBLIC_FILE_MANIFEST.json` and `SHA256SUMS` describe the selected source package.
 The installation ZIP has its own manifest and checksums. No music, caches, state,

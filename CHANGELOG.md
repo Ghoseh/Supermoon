@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.3 - 2026-11-02
+
+- Restore hook compatibility with NMS Steam build **26385139**, retaining exact executable, native-site and matching-payload gates.
+- Keep ByteBeat playback audible through Discoveries and menu transitions.
+- Suppress the native soundtrack throughout custom playback, including silent passages, and restore it after Stop or leaving the custom carrier.
+- Accept bounded indexed entries in NMS's current mod-settings MXML without relaxing malformed/disabled-setting refusal.
+- Generate the required audio override locally from the player's supported game bank; no game bank or playlist music is distributed.
+- Confirm the quiet-passage, Stop/native-return, repeated Discoveries, fast-travel and save-reload checks with the owner. Preserve existing manual Play recovery and brief restart/navigation buffer gaps.
+- Pass independent native/UI/audio reviews, recovery/publication and public regressions, and reproduce the exact owner-tested DLL pair. Existing resident shutdown limitations remain.
+
 ## 1.0.2 - 2026-11-01
 
 - Adapt native audio, lifecycle, allocator, global and UI profiles to NMS Steam build **26295378** (7.11).

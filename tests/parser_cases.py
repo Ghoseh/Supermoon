@@ -13,6 +13,10 @@ def corpus(work):
         try:r=ET.fromstring(xml)
         except (ET.ParseError,ValueError):return False
         if r.tag!='Data' or r.attrib!={'template':'GcModSettings'}:return False
+        for e in r.iter('Property'):
+            if '_index' in e.attrib:
+                index=e.attrib['_index']
+                if not index or len(index)>10 or any(c not in '0123456789' for c in index) or int(index)>0xffffffff:return False
         all_settings=[e for e in r.iter('Property') if e.attrib.get('name')=='DisableAllMods']
         return len(all_settings)==1 and all_settings[0] in list(r) and all_settings[0].attrib.get('value')=='false'
     def add(name,xml,expected=None):
@@ -22,6 +26,13 @@ def corpus(work):
         cases.append((name,xml,logical))
     literal=prop()
     add('literal_enabled',wrap(literal),True)
+    mod="<Property name='Data'><Property name='Data' value='GcModSettingsInfo' _index='0'><Property name='Name' value='MENU_AUDIO_TEST'/><Property name='Enabled' value='true'/><Property name='Dependencies'/></Property></Property>"
+    add('indexed_mod_entry',wrap(literal+mod),True)
+    add('indexed_mod_disabled',wrap(prop(value='true')+mod),False)
+    add('typed_container_nested_policy',wrap(literal+"<Property name='Data' value='GcModSettingsInfo' _index='0'>"+prop('DisableAllMod&#115;','true')+'</Property>'),False)
+    add('maximum_mod_index',wrap(literal+"<Property name='Data' _index='4294967295'/>"),True)
+    for index in ['', '-1', '+1', '1.0', '4294967296', '00000000000']:
+        add('invalid_mod_index_'+str(len(cases)),wrap(literal+"<Property name='Data' _index='"+index+"'/>"),False)
     add('duplicate_decimal_conflict',wrap(literal+prop('DisableAllMod&#115;','true')),False)
     add('duplicate_hex_conflict',wrap(literal+prop('&#x44;isableAllMods','true')),False)
     add('reversed_decimal_conflict',wrap(prop('DisableAllMod&#115;','true')+literal),False)

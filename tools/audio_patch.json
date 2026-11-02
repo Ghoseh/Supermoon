@@ -1,0 +1,231 @@
+{
+  "schema": 1,
+  "input_bytes": 35596,
+  "input_sha256": "0dad323e40dcda2b360a3c00616419562775ec575d40d0acda92c193ba0f78b8",
+  "output_bytes": 36017,
+  "output_sha256": "65bcbdd3cd9aaae513d21865e504f194afba584ee012f9d3d558e9c04f71a54f",
+  "insertions": [
+    {
+      "at": 3487,
+      "source_offset": 2668,
+      "bytes": 21,
+      "replace_u32": {
+        "0": 658155624
+      },
+      "kind": "parameter-default"
+    },
+    {
+      "at": 28192,
+      "source_offset": 28142,
+      "bytes": 50,
+      "replace_u32": {
+        "0": 658155624,
+        "7": 2337266677
+      },
+      "kind": "music-bus-curve",
+      "bus": 356231183
+    },
+    {
+      "at": 28470,
+      "source_offset": 28420,
+      "bytes": 50,
+      "replace_u32": {
+        "0": 658155624,
+        "7": 470999892
+      },
+      "kind": "music-bus-curve",
+      "bus": 432870429
+    },
+    {
+      "at": 28627,
+      "source_offset": 28577,
+      "bytes": 50,
+      "replace_u32": {
+        "0": 658155624,
+        "7": 2848189339
+      },
+      "kind": "music-bus-curve",
+      "bus": 573982288
+    },
+    {
+      "at": 29348,
+      "source_offset": 29298,
+      "bytes": 50,
+      "replace_u32": {
+        "0": 658155624,
+        "7": 1186646307
+      },
+      "kind": "music-bus-curve",
+      "bus": 938609247
+    },
+    {
+      "at": 29799,
+      "source_offset": 29749,
+      "bytes": 50,
+      "replace_u32": {
+        "0": 658155624,
+        "7": 1921536904
+      },
+      "kind": "music-bus-curve",
+      "bus": 1040160058
+    },
+    {
+      "at": 29969,
+      "source_offset": 29919,
+      "bytes": 50,
+      "replace_u32": {
+        "0": 658155624,
+        "7": 1733220216
+      },
+      "kind": "music-bus-curve",
+      "bus": 1782264177
+    },
+    {
+      "at": 30514,
+      "source_offset": 30464,
+      "bytes": 50,
+      "replace_u32": {
+        "0": 658155624,
+        "7": 1405697964
+      },
+      "kind": "music-bus-curve",
+      "bus": 3495197791
+    },
+    {
+      "at": 30809,
+      "source_offset": 30759,
+      "bytes": 50,
+      "replace_u32": {
+        "0": 658155624,
+        "7": 1147048647
+      },
+      "kind": "music-bus-curve",
+      "bus": 4022786467
+    }
+  ],
+  "edits": [
+    {
+      "offset": 1131,
+      "format": "<I",
+      "expected": 112,
+      "value": 113
+    },
+    {
+      "offset": 28140,
+      "format": "<H",
+      "expected": 1,
+      "value": 2
+    },
+    {
+      "offset": 28017,
+      "format": "<I",
+      "expected": 242,
+      "value": 292
+    },
+    {
+      "offset": 28418,
+      "format": "<H",
+      "expected": 1,
+      "value": 2
+    },
+    {
+      "offset": 28264,
+      "format": "<I",
+      "expected": 255,
+      "value": 305
+    },
+    {
+      "offset": 28575,
+      "format": "<H",
+      "expected": 1,
+      "value": 2
+    },
+    {
+      "offset": 28524,
+      "format": "<I",
+      "expected": 446,
+      "value": 496
+    },
+    {
+      "offset": 29296,
+      "format": "<H",
+      "expected": 1,
+      "value": 2
+    },
+    {
+      "offset": 29160,
+      "format": "<I",
+      "expected": 237,
+      "value": 287
+    },
+    {
+      "offset": 29747,
+      "format": "<H",
+      "expected": 1,
+      "value": 2
+    },
+    {
+      "offset": 29575,
+      "format": "<I",
+      "expected": 273,
+      "value": 323
+    },
+    {
+      "offset": 29917,
+      "format": "<H",
+      "expected": 1,
+      "value": 2
+    },
+    {
+      "offset": 29853,
+      "format": "<I",
+      "expected": 201,
+      "value": 251
+    },
+    {
+      "offset": 30462,
+      "format": "<H",
+      "expected": 1,
+      "value": 2
+    },
+    {
+      "offset": 30290,
+      "format": "<I",
+      "expected": 285,
+      "value": 335
+    },
+    {
+      "offset": 30757,
+      "format": "<H",
+      "expected": 1,
+      "value": 2
+    },
+    {
+      "offset": 30580,
+      "format": "<I",
+      "expected": 290,
+      "value": 340
+    },
+    {
+      "offset": 399,
+      "format": "<I",
+      "expected": 3088,
+      "value": 3109
+    },
+    {
+      "offset": 3495,
+      "format": "<I",
+      "expected": 31737,
+      "value": 32137
+    },
+    {
+      "offset": 29528,
+      "format": "<f",
+      "expected": -96.0,
+      "value": 0.0
+    }
+  ],
+  "native_payload_embedded": false,
+  "byte_exact_reversal_verified": true,
+  "rules": "Every insertion copies bytes from the hash-verified user-owned original bank before mutation. Apply fixed-width edits before descending-offset insertions. Never read a modded or unknown bank."
+}

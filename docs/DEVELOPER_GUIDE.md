@@ -14,6 +14,13 @@ Loading the payload alone does not call its activator; loading the proxy schedul
 a worker that may activate the payload after all gates pass. DllMain does not wait,
 resolve WINMM exports, hash files, inspect game objects or publish hooks itself.
 
+Version 1.0.3 adds the generated-bank identity gate and indexed ModSettings entries;
+see CHANGELOG.md and MIGRATION_STATUS.md for current scope. Music suppression is
+driven by owned playback intent in playback_intent_prototype.hpp and
+music_control_prototype.hpp, called after existing control unlocks. Their historical
+filenames are retained; these are production release components. The required bank
+is derived locally by tools/prepare_audio.py; it is not part of the source archive.
+
 The worker derives paths from the executable location, preflights OS forwarding,
 checks the exact enable marker and host path, compatibility decisions, pinned
 executable, mod settings, payload identity, existing modules, readiness code and
@@ -118,7 +125,7 @@ worst-case callback deadlines remain unqualified.
 `Engine` has one serialized PCM consumer and one disk worker. Consumer read index
 and intra-block offset are consumer-owned; reader, write index and Order/history
 are worker-owned. Release/acquire publication exposes complete immutable blocks;
-consumer release permits reuse. Queue storage is 16 × 1,024 float frames (65,536
+consumer release permits reuse. Queue storage is 16 Ã— 1,024 float frames (65,536
 sample bytes), not a preloaded whole soundtrack. Callback APIs do not decode,
 allocate, read files, sleep or wait on a lock. That source contract and audited
 allocation observations do not establish real callback deadlines on every system.
@@ -143,7 +150,7 @@ and current native factor; unsafe cue contribution mutes rather than changing mu
 ## Preparation, decoder and cache
 
 `wav_pipeline` handles strict little-endian RIFF PCM8/16/24/32 or float32/64,
-supported extensible variants, 8–384 kHz and mono/stereo input. RIFF/data lengths
+supported extensible variants, 8â€“384 kHz and mono/stereo input. RIFF/data lengths
 must be correctly finalized; valid PCM samples alone do not make an inconsistent
 container acceptable. The runtime does not repair headers. See SUPPORTED_FORMATS.md. MP3 uses the
 production low-level vendored dr_mp3 decoder through `mp3_reader.cpp`, not its

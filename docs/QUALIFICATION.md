@@ -1,20 +1,27 @@
-# Version 1.0.2 qualification
+# Version 1.0.3 qualification
 
-The DLL pair targets Steam build 26295378. Independent static/native-profile
-reviews, current-native fixture tests, public regressions, normal and UBSan UI
-tests, executable identity cases and a second identical build passed.
+The exact DLL pair supports Steam build 26385139. Independent native-profile,
+UI and recovery reviews, current-native fixtures, executable identity rejection
+cases, all eleven public suites, the indexed-settings guard-page corpus, normal
+and UBSan UI coverage, and startup/parser UBSan tests passed. Two portable builds
+reproduced the owner-tested DLL hashes. The local bank generator passed derivation,
+installation, backup, idempotence and conflict/identity-refusal tests on an owned
+temporary installation tree.
 
-The exact pair was installed with backups and live-tested by the owner. Custom
-music, Next, UI, fast-travel recovery and music after Steam relaunch passed.
-Logs confirm a natural EOF transition and normal first-session exit code 0.
-Warm activation took 0.605 seconds from activation attempt to return.
+On 2026-11-02 the owner confirmed native music before Play, suppression through
+silent custom passages, native music returning after Stop, continued playback
+through repeated Discoveries menu transitions, Next, and custom recovery after
+fast travel and save reload. A further Stop after those transitions restored
+native music. NMS is closed; the accepted pair remains installed.
 
-See MIGRATION_STATUS.md for counters and limits. Two isolated 512-frame
-revision-empty blocks were recorded around navigation/travel; no audible-gap
-measurement or new four-hour endurance result is claimed. The warm session
-remains active. Existing accepted findings remain, including soundtrack overlap
-and intermittent menu interruption; neither is fixed by this hook update. Historical v1.0.1 evidence
-is retained in V1_0_1_MIGRATION_STATUS.md and V1_0_1_PACKAGING_VERIFICATION.json.
+The finite session recorded two natural EOF transitions and no callback exceptions,
+faults, failed tracks, stale frames or dropped diagnostics. It also recorded
+20,943 empty frames across manual restart/navigation transitions, with a maximum
+512 consecutive frames. Existing restart/Next refill gaps remain; this is not
+zero-underrun qualification. No new four-hour endurance, multiplayer certification,
+universal shutdown or live-unload result is claimed. See MIGRATION_STATUS.md and
+SUPERMOON_V1_KNOWN_LIMITATIONS.md. Historical v1.0.1 and v1.0.2 evidence does not
+qualify this pair.
 
 # Original release qualification (historical)
 
@@ -23,8 +30,8 @@ These results apply to the original v1.0.0 pair. For the historical build 262714
 # Qualification summary for the exact shipped pair
 
 Comprehensive independent review found no confirmed Critical or High blocker.
-F1–F6 passed focused independent verification. Accepted C1 Medium and C2/C3 Low
-remain described in ACCEPTED_AUDIT_FINDINGS.md, along with unverified U1–U3 contracts.
+F1â€“F6 passed focused independent verification. Accepted C1 Medium and C2/C3 Low
+remain described in ACCEPTED_AUDIT_FINDINGS.md, along with unverified U1â€“U3 contracts.
 This public summary does not replace or redistribute the preserved private reports.
 
 On 2026-10-16 the exact RC1 pair completed 4h00m24s of Steam-online NMS operation
@@ -58,8 +65,9 @@ save/settings changes were retained. Original music and historical artifacts rem
 unchanged. One older telemetry fixture remains an explicitly preserved historical
 exception described in SUPERMOON_V1_KNOWN_LIMITATIONS.md, not a reconstructed original.
 
-Intermittent pause-menu persistence and one unconfirmed fuzzy-vocal report remain
-open observations. Neither is silently fixed or inflated into a proven decoder bug.
+For that historical pair, intermittent pause-menu persistence and one unconfirmed
+fuzzy-vocal report were open observations. Version 1.0.3 addresses menu persistence;
+the historical vocal observation is not established as a decoder bug.
 No private music names, raw logs, settings, saves or audit archives are included here.
 
 The binary hashes are in build/recipe.json and RELEASE_DLL_SHA256SUMS.

@@ -1,6 +1,11 @@
-> These limitations remain applicable to v1.0.2. Its current verification is in QUALIFICATION.md; the four-hour F6 result below applies only to v1.0.0.
+> Current version 1.0.3 qualification is in QUALIFICATION.md. The menu and
+> soundtrack-overlap observations below describe historical releases: owner
+> listening accepted both fixes in 1.0.3. Brief restart/Next refill gaps remain
+> (up to 512 consecutive empty frames observed in the current finite session).
+> Lifecycle, resident-unload and accepted audit limits still apply. The four-hour
+> F6 result below qualifies only v1.0.0.
 
-# Supermoon v1.0 — known limitations and qualification status
+# Supermoon v1.0 â€” known limitations and qualification status
 
 ## Background soundtrack overlap
 
@@ -44,7 +49,7 @@ discovery can omit tracks and evict reusable decoded caches), C2 (Low: synthetic
 invalid-parameter Init/TLS cleanup gap) and C3 (Low: partial-publication diagnostic
 ambiguity) for v1.0. They remain unfixed. No original-song loss, ordinary valid-caller
 C2 crash or new incompatible native Free route was established. See
-ACCEPTED_AUDIT_FINDINGS.md for triggers, impact and separate U1–U3 uncertainties.
+ACCEPTED_AUDIT_FINDINGS.md for triggers, impact and separate U1â€“U3 uncertainties.
 
 Use a stable, preverified local library and inspect actual prepared inventory.
 After any refusal with possible hook exposure, exit NMS normally; never hot-retry
@@ -73,7 +78,7 @@ rendered UI variants and focus/overlay interactions require observed qualificati
 Filename titles are bounded to 255 UTF-8 bytes and can truncate; failed UI guards
 retain native display. Runtime library refresh and cross-session position/history
 are not implemented. Foreground/capture keyboard heuristics cannot guarantee all
-overlay/binding combinations. Default shortcuts use Ctrl+Shift, not bare F6–F9.
+overlay/binding combinations. Default shortcuts use Ctrl+Shift, not bare F6â€“F9.
 
 Shuffle toggles preserve already queued PCM; up to 16,384 published frames can
 delay future order at 24 kHz, with longer wall-clock delay while paused. Notification

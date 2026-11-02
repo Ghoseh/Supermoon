@@ -13,8 +13,8 @@ inline Readiness classify(uintptr_t base, uintptr_t execute, uintptr_t format, u
     if (!execute && !format && !gain) return Readiness::waiting;
     // The setter publishes execute then format then gain. Its intermediate
     // expected/zero state is not an error and must not authorize activation.
-    if ((!execute || execute == base+0x2EA1EF0) &&
-        (!format || format == base+0x2EA1F70) && !gain)
+    if ((!execute || execute == base+0x2ea6e60) &&
+        (!format || format == base+0x2ea6ee0) && !gain)
         return execute && format ? Readiness::ready : Readiness::waiting;
     return Readiness::conflict;
 }
@@ -76,7 +76,6 @@ inline bool mods_enabled(std::string_view xml) noexcept {
         if(!xml_character(c))return false;
     }
     unsigned matches=0,depth=0;bool enabled=false,root=false,closed=false,declaration=false;
-    std::array<bool,32> leaf{};
     size_t p=0;
     if(xml.substr(0,3)=="\xef\xbb\xbf")p=3;
     const size_t document_start=p;
@@ -116,6 +115,14 @@ inline bool mods_enabled(std::string_view xml) noexcept {
             }
             if(p==xml.size())return false;auto text=xml.substr(begin,p++-begin);
             if(attr=="name")property=text;else if(attr=="value")value=text;else if(attr=="template")type=text;
+            else if(!decl&&tag=="Property"&&attr=="_index"){
+                // NMS emits indexed, typed containers for installed mod entries.
+                // The index is metadata, never a policy name/value override.
+                if(text.empty()||text.size()>10)return false;
+                uint64_t index=0;
+                for(char digit:text){if(digit<'0'||digit>'9')return false;index=index*10+unsigned(digit-'0');}
+                if(index>0xffffffffULL)return false;
+            }
             else if(decl&&attr=="version")version=text;else if(decl&&attr=="encoding")encoding=text;else if(decl&&attr=="standalone")standalone=text;
             else return false;
         }
@@ -127,8 +134,8 @@ inline bool mods_enabled(std::string_view xml) noexcept {
             continue;
         }
         if(!depth){if(root||closed||tag!="Data"||!xml_attribute_equals(type,"GcModSettings")||count!=1||self)return false;root=true;}
-        else {if(tag!="Property"||leaf[depth-1]||property.empty())return false;if(xml_attribute_equals(property,"DisableAllMods")){if(depth!=1||++matches!=1)return false;enabled=xml_attribute_equals(value,"false");}}
-        if(!self){if(depth==leaf.size())return false;leaf[depth++]=!value.empty();}
+        else {if(tag!="Property"||property.empty())return false;if(xml_attribute_equals(property,"DisableAllMods")){if(depth!=1||++matches!=1)return false;enabled=xml_attribute_equals(value,"false");}}
+        if(!self){if(depth==32)return false;++depth;}
     }
     return root&&closed&&!depth&&matches==1&&enabled;
 }

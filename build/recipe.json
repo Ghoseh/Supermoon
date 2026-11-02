@@ -38,18 +38,18 @@
     "playlist/compatibility.cpp"
   ],
   "DLLs": {
-    "supermoon_playlist.dll": {
-      "bytes": 6138880,
-      "sha256": "6c5968fb1c3222a7bc0dec783abc73a541506238583923fa5c045b18a24d31a6"
-    },
     "winmm.dll": {
       "bytes": 937984,
-      "sha256": "94a8e542e67c754b55fdc317455b2744ad2c0f6ff60243cf19465fb2f6e88b04"
+      "sha256": "6911d04b39ba97f49cfdd5e52dc36f34a7f2a1f7e6faa5aeed59e97ab7b6f02b"
+    },
+    "supermoon_playlist.dll": {
+      "bytes": 6145024,
+      "sha256": "b51cb3c3b94c589c8ed9decaa758444dff260667a4e6a93e0fa91eebcc079d1d"
     }
   },
-  "game_executable_sha256": "d393c6782d29e1915854c0d5cf42505c8093740c05dc53705dbed7e0d1d4ac37",
-  "game_executable_bytes": 89489480,
-  "steam_build_id": 26295378,
-  "qualification": "Build reproduced; offline and owner live acceptance passed; see docs/MIGRATION_STATUS.md",
-  "version": "1.0.2"
+  "game_executable_sha256": "a77fc29877789c3da9181afeb5941b9b85a27d3df24919a24403cf8e194c6109",
+  "game_executable_bytes": 89535560,
+  "steam_build_id": 26385139,
+  "qualification": "Owner confirmed native music before Play, suppression during silent passages, native return after Stop, repeated Discoveries reopening and custom recovery after travel/save reload; offline checks passed. See migration status for limits and restart-empty frames.",
+  "version": "1.0.3"
 }
