@@ -1,5 +1,5 @@
 {
-  "purpose": "Supermoon 1.1.0 source; unchanged Phase 6 DLL production inputs, owner-accepted M2/H1 limitations; upload pending",
+  "purpose": "Supermoon player-documentation update; production and tooling unchanged; release archives remain pinned to v1.1.0 tag",
   "files": {
     ".gitattributes": {
       "bytes": 38,
@@ -18,16 +18,16 @@
       "sha256": "91eaaef87995254e16a793b2f5981b95a3b76a4539c69034f0076ecd341bac82"
     },
     "CHANGELOG.md": {
-      "bytes": 13003,
-      "sha256": "f69c30055efbdf4f6634b15a4cfaad4e9b0f04914c249d8bf4145c86b4b4fe6d"
+      "bytes": 2522,
+      "sha256": "204cb30a4e6f47caada33200674d57e0b8977975c785ba95fed90863f1fcc4f3"
     },
     "COPYING": {
       "bytes": 1059,
       "sha256": "d6b4754bb67bdd08b97d5d11b2d7434997a371585a78fe77007149df3af8d09c"
     },
     "INSTALL.md": {
-      "bytes": 16917,
-      "sha256": "a9489b2621c3c1c054f98ccfd82c11ecd25a87cf0e172efa8313db4d14f747a5"
+      "bytes": 7488,
+      "sha256": "2720ea22a47df1e3b336a4e833ed70b3a53496020da3281f76928c190d0f0a06"
     },
     "LICENSE": {
       "bytes": 1066,
@@ -38,8 +38,8 @@
       "sha256": "53c8ee0a64aad4c9e2febad2ee7c6c531c41d2597f1ebbbee439c27ec190f7c8"
     },
     "README.md": {
-      "bytes": 6817,
-      "sha256": "ce18b4f83da694d37b6ee7931fe236b0ce81130b9b0bad9be72ef8e27dc671cd"
+      "bytes": 4395,
+      "sha256": "c5a199494d0425b12d6fc16e7a40f5d2af8a4d8e8ffbe1f724af1d1726699daf"
     },
     "RELEASE_DLL_SHA256SUMS": {
       "bytes": 165,
@@ -66,8 +66,8 @@
       "sha256": "d172d681be7557235dbd509b7cf2c07a5bbca6997305c87441bb624c49a6b631"
     },
     "docs/CONFIGURATION_AND_LAYOUT.md": {
-      "bytes": 6284,
-      "sha256": "c5cc72747b27b22443011347755dcc6719def1fd30b67c20c9ea966608198a39"
+      "bytes": 2628,
+      "sha256": "fa40f6dfede2aef533ca1184480887ca010111b4417c75264110a473bac0f727"
     },
     "docs/DEPENDENCIES.json": {
       "bytes": 20035,
@@ -90,8 +90,8 @@
       "sha256": "d5db2a7f4ff4e13b2444d905f55d6c17dce35f0911c2b296cb1b809c0eaaca92"
     },
     "docs/NEXUS_DESCRIPTION.md": {
-      "bytes": 8605,
-      "sha256": "a55b085cec6198b47b877107abfb4c716607f75b9a90cf32a8860c03f3ac2efa"
+      "bytes": 5382,
+      "sha256": "47832cb7a2c15075808dd79c389bddf8e641750b1d796bbf6eac323eb872a761"
     },
     "docs/PACKAGING_VERIFICATION.json": {
       "bytes": 3696,
@@ -106,8 +106,8 @@
       "sha256": "4c0d85d1f0548d8da9e6d93ed76710b27eb960f58434e35bd8bfabb98035deaf"
     },
     "docs/RELEASE_NOTES.md": {
-      "bytes": 6474,
-      "sha256": "aaa6f2580bfe6b09614027d0458795a4cc00be05b80656a199808a79e78f295d"
+      "bytes": 2940,
+      "sha256": "5644f74060e056a6ef63fb495fff9490627e56ed9f1ee9ec0e1f0578a73e718e"
     },
     "docs/REMEDIATION_PHASE0.md": {
       "bytes": 5740,
@@ -134,16 +134,16 @@
       "sha256": "8375930dfb6837aa5fc1c7a76d7f22bab203c25b58c9f73c145d6ceb677fed4e"
     },
     "docs/SUPERMOON_V1_KNOWN_LIMITATIONS.md": {
-      "bytes": 12795,
-      "sha256": "938e4a8b999c4a38db349bd0f332c1282ac2f0c50a736db433b63d98bcc6a29d"
+      "bytes": 2981,
+      "sha256": "743fbecec4a869333d3af56316a985eb2e0ae4481a3f10dc3a5e40b6915f26fe"
     },
     "docs/SUPPORTED_FORMATS.md": {
-      "bytes": 2548,
-      "sha256": "330b55d9b07d6ca22724e25bc3366ff0f7c42227291af17a8b882cfc0b732751"
+      "bytes": 1562,
+      "sha256": "15af585a1f74e3f1915fe2dfbb35cad098383d10b88d0c41ca0f225d01858352"
     },
     "docs/TROUBLESHOOTING.md": {
-      "bytes": 5201,
-      "sha256": "b19ee49d259e0b75a00b7bbd0f00e3b35f8165f512f9729fe0200790b4655681"
+      "bytes": 3917,
+      "sha256": "9dd03698e08177f354c726737d5af001d8c505c2a9d95b28f3a45d4563f167fe"
     },
     "docs/V1_0_0_PACKAGING_VERIFICATION.json": {
       "bytes": 7192,
@@ -168,6 +168,18 @@
     "docs/V1_1_0_VERSION_TRANSITION.md": {
       "bytes": 7728,
       "sha256": "ae9cbd8ce0d67101a28918a31af15122d089d82c02cc7d14f1bdbbfdd31260d9"
+    },
+    "docs/engineering/README.md": {
+      "bytes": 920,
+      "sha256": "2dbeaa7af1035eb80c4c77215e0fc0c39a994113c711199bc3cffebb0d324b35"
+    },
+    "docs/engineering/V1_1_0_DEVELOPMENT_CHANGELOG.txt": {
+      "bytes": 13003,
+      "sha256": "f69c30055efbdf4f6634b15a4cfaad4e9b0f04914c249d8bf4145c86b4b4fe6d"
+    },
+    "docs/engineering/V1_1_0_TECHNICAL_LIMITATIONS.txt": {
+      "bytes": 12795,
+      "sha256": "938e4a8b999c4a38db349bd0f332c1282ac2f0c50a736db433b63d98bcc6a29d"
     },
     "ebur128_peak.c": {
       "bytes": 54809,

@@ -1,103 +1,59 @@
-# Supermoon v1.1.0 — release notes
+# Supermoon v1.1.0
 
-**Local release artifacts prepared; public upload/release approval pending.**
-The owner selected v1.1.0 for the audio functionality beyond v1.0.2 and approved
-Ready with Caveats for the limited desktop scope. This separate `1.1.0` public
-package/recovery policy retains the exact DLLs qualified as `1.0.4-rc1-private`
-in Phase 6. The installed RC record and matching tools remain unchanged.
+Play your own supported WAV and MP3 music through the personal ByteBeat player,
+with playlist navigation, shuffle, filename titles and loudness normalization.
 
-## Audio features beyond v1.0.2
+## What changed
 
-- Intent-driven native soundtrack suppression during custom playback, including
-  quiet/silent passages and internal playlist endings/refill. Normal Stop return
-  passed listening checks; M2 means restoration after every Stop is not guaranteed.
-- Required locally generated Frontend bank workaround keeps ByteBeat audio through
-  Discoveries/menu transitions. It also affects native ByteBeat tracks and persists
-  independently of the DLLs, so removal must handle both components.
-- Exact native integration for Steam build 26385139 and current indexed mod settings.
+This release improves playback recovery, installation and troubleshooting:
 
-These capabilities were first delivered in v1.0.3 and are carried into v1.1.0 with
-remediation and new qualification. They are not newly implemented by this documentation
-pass. Playlist, supported WAV/MP3 preparation, normalization, filename display,
-shuffle and keyboard controls are retained features from the earlier line.
+- Better recovery from temporary soundtrack-control failures.
+- Checks for the required enabled audio entry and known conflicting bank overrides.
+- A staged installer with durable backups and status, resume, rollback and removal tools.
+- Updates preserve personal configuration, Music, Cache, State and unrelated files.
+- Interrupted music-folder scans preserve reusable cache entries.
+- Clearer startup and per-session capacity messages.
 
-## Reliability and installation improvements
+The Discoveries/menu audio workaround and suppression of native music through
+quiet custom passages were first released in v1.0.3. v1.1.0 retains those features
+and adds the improvements above.
 
-- Recover suppression after demonstrated transient controller failures with newer
-  validated playback intent; compensate audited stale-command ordering cases.
-  Final callback cessation/failed-last-release conditions remain unresolved M2.
-- Require specific enabled desktop bank registration, handle bounded first-time
-  registration, and refuse known incompatible loose bank overrides without
-  disabling unrelated mods. No required Steam launch arguments.
-- Stage four-file installation with verified durable backups, version-bound recovery
-  records, status/resume/qualified rollback/disable and unknown-file refusal.
-  Ship an example INI only; preserve personal INI/Music/Cache/State/unrelated files.
-- Block cache removal on incomplete playlist discovery and close the audited
-  Init borrowed-read cleanup gap. Improve activation-stage/capacity diagnostics
-  and safe build-output reservation. Finite capacity and native contracts remain.
+## Requirements
 
-## Accepted unresolved limitations
+Windows x64 desktop NMS **Steam build 26385139 only**. Other game builds, stores
+and VR are unsupported. Mod managers and multiplayer compatibility have not been
+established.
 
-The project owner explicitly accepted these risks for the limited desktop release,
-subject to final publication verification. Original findings, severity, evidence,
-test assertions and historical audit release dispositions remain preserved.
+Python 3.10+ is needed for installation, updates and recovery, not gameplay. No extra Python
+packages or Steam launch arguments are required. Setup generates the required
+audio-bank override from your own game files; enable it in normal NMS mod settings.
 
-- **M2, original Medium:** native soundtrack volume may fail to restore after Stop
-  under certain engine callback conditions, including no later qualified release
-  opportunity/retry. Three original regressions still fail. Normal restoration
-  passed live tests; universal restoration is not guaranteed. No M2 gameplay
-  failure is confirmed in reviewed evidence. Likelihood/duration are not established.
-- **H1/U1:** isolated conditional cleanup self-deadlock remains reproducible; actual
-  NMS gameplay reachability is unproven. A1's original High conditional severity,
-  historical qualification hold and earlier U1 history remain. No gameplay occurrence
-  is confirmed. Both live sessions exited normally; this does not prove exclusion.
+Unrelated mods may remain enabled. Another `winmm.dll` loader or an incompatible
+`audio/windows/init.bnk` override conflicts with this mod.
 
-Neither is fixed or proven harmless. M2's release-blocker classification originated
-in the independent audit; current owner acceptance changes release disposition.
-See [known limitations](SUPERMOON_V1_KNOWN_LIMITATIONS.md) for practical impact,
-finite cumulative lifecycle stores/headroom, manual recovery/refill gaps, bounded
-diagnostics, performance and unsupported hot unload/universal shutdown.
+## Known limitations
 
-## Qualification and support
+- The game's background soundtrack may remain quieter after Stop under some
+  conditions. Normal restoration worked in listening checks, but every Stop is
+  not guaranteed to restore it.
+- A potential freeze during audio cleanup has been reproduced in isolated tests.
+  Whether ordinary gameplay can trigger it remains unproven; no gameplay occurrence
+  was confirmed in the reviewed tests.
+- Travel or reload may stop playback. Press Play manually afterward.
+- Brief restart/Next gaps remain. Playback is mono and the library is scanned at startup.
+- Per-session audio storage is finite; a guaranteed session-length limit is not established.
 
-The Phase 6 owner-run checklist passed in two ordinary desktop Steam sessions:
-native baseline; loud/quiet/owner-identified silent custom passages; normal Stop
-return; repeated Play/Stop, Discoveries/pause, Next/EOF; manual travel/reload recovery;
-fresh launch and normal exits. These are finite reported audible outcomes, separate
-from SDK submissions, with no new four-hour endurance or all-schedule safety claim.
+Listening checks covered quiet/silent passages, Stop, menu transitions, Next,
+automatic song changes, travel/reload recovery and normal exits. Those results
+do not guarantee every possible game condition.
 
-Final Phase 5 offline runs per normal/applicable UBSan mode: public 11 suites plus
-595 checks; remediation **81 PASS / 3 M2 FAIL / 1 H1 TIMEOUT / 0 ERROR**; reliability
-26 C++/6 Python PASS; installation 39 PASS. Both DLLs linked/reproduced, all 23
-production units compiled, and private archives/source correspondence verified.
-Python, C meter, assembly and native NMS are not UBSan-instrumented; H1 times out.
-See [qualification](QUALIFICATION.md) for attribution and diagnostics.
+## Download and install
 
-Only ordinary desktop Windows x64 **Steam build 26385139** is supported:
-`NMS.exe` 89,535,560 bytes, SHA-256
-`a77fc29877789c3da9181afeb5941b9b85a27d3df24919a24403cf8e194c6109`.
-VR is unsupported/not reliably detected. Other stores/builds, mod managers,
-multiplayer and arbitrary packed-resource priorities are unqualified. Unrelated
-mods are supported subject to foreign `winmm.dll` and incompatible `init.bnk`
-conflicts. Python 3.10+ is required for setup; exercised Python was 3.12.
+Use `Supermoon-1.1.0-windows-x64.zip` and check it against the attached `SHA256SUMS`.
+The source ZIP is optional development material. Follow the installation guide:
+extract into staging outside the game, keep NMS closed while changing files,
+and preserve personal files plus matching recovery tools/backups.
 
-## Install, update and recovery
-
-Use [INSTALL.md](../INSTALL.md), keep the game closed and other writers idle,
-stage outside the game/TEMP, and retain matching trusted recovery tools/backups.
-Generate the bank from your own supported game, enable it in normal NMS settings,
-then use the personal ByteBeat Supermoon track. No native/generated game bank or
-playlist music is distributed. Keep all required licenses/notices and the separate
-terms for owner-created embedded notification cues.
-
-The installed private RC remains on its matching record/tools; no record rewrite,
-automatic migration, DLL rebuild or installed-file change occurred. See the
-[v1.1.0 version policy](V1_1_0_VERSION_TRANSITION.md). Public installation/source ZIPs
-have new hashes in the external release receipt and `SHA256SUMS`; old Phase 5 hashes
-identify only the unchanged private archives.
-
-New public setup checks: 39 installation/recovery cases PASS in each normal/
-applicable UBSan mode and 17 disposable genuine-input CLI scenarios PASS for clean
-install/update, rollback/resume/disable, interruptions and identity/version refusal.
-Both ZIPs reproduce and verify source/member/manifest/link/notice/privacy closure.
-No new game/runtime listening qualification is claimed; upload awaits explicit approval.
+The audio-bank menu change also affects built-in ByteBeat tracks. Removal must
+handle both the DLLs and the override. No game bank or playlist music is distributed.
+Retain the supplied code, third-party and notification-asset notices.

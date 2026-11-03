@@ -1,77 +1,83 @@
-# Troubleshooting — v1.1.0
+# Troubleshooting
 
-The owner approved Ready with Caveats and explicitly accepted unresolved M2 and
-H1/U1 risks for the limited desktop scope, subject to final publication verification.
-The v1.1.0 public policy retains the exact Phase 6-tested `1.0.4-rc1-private` DLLs.
-The installed RC remains under its unchanged record/tools; see
-[version-specific recovery](V1_1_0_VERSION_TRANSITION.md).
-See [qualification](QUALIFICATION.md) for finite live results and unchanged failures.
+## Setup cannot find Python
 
-**Inactive/original track/no custom audio:** check exact executable and matching
-DLL identities in `build/recipe.json`, the marker, mod settings and folder layout.
-Select Supermoon in the personal player. Cold cache preparation delays availability.
-Inspect `Supermoon/bytebeat-startup-latest.log` and `preparation-latest.log`.
-After refusal, exit normally before another attempt; never hot reload/swap DLLs.
+Python 3.10+ is required by the supplied installation and recovery scripts.
+Check `python --version` in the same terminal. Make the Python command available
+before running setup. No extra Python packages are needed, and Python does not
+run as part of normal gameplay.
 
-**Missing/disabled/wrong bank:** generate through the staged installer in INSTALL.md
-and enable the registered Supermoon entry in NMS's desktop mod settings. Missing
-registration is pending, never permission to activate. The worker allows up to
-120 seconds; `audio_registration_pending_exit_normally_and_restart` means exit
-normally and restart after NMS saves its entry. Do not hand-create an MXML record.
-Known disable/malformed settings or wrong bank refuse. No launch arguments are needed.
+## The original track plays, or custom music is unavailable
 
-**Other mods:** retain unrelated mods. Resolve a specifically identified incompatible
-`audio/windows/init.bnk` override or foreign `winmm.dll`. Loose conflict checks cannot
-prove the winning resource in opaque/legacy packages. Blind priority changes and
-arbitrary mod-manager deployment are unqualified. VR is unsupported.
+Confirm the supported game build, matching DLL pair, enable marker, bank and normal
+NMS mod enablement. Select Supermoon in the personal ByteBeat player. Preparing a
+new music library can delay availability. Inspect `bytebeat-startup-latest.log`
+and `preparation-latest.log` under `Binaries/Supermoon`.
 
-**Setup failed or interrupted:** keep NMS closed and other writers idle. Run the
-trusted setup tool's `status`, keep `.Supermoon-Recovery` and its record ID, then
-choose `resume`, qualified `rollback` or `disable` as documented in INSTALL.md.
-`REFUSED_OR_INCOMPLETE` can mean a bank was already replaced. Do not overwrite an
-unknown file, discard the first backup, edit record hashes or delete a whole folder.
-A new recipe does not authorize overwriting old-version DLLs or importing a record.
-The installed RC record must stay with its matching RC tools. The v1.1.0 recipe will
-refuse that record even if DLLs match; do not rewrite its release/hash or run a new
-tool to force recovery. No installed transition is authorized by this documentation.
+After startup refuses activation, exit normally before trying again. Do not swap
+DLLs or attempt to reload the mod while the game is running.
 
-**Native soundtrack fails to return after Stop:** M2 is an accepted unresolved
-Medium limitation. Logical Stop does not guarantee a subsequent legal release/
-retry opportunity. Another qualified update could repair the parameter; a reset
-could change it, with no timing or restoration guarantee. Normal Stop restoration
-passed live checks; no M2 gameplay failure is confirmed in the reviewed evidence.
-If an unexpected failure occurs, stop testing and preserve available diagnostics
-before relaunch overwrites them. Exit normally when possible. Normal exit/restart
-is the conservative process boundary, not proof of universal repair. Do not hot
-reload, add SDK callers or repeatedly change controls to conceal a failed check.
+## The audio entry is missing or disabled
 
-**A freeze occurs:** H1/U1 is an accepted unresolved conditional risk, with A1 High
-conditional severity. Its isolated self-wait remains reproducible; gameplay
-reachability is unproven and no gameplay occurrence is confirmed. Do not attribute
-every freeze to H1. Preserve available evidence; do not swap DLLs/banks or attempt
-live repair. A timeout does not authorize native destruction. Both normal exits
-and earlier listening do not exclude the condition.
+Generate the bank using the staged setup tool, then enable the registered entry
+in NMS's desktop mod settings. First-time registration may require a normal exit
+and restart after settings are saved. Do not create settings records manually or
+add Steam launch arguments to force activation.
 
-**After travel/reload:** press Play manually if native ByteBeat stopped. No automatic
-resume exists. Persistent failure after manual Play is not an accepted guarantee.
+## Another mod conflicts
 
-**Missing songs/cache pressure:** top-level supported WAV/MP3 only; restart after
-changes. Incomplete enumeration now blocks cache removals and retains omitted pairs;
-a later complete scan can recover them. This is not an atomic directory snapshot.
-Keep original music stable and allow space for PCM and temporary preparation passes.
-CacheMiB defaults to 3072 and includes unmanaged files/scratch, not all diagnostics
-or original music. Do not remove active cache files. Malformed WAVs must be
-re-exported separately; Supermoon does not repair source files.
+Do not overwrite a foreign `winmm.dll` or an incompatible `audio/windows/init.bnk`.
+Keep unrelated mods. The setup tool cannot identify every packed-bank conflict;
+blind priority changes or unverified mod-manager deployment are not recommended.
 
-**Capacity degraded:** `# recovery_capacity` reports cumulative slots/refusals,
-ID reuse, late calls, overlap and cleanup waits, subject to log budgets. Slots do
-not recycle. Exit normally/restart for a fresh process; no hours-to-exhaustion or
-all-session headroom is established. Missing logs are not proof of healthy state.
+## Setup failed or was interrupted
 
-**Quality/keys/display:** output is mono; constant-gain normalization is not a limiter.
-Brief refill gaps remain. Ctrl+Shift is required for F6 through F9. Focus/overlays
-can interfere and failed UI guards retain native display. Historical vocal/menu
-observations are not new candidate validation or confirmed decoder defects.
+Keep NMS closed and use the same release's setup tool to check `status`. Preserve
+the recovery folder. The bank may already have changed, even if setup returned
+`REFUSED_OR_INCOMPLETE`. Choose resume, rollback or disable based on the reported
+state and installation guide. They are alternatives, not a sequence to run blindly.
 
-Logs can include personal paths/song names. Share only reviewed, redacted minimal
-excerpts. Never post music, caches, saves, credentials or full diagnostic archives.
+If a record belongs to a different version, keep it and use its matching tools.
+Never edit its version or hashes, discard the first backup, or delete the whole
+mod folder to force an installation.
+
+## Native music stays quieter after Stop
+
+This is a known unresolved limitation under some game conditions. Normal return
+worked in listening checks, but every Stop is not guaranteed. Preserve useful logs
+and exit normally before another session. No timing or universal repair guarantee
+is established. Do not replace files or repeatedly change controls to hide a failed check.
+
+## The game freezes
+
+A potential freeze during audio cleanup was reproduced in isolated tests; ordinary
+gameplay reachability is unproven. Do not assume every freeze has that cause.
+Preserve available logs after exit and report what happened before it. Do not
+attempt live DLL/bank replacement or remove user files as a repair.
+
+## Music stopped after travel or reload
+
+Press Play manually in the personal ByteBeat player. Automatic resume is not
+provided. If manual Play does not recover, retain the logs and report the failure.
+
+## Songs are missing or preparation cannot finish
+
+Use supported top-level WAV/MP3 files and restart after library changes. Keep the
+original library on stable local storage. Check the configured folder and free
+cache space. Do not delete active cache files. Keep originals and re-export an
+unsupported or malformed WAV to a separate file if needed.
+
+## Capacity warning
+
+Audio storage is limited per game process. Exit normally and restart for a fresh
+session. There is no established hours-to-exhaustion guarantee. Missing logs alone
+do not prove that everything is healthy.
+
+## Short gaps, mono sound or shortcut problems
+
+Brief restart/Next refill gaps remain. Stereo is downmixed to mono. Normalization
+adjusts loudness and does not act as a dynamics limiter. Default F6-F9 shortcuts
+all require Ctrl+Shift; focus, overlays and other bindings can interfere.
+
+Before sharing a diagnostic excerpt, redact personal paths and song names.
+Do not post music, caches, saves, credentials or full diagnostic archives.
