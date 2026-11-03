@@ -12,9 +12,11 @@
 #include <cstdint>
 #include "pinned_build.hpp"
 #include "startup_policy.hpp"
+#include "audio_dependency_preflight.hpp"
 #include "playlist/bootstrap_compatibility.hpp"
 #include "winmm_bootstrap_config.hpp"
 #include "supermoon_adapter_api.hpp"
+#include "activation_status.hpp"
 
 extern "C" bool InitializeWinmm() noexcept;
 namespace {
@@ -49,11 +51,9 @@ bool pinned_file(HANDLE file,const uint8_t* expected,uint64_t expected_bytes) no
     if(hash)BCryptDestroyHash(hash);if(alg)BCryptCloseAlgorithmProvider(alg,0);
     return ok && count==expected_bytes && !memcmp(expected,digest,32);
 }
-bool setting_allows_startup() noexcept {
-    File xml(settings_path);if(xml.handle==INVALID_HANDLE_VALUE)return false;
-    char data[65537];DWORD bytes{};
-    if(!ReadFile(xml.handle,data,sizeof(data),&bytes,nullptr) || bytes>65536)return false;
-    return bytebeat::startup::mods_enabled(std::string_view(data,bytes));
+bytebeat::startup::AudioPolicy setting_policy() noexcept {
+    auto result=bytebeat::startup::audio_dependency_preflight(game_path);
+    return result.policy;
 }
 bool opt_in() noexcept {
     File marker(enable_path);if(marker.handle==INVALID_HANDLE_VALUE)return false;
@@ -135,6 +135,7 @@ DWORD run_impl(HMODULE self) {
     // An unobservable startup is refused, but WINMM still forwards normally.
     if(journal==INVALID_HANDLE_VALUE)return 3;
     event("worker_started_outside_DllMain");
+    event(bytebeat::activation::name(uint32_t(bytebeat::activation::Stage::preflight)));
     // Nonfatal preflight, with a pinned proxy and diagnostics, before any mod
     // publication. Native PCM callbacks can never trigger lazy OS loading.
     if(!InitializeWinmm()){event("refused_incomplete_system_winmm");return 20;}
@@ -147,7 +148,9 @@ DWORD run_impl(HMODULE self) {
     try{if(!bytebeat::compatibility::allow_startup(path,std::filesystem::path(log_directory)/"State")){event("compatibility_declined_or_no_native_profile");return 4;}}
     catch(...){event("compatibility_state_refused");return 4;}
     if(!bytebeat::pinned_executable_file(path)){event("refused_native_profile_identity");return 4;}
-    if(!setting_allows_startup()){event("disabled_or_unknown_mod_settings");return 6;}
+    auto policy=setting_policy();
+    if(!bytebeat::startup::audio_registration_can_wait(policy)){event(bytebeat::startup::audio_policy_reason(policy));return 6;}
+    if(policy==bytebeat::startup::AudioPolicy::registration_pending)event(bytebeat::startup::audio_policy_reason(policy));
     File adapter_file(adapter_path);
     if(!pinned_file(adapter_file.handle,adapter_sha256,adapter_bytes)){event("refused_adapter_identity");return 7;}
     if(GetModuleHandleW(L"supermoon_playlist.dll") || GetModuleHandleW(L"supermoon_playback.dll") || GetModuleHandleW(L"supermoon_adapter.dll") || GetModuleHandleW(L"player_probe.dll")) {
@@ -158,28 +161,36 @@ DWORD run_impl(HMODULE self) {
     if(!original_dispatch(base)){event("refused_dispatch_conflict");return 9;}
     event("waiting_native_audio_registration");
     const uint64_t deadline=GetTickCount64()+120000;
-    unsigned confirmations=0;
-    while(confirmations<2) {
-        if(GetTickCount64()>=deadline){event("refused_readiness_timeout");return 10;}
+    bytebeat::startup::AudioRegistrationGate registration;
+    while(registration.confirmations<2) {
+        if(GetTickCount64()>=deadline){event(policy==bytebeat::startup::AudioPolicy::registration_pending?
+            "audio_registration_pending_exit_normally_and_restart":"refused_readiness_timeout");return 10;}
         auto status=readiness(base);
         if(status==bytebeat::startup::Readiness::conflict){event("refused_audio_registration_conflict");return 11;}
-        confirmations=status==bytebeat::startup::Readiness::ready ? confirmations+1 : 0;
-        if(confirmations<2)Sleep(25); // polling cadence, never a readiness criterion
+        if(policy!=bytebeat::startup::AudioPolicy::registration_pending||status==bytebeat::startup::Readiness::ready)
+            policy=setting_policy();
+        if(!bytebeat::startup::audio_registration_can_wait(policy)){event(bytebeat::startup::audio_policy_reason(policy));return 6;}
+        registration.update(policy,status);
+        if(registration.confirmations<2)Sleep(25); // worker only; NMS registration can continue
     }
     // Recheck policy and dispatch immediately before loading the payload. The
     // adapter repeats executable/function/dispatch/PCM validation before writing.
-    if(!opt_in() || !setting_allows_startup() || !original_dispatch(base)){
+    policy=setting_policy();
+    if(policy!=bytebeat::startup::AudioPolicy::allowed){event(bytebeat::startup::audio_policy_reason(policy));return 12;}
+    if(!opt_in() || !original_dispatch(base)){
         event("refused_final_preflight");return 12;
     }
     event("native_audio_registration_ready");
+    event("desktop_policy_only_loaded_audio_bank_unobserved");
     HMODULE adapter=LoadLibraryExW(adapter_path,nullptr,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
     if(!adapter){event("refused_adapter_load",GetLastError());return 13;}
     // Never unload/retry, including nonzero activator results: existing activator
     // status 10 can mean partial publication. Process exit is the only rollback.
     auto activate=resolve<DWORD(WINAPI*)(void*)>(adapter,"AdapterActivatePlayback");
+    auto stage=resolve<DWORD(WINAPI*)(void*)>(adapter,"AdapterActivationStage");
     auto count=resolve<uint32_t(*)()>(adapter,"AdapterCount");
     auto read=resolve<uint32_t(*)(uint32_t,AdapterRecord*)>(adapter,"AdapterRead");
-    if(!activate || !count || !read){event("refused_adapter_exports");return 14;}
+    if(!activate || !count || !read || !stage){event("refused_adapter_exports");return 14;}
     bytebeat::compatibility::Store recovery(std::filesystem::path(log_directory)/"State");
     // Legacy records are advisory; no claim that the previous exit was clean.
     if(recovery.unexpected_previous_active())event("legacy_session_unresolved_advisory");
@@ -189,14 +200,14 @@ DWORD run_impl(HMODULE self) {
     recovery.begin_attempt(bytebeat::compatibility::executable_hash(game_path));
     event("activation_attempt_once");
     DWORD result=activate(nullptr);event("activation_return",result);
+    auto phase=stage(nullptr);event(bytebeat::activation::name(phase),phase);
     recovery.record_activation_return(result); // Includes rejection/partial publication; no retry
-    if(result){event(result==10 ? "partial_publication_possible_exit_required" : "activation_refused_no_retry",result);return 15;}
+    if(result){event(bytebeat::activation::failure(phase,result),result);return 15;}
     if(!published_dispatch(base,adapter)){event("publication_verification_failed_exit_required");return 16;}
     event("five_dispatch_redirects_verified");
     event("awaiting_callback_and_commit_evidence_PCM_requires_CSV");
-    // Accepted C3: only result 10 explicitly names partial publication;
-    // result 16/later preparation refusals may also leave resident wrappers.
-    // All such refusals require normal exit, never retry or hot unloading.
+    // The payload reports its actual boundary, including early lifecycle exposure
+    // before preparation. No numeric result is assumed to imply safe unloading.
     // Read only the payload's immutable journal. A successful LoadLibrary or
     // even five redirects does not prove execution or audible replacement.
     bool callback=false,commit=false;uint32_t cursor=0;
@@ -212,7 +223,7 @@ DWORD run_impl(HMODULE self) {
     }
     event("hook_execution_observed_PCM_requires_CSV");return 0;
 }
-DWORD run(HMODULE self) noexcept {try{return run_impl(self);}catch(...){event("refused_state_or_storage_exception");return 19;}}
+DWORD run(HMODULE self) noexcept {try{return run_impl(self);}catch(...){event("refused_state_or_storage_exception_exit_normally_no_retry");return 19;}}
 DWORD WINAPI worker(void* module) noexcept {
     auto result=run(static_cast<HMODULE>(module));
     if(journal!=INVALID_HANDLE_VALUE){CloseHandle(journal);journal=INVALID_HANDLE_VALUE;}

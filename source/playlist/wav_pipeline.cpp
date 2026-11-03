@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <bcrypt.h>
 #include "wav_pipeline.hpp"
+#include "discovery_io.hpp"
 #include "mp3_reader.hpp"
 #include <algorithm>
 #include <cmath>
@@ -146,17 +147,40 @@ CacheReader::~CacheReader(){delete pin_;}
 size_t CacheReader::read(float* out,size_t count){check(out||!count,"Null PCM buffer");size_t n=size_t(std::min<uint64_t>(count,frames_-position_));if(n)exact(file_,out,n*4);for(size_t i=0;i<n;++i)check(std::isfinite(out[i])&&std::abs(out[i])<=1,"Corrupt PCM cache sample");position_+=n;return n;}
 void CacheReader::seek(uint64_t frame){check(frame<=frames_&&frame<=uint64_t(INT64_MAX)/4,"Cache continuation bounds");file_.clear();file_.seekg(std::streamoff(frame*4));check(bool(file_),"Cache continuation seek failed");position_=frame;}
 void CacheReader::restart(){file_.clear();file_.seekg(0);check(bool(file_),"Cache seek failed");position_=0;}
-// Accepted audit C1: interrupted enumeration can end without a diagnostic
-// in the pinned filesystem implementation. A partial path list is therefore not
-// proof of complete discovery; prepare_cached_library may evict omitted caches.
-// Source audio is never repaired/deleted here. The runtime defect is deferred.
-Discovery discover(const std::filesystem::path& directory){Discovery result;std::error_code ec;
-    if(!std::filesystem::is_directory(directory,ec)){result.diagnostics.push_back("Music folder missing/unreadable");return result;}
-    std::filesystem::directory_iterator it(directory,ec),end;if(ec){result.diagnostics.push_back("Music folder enumeration failed");return result;}
-    for(;it!=end;it.increment(ec)){if(ec){result.diagnostics.push_back("Music folder enumeration interrupted");break;}auto p=it->path();auto ext=p.extension().wstring();std::transform(ext.begin(),ext.end(),ext.begin(),[](wchar_t c){return std::towlower(c);});
+Discovery discover(const std::filesystem::path& directory,const DiscoveryIO& io){
+    Discovery result;auto attr=io.attributes(directory.c_str());
+    if(attr==INVALID_FILE_ATTRIBUTES||!(attr&FILE_ATTRIBUTE_DIRECTORY)){result.diagnostics.push_back("Music folder missing/unreadable");return result;}
+    WIN32_FIND_DATAW data{};auto search=directory/L"*";auto handle=io.first(search.c_str(),&data);
+    if(handle==INVALID_HANDLE_VALUE){
+        auto error=io.error();
+        auto current=io.attributes(directory.c_str());
+        if(error==ERROR_FILE_NOT_FOUND&&current!=INVALID_FILE_ATTRIBUTES&&(current&FILE_ATTRIBUTE_DIRECTORY))result.complete=true;
+        else result.diagnostics.push_back("Music folder enumeration failed: Win32 "+std::to_string(error));
+        return result;
+    }
+    struct Close {HANDLE handle;const DiscoveryIO& io;~Close(){io.close(handle);}} close{handle,io};
+    bool metadata_ok=true;
+    for(;;){
+        auto p=directory/data.cFileName;auto ext=p.extension().wstring();
+        std::transform(ext.begin(),ext.end(),ext.begin(),[](wchar_t c){return std::towlower(c);});
         auto name=p.filename().wstring();std::transform(name.begin(),name.end(),name.begin(),[](wchar_t c){return std::towlower(c);});
-        if(name==L"shuffle on.wav"||name==L"shuffle off.wav"){result.diagnostics.push_back("Developer shuffle notification excluded from playlist");continue;}
-        if((ext!=L".wav"&&ext!=L".mp3")||!it->is_regular_file(ec))continue;if(result.paths.size()==10000){result.diagnostics.push_back("Music folder limit: 10000 files");break;}result.paths.push_back(p);}
+        if(name==L"shuffle on.wav"||name==L"shuffle off.wav")result.diagnostics.push_back("Developer shuffle notification excluded from playlist");
+        else if(ext==L".wav"||ext==L".mp3"){
+            auto attributes=io.attributes(p.c_str());
+            if(attributes==INVALID_FILE_ATTRIBUTES){metadata_ok=false;auto error=io.error();result.diagnostics.push_back("Music entry metadata failed: Win32 "+std::to_string(error));}
+            else if(!(attributes&(FILE_ATTRIBUTE_DIRECTORY|FILE_ATTRIBUTE_DEVICE))){
+                if(result.paths.size()==10000){result.diagnostics.push_back("Music folder limit: 10000 files");break;}
+                result.paths.push_back(std::move(p));
+            }
+        }
+        if(!io.next(handle,&data)){
+            auto error=io.error();
+            if(error==ERROR_NO_MORE_FILES)result.complete=metadata_ok;
+            else result.diagnostics.push_back("Music folder enumeration interrupted: Win32 "+std::to_string(error));
+            break;
+        }
+    }
     std::sort(result.paths.begin(),result.paths.end());return result;
 }
+Discovery discover(const std::filesystem::path& directory){return discover(directory,DiscoveryIO{});}
 }

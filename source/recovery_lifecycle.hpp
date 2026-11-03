@@ -41,17 +41,26 @@ struct Registry {
     Source sources[source_capacity];Parameter parameters[parameter_capacity];Event events[event_capacity];
     std::atomic<uint32_t> source_count{0},parameter_count{0},event_count{0};
     std::atomic<uint64_t> refused{0},id_reuse{0},late_calls{0},overlaps{0},cleanup_waits{0};
-    uint32_t reserve(std::atomic<uint32_t>& counter,uint32_t limit) noexcept {
+    std::atomic<uint64_t> source_refused{0},parameter_refused{0},event_refused{0};
+    struct Snapshot {
+        uint32_t sources{},parameters{},events{};
+        uint64_t source_refused{},parameter_refused{},event_refused{},refused{},id_reuse{},late_calls{},overlaps{},cleanup_waits{};
+    };
+    Snapshot snapshot() const noexcept {
+        return {source_count.load(std::memory_order_acquire),parameter_count.load(std::memory_order_acquire),event_count.load(std::memory_order_acquire),
+            source_refused.load(),parameter_refused.load(),event_refused.load(),refused.load(),id_reuse.load(),late_calls.load(),overlaps.load(),cleanup_waits.load()};
+    }
+    uint32_t reserve(std::atomic<uint32_t>& counter,uint32_t limit,std::atomic<uint64_t>& pool_refused) noexcept {
         auto n=counter.load(std::memory_order_acquire);
         for(unsigned attempt=0;attempt<8;++attempt){if(n>=limit)break;if(counter.compare_exchange_weak(n,n+1,std::memory_order_acq_rel))return n;}
-        refused.fetch_add(1);return UINT32_MAX;
+        pool_refused.fetch_add(1,std::memory_order_relaxed);refused.fetch_add(1);return UINT32_MAX;
     }
     Source* allocate_source() noexcept {
-        auto n=reserve(source_count,source_capacity);if(n==UINT32_MAX)return nullptr;
+        auto n=reserve(source_count,source_capacity,source_refused);if(n==UINT32_MAX)return nullptr;
         auto& s=sources[n];s.phase.store(allocated,std::memory_order_release);return &s;
     }
     Parameter* allocate_parameter() noexcept {
-        auto n=reserve(parameter_count,parameter_capacity);if(n==UINT32_MAX)return nullptr;return &parameters[n];
+        auto n=reserve(parameter_count,parameter_capacity,parameter_refused);if(n==UINT32_MAX)return nullptr;return &parameters[n];
     }
     Source* source(void* p) noexcept {
         auto a=reinterpret_cast<uintptr_t>(p),base=reinterpret_cast<uintptr_t>(sources);
@@ -64,7 +73,7 @@ struct Registry {
         auto n=(a-base)/sizeof(Parameter);return n<parameter_count.load(std::memory_order_acquire)?&parameters[n]:nullptr;
     }
     Event* begin_event(uintptr_t stream) noexcept {
-        auto n=reserve(event_count,event_capacity);if(n==UINT32_MAX)return nullptr;
+        auto n=reserve(event_count,event_capacity,event_refused);if(n==UINT32_MAX)return nullptr;
         auto& e=events[n];e.stream=stream;e.prepared.store(1,std::memory_order_release);return &e;
     }
     static bool open(const Event* e) noexcept {return e&&e->published.load(std::memory_order_acquire)&&!e->terminal.load(std::memory_order_acquire)&&!(e->admission.load(std::memory_order_acquire)&closed_bit)&&!e->poisoned.load(std::memory_order_acquire);}

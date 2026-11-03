@@ -1,43 +1,77 @@
-# Troubleshooting
+# Troubleshooting — v1.1.0
 
-**Original track or no custom audio:** verify the exact supported executable and
-DLL hashes, mod settings, marker and folder layout. Select Supermoon in the personal
-player. Cold cache preparation happens during startup and can delay availability;
-start playback after preparation. Inspect startup/preparation logs under Supermoon
-including bytebeat-startup-latest.log in Supermoon. A refusal requires normal exit
-before retrying; do not hot-reload or swap DLLs in a running game.
+The owner approved Ready with Caveats and explicitly accepted unresolved M2 and
+H1/U1 risks for the limited desktop scope, subject to final publication verification.
+The v1.1.0 public policy retains the exact Phase 6-tested `1.0.4-rc1-private` DLLs.
+The installed RC remains under its unchanged record/tools; see
+[version-specific recovery](V1_1_0_VERSION_TRANSITION.md).
+See [qualification](QUALIFICATION.md) for finite live results and unchanged failures.
 
-Version 1.0.3 also requires the locally generated audio override. With the
-matching DLL pair installed and NMS closed, run the setup command in INSTALL.md.
-An absent, altered or wrong bank refuses payload activation. Do not substitute
-a bank from another game build or mod.
+**Inactive/original track/no custom audio:** check exact executable and matching
+DLL identities in `build/recipe.json`, the marker, mod settings and folder layout.
+Select Supermoon in the personal player. Cold cache preparation delays availability.
+Inspect `Supermoon/bytebeat-startup-latest.log` and `preparation-latest.log`.
+After refusal, exit normally before another attempt; never hot reload/swap DLLs.
 
-**After travel or reload:** if native ByteBeat stopped, manually press Play.
-Automatic resumption is intentionally absent. If native playback continues, music
-may continue. Persistent failure after a manual restart should be reported with a
-small reviewed log excerpt, not a private full diagnostic archive.
+**Missing/disabled/wrong bank:** generate through the staged installer in INSTALL.md
+and enable the registered Supermoon entry in NMS's desktop mod settings. Missing
+registration is pending, never permission to activate. The worker allows up to
+120 seconds; `audio_registration_pending_exit_normally_and_restart` means exit
+normally and restart after NMS saves its entry. Do not hand-create an MXML record.
+Known disable/malformed settings or wrong bank refuse. No launch arguments are needed.
 
-**Missing songs:** top-level supported WAV/MP3 only; filenames supply titles.
-Use a stable local Music folder and restart after changes. Interrupted discovery
-has accepted finding C1 and may omit songs/evict decoded cache; a clean scan can
-rebuild. Keep originals. See SUPPORTED_FORMATS.md for encoding and strict WAV
-length requirements. Re-export inconsistent WAVs as separate files; Supermoon
-does not repair headers. No claim is made that every WAV is supported.
+**Other mods:** retain unrelated mods. Resolve a specifically identified incompatible
+`audio/windows/init.bnk` override or foreign `winmm.dll`. Loose conflict checks cannot
+prove the winning resource in opaque/legacy packages. Blind priority changes and
+arbitrary mod-manager deployment are unqualified. VR is unsupported.
 
-**Cache fails or storage fills:** leave room for source copies, final PCM and
-temporary preparation passes. CacheMiB includes legacy/unknown files and scratch;
-leased or unmanaged entries may prevent admission. Default 3072 MiB is a cache-root
-budget, not a bound on total music or diagnostic storage. Do not delete an active
-cache or edit music while preparation/playback is using it.
+**Setup failed or interrupted:** keep NMS closed and other writers idle. Run the
+trusted setup tool's `status`, keep `.Supermoon-Recovery` and its record ID, then
+choose `resume`, qualified `rollback` or `disable` as documented in INSTALL.md.
+`REFUSED_OR_INCOMPLETE` can mean a bank was already replaced. Do not overwrite an
+unknown file, discard the first backup, edit record hashes or delete a whole folder.
+A new recipe does not authorize overwriting old-version DLLs or importing a record.
+The installed RC record must stay with its matching RC tools. The v1.1.0 recipe will
+refuse that record even if DLLs match; do not rewrite its release/hash or run a new
+tool to force recovery. No installed transition is authorized by this documentation.
 
-**Audio quality:** playback is mono. Normalization is constant gain, not a limiter.
-Native/game/OS gain and original recording quality can affect output. Background
-soundtrack suppression and Discoveries persistence were owner-tested in 1.0.3.
-Brief empty-buffer windows on restart/navigation and an unconfirmed historical
-vocal-distortion report remain documented; no decoder fix is claimed.
+**Native soundtrack fails to return after Stop:** M2 is an accepted unresolved
+Medium limitation. Logical Stop does not guarantee a subsequent legal release/
+retry opportunity. Another qualified update could repair the parameter; a reset
+could change it, with no timing or restoration guarantee. Normal Stop restoration
+passed live checks; no M2 gameplay failure is confirmed in the reviewed evidence.
+If an unexpected failure occurs, stop testing and preserve available diagnostics
+before relaunch overwrites them. Exit normally when possible. Normal exit/restart
+is the conservative process boundary, not proof of universal repair. Do not hot
+reload, add SDK callers or repeatedly change controls to conceal a failed check.
 
-**Keys or display:** Ctrl+Shift is required for default F6â€“F9 bindings. Focus and
-overlays may interfere; UI guards can retain native text. See CONFIGURATION_AND_LAYOUT.md.
+**A freeze occurs:** H1/U1 is an accepted unresolved conditional risk, with A1 High
+conditional severity. Its isolated self-wait remains reproducible; gameplay
+reachability is unproven and no gameplay occurrence is confirmed. Do not attribute
+every freeze to H1. Preserve available evidence; do not swap DLLs/banks or attempt
+live repair. A timeout does not authorize native destruction. Both normal exits
+and earlier listening do not exclude the condition.
 
-Logs can contain personal paths and song names. Review/redact a minimal excerpt
-before sharing; never post complete music, caches, PDBs, saves or diagnostic archives.
+**After travel/reload:** press Play manually if native ByteBeat stopped. No automatic
+resume exists. Persistent failure after manual Play is not an accepted guarantee.
+
+**Missing songs/cache pressure:** top-level supported WAV/MP3 only; restart after
+changes. Incomplete enumeration now blocks cache removals and retains omitted pairs;
+a later complete scan can recover them. This is not an atomic directory snapshot.
+Keep original music stable and allow space for PCM and temporary preparation passes.
+CacheMiB defaults to 3072 and includes unmanaged files/scratch, not all diagnostics
+or original music. Do not remove active cache files. Malformed WAVs must be
+re-exported separately; Supermoon does not repair source files.
+
+**Capacity degraded:** `# recovery_capacity` reports cumulative slots/refusals,
+ID reuse, late calls, overlap and cleanup waits, subject to log budgets. Slots do
+not recycle. Exit normally/restart for a fresh process; no hours-to-exhaustion or
+all-session headroom is established. Missing logs are not proof of healthy state.
+
+**Quality/keys/display:** output is mono; constant-gain normalization is not a limiter.
+Brief refill gaps remain. Ctrl+Shift is required for F6 through F9. Focus/overlays
+can interfere and failed UI guards retain native display. Historical vocal/menu
+observations are not new candidate validation or confirmed decoder defects.
+
+Logs can include personal paths/song names. Share only reviewed, redacted minimal
+excerpts. Never post music, caches, saves, credentials or full diagnostic archives.

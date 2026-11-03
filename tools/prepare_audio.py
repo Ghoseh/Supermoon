@@ -2,7 +2,8 @@
 # SPDX-License-Identifier: MIT
 """Generate Supermoon's audio override from the supported owner's game bank."""
 from pathlib import Path
-import argparse,csv,datetime,hashlib,io,json,os,struct,subprocess,sys,tempfile
+import argparse,hashlib,json,struct
+from installation_safety import require_closed,no_reparse
 
 ROOT=Path(__file__).resolve().parents[1]
 PAK_BYTES=67842512
@@ -56,21 +57,10 @@ def derive(game,plan):
         raise ValueError('Native init entry identity mismatch')
     return patch_bank(data[NATIVE_OFFSET:NATIVE_OFFSET+plan['input_bytes']],plan)
 
-def require_closed():
-    if os.name!='nt':raise ValueError('Installation requires Windows; generation can run elsewhere.')
-    r=subprocess.run(['tasklist','/FI','IMAGENAME eq NMS.exe','/FO','CSV','/NH'],capture_output=True,text=True,check=True,creationflags=subprocess.CREATE_NO_WINDOW)
-    if any(row and row[0].lower()=='nms.exe' for row in csv.reader(io.StringIO(r.stdout))):
-        raise ValueError('Exit NMS fully before installing the audio override.')
-
-def no_reparse(path):
-    for p in (path,*path.parents):
-        if p.exists() and (p.is_symlink() or getattr(p.lstat(),'st_file_attributes',0)&0x400):
-            raise ValueError('Reparse-point installation paths are unsupported')
-
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--game',type=Path,required=True)
     p.add_argument('--install',action='store_true',help='Install the locally generated bank while NMS is closed')
-    args=p.parse_args();game=args.game.resolve(strict=True);no_reparse(game)
+    args=p.parse_args();no_reparse(args.game.absolute());game=args.game.resolve(strict=True)
     recipe=json.loads((ROOT/'build/recipe.json').read_text());plan=json.loads((Path(__file__).with_name('audio_patch.json')).read_text())
     exe=game/'Binaries/NMS.exe'
     if exe.stat().st_size!=recipe['game_executable_bytes'] or sha(exe.read_bytes())!=recipe['game_executable_sha256']:
@@ -78,33 +68,8 @@ def main():
     bank=derive(game,plan)
     report={'status':'PASS_GENERATED_IN_MEMORY_NO_GAME_WRITES','bytes':len(bank),'sha256':sha(bank)}
     if args.install:
-        require_closed();target=game/BANK_REL;no_reparse(target)
-        # The DLL and bank are one qualified unit. Never install the bank next
-        # to an older or unrelated mod pair.
-        for name,rel in [('winmm.dll','Binaries/winmm.dll'),('supermoon_playlist.dll','Binaries/Supermoon/supermoon_playlist.dll')]:
-            data=(game/rel).read_bytes();identity=recipe['DLLs'][name]
-            if len(data)!=identity['bytes'] or sha(data)!=identity['sha256']:
-                raise ValueError('Install the matching Supermoon DLL pair before its audio override.')
-        existing=target.read_bytes() if target.exists() else None
-        if existing is not None and sha(existing) not in (MENU_SHA,plan['output_sha256']):
-            raise ValueError('Conflicting audio override; preserve it and resolve the conflict before installing.')
-        if existing==bank:
-            report['status']='PASS_AUDIO_OVERRIDE_ALREADY_CURRENT'
-        else:
-            backup=Path(tempfile.mkdtemp(prefix='Supermoon-audio-backup-'));receipt={'target':str(target),'prior_exists':existing is not None,'new_sha256':sha(bank),'utc':datetime.datetime.now(datetime.timezone.utc).isoformat()}
-            if existing is not None:(backup/'prior-init.bnk').write_bytes(existing);receipt['prior_sha256']=sha(existing)
-            (backup/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
-            print('Keep this audio backup/receipt: '+str(backup),file=sys.stderr)
-            target.parent.mkdir(parents=True,exist_ok=True);require_closed()
-            fd,tmp=tempfile.mkstemp(prefix='supermoon-',suffix='.tmp',dir=target.parent)
-            try:
-                with os.fdopen(fd,'wb') as f:f.write(bank);f.flush();os.fsync(f.fileno())
-                if (target.read_bytes() if target.exists() else None)!=existing:raise ValueError('Audio destination changed during installation')
-                require_closed();os.replace(tmp,target)
-            finally:
-                if os.path.exists(tmp):os.unlink(tmp)
-            if sha(target.read_bytes())!=plan['output_sha256']:raise ValueError('Installed audio bank verification failed')
-            report.update(status='PASS_AUDIO_OVERRIDE_INSTALLED',backup=str(backup))
+        from install_supermoon import installed_bank
+        report=installed_bank(game,recipe,plan,bank)
     print(json.dumps(report,indent=2))
 
 if __name__=='__main__':main()

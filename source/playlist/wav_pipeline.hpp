@@ -59,6 +59,9 @@ public:
     void seek(uint64_t frame); // Worker-only bounded repositioning; pure toggles do not seek.
     uint64_t frames() const{return frames_;}
 };
-struct Discovery {std::vector<std::filesystem::path> paths;std::vector<std::string> diagnostics;};
+struct Discovery {
+    std::vector<std::filesystem::path> paths;std::vector<std::string> diagnostics;
+    bool complete{}; // Enumeration/classification completed, not a decode guarantee.
+};
 Discovery discover(const std::filesystem::path& directory);
 }

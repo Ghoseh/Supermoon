@@ -43,7 +43,13 @@ public:
         if(source>=capacity||!captured||ticket(captured)!=source)return false;
         if(enabled==1&&initialized==1)return true; // no store, no resurrection
         if(!(captured&active_bit))return false;
-        return word_.compare_exchange_strong(captured,captured&~active_bit,std::memory_order_acq_rel);
+        return invalidate(captured);
+    }
+    // Recoverable engine/SDK loss cancels this generation only. Keep its
+    // generation so replay needs a strictly newer validated commit. A newer
+    // commit published during a failed setter is never cleared by that failure.
+    bool invalidate(uint64_t captured) noexcept {
+        return (captured&active_bit)&&word_.compare_exchange_strong(captured,captured&~active_bit,std::memory_order_acq_rel);
     }
     void retire(uint32_t source) noexcept {
         if(source<capacity)retired_[source].store(true,std::memory_order_release);

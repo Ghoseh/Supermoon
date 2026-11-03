@@ -1,5 +1,10 @@
 # Implementation map and contracts
 
+Current public package is v1.1.0 with the unchanged Phase 6-tested RC DLL pair.
+See [qualification](QUALIFICATION.md) for the owner-accepted unresolved M2/H1
+findings and [version-specific policy](V1_1_0_VERSION_TRANSITION.md) before changing installation records.
+The implementation descriptions below are not a claim of all-schedule safety.
+
 This guide describes the comprehensively audited F6-corrected implementation.
 Statements about code flow are source contracts; copied-native fixtures and short
 live observations have narrower scopes. The accepted noncritical findings and
@@ -27,6 +32,12 @@ executable, mod settings, payload identity, existing modules, readiness code and
 original dispatch cells. It parses settings before readiness polling and again
 before loading the payload. A compatibility Yes does not supply an unknown native
 profile or bypass executable/site checks.
+
+`global_mods_enabled` retains the global-only parser contract; production
+`mods_enabled` additionally requires Supermoon's unique desktop-enabled entry.
+First-time absence is pending for the bootstrap's bounded registration wait,
+never an enabled result. Cold preflight is repeated by the payload before
+publication. See [Phase 2A policy and limits](REMEDIATION_PHASE2A.md).
 
 `startup_policy.hpp` accepts a bounded UTF-8 MXML subset: one non-self-closing
 GcModSettings Data root and balanced Property elements, optional supported XML
@@ -71,9 +82,11 @@ payload resources until adoption. Once adopted, the Core/Engine remain resident;
 the Core pointer/validator are established before the release/acquire readiness gate.
 Four later provider/update/pool cells publish individually, with provider last;
 cleanup is already owned by the lifecycle hook. UI activation follows successful
-audio publication. These exchanges are not one transaction. A later refusal may
-still leave hooks exposed even if its log omits explicit partial-publication wording
-(C3); normal process exit is required.
+audio publication. These exchanges are not one transaction. The cold stage export
+records possible lifecycle exposure, core readiness and publication progress;
+bootstrap reports the observed boundary for every activation return. Any possibly
+exposed refusal requires normal exit/no retry, including early preparation failures.
+This diagnostic interface does not prove native execution or permission to unload.
 
 Only exact pinned source/parameter/Clone factory callers and sizes receive owned
 slots. Other allocations and foreign object methods retain native ownership. Source,
@@ -85,8 +98,9 @@ and close admission; neither pointer nor ID equality is incarnation proof.
 Owner Init creates an append-only Event; the PostEvent return bridge publishes its
 PlayingID. Source Init borrows caller-live context to obtain an ID and associate a
 qualified Event, then native Init/Execute use resident context interfaces and stable
-parameters. The accepted C2 parameter snapshot is before the finally-protected
-scope, so invalid borrowed-parameter faults are an explicit cleanup exception.
+parameters. Phase 4 places the parameter snapshot inside the finally-protected
+scope: faults propagate while retiring the source and restoring TLS/admission/latch
+state. This repairs the audited owned-input gap, not arbitrary native-memory safety.
 
 Execute acquires its Source/event admission lease before the copied native lookup,
 provider and tail. TLS carries that identity through the invocation; `__finally`
@@ -179,11 +193,12 @@ vendor reference C. All vendor initialization/measurement is serialized off audi
 because initialization rewrites shared histogram tables. Zero/reflected endpoint
 measurements are conservative checks, not a proof of every playback reconstruction.
 
-Discovery currently has accepted C1: interrupted enumeration can silently return
-a partial path list. Empty diagnostics therefore do not prove complete discovery;
-obsolete-entry eviction can discard reusable decoded pairs. Original music is not
-deleted. A later clean scan rebuilds omitted entries. Use a stable verified library
-for controlled endurance; this text does not change the eviction gate.
+Phase 4 discovery uses explicit Win32 error/end classification and a separate
+completion flag. Initial/next/metadata failures or truncation prohibit cache removal,
+including quota/orphan removal, while identified valid hits can still be reused.
+A later complete scan recovers omitted pairs. Intentional exclusions and decode
+diagnostics remain distinct; source audio is not repaired/deleted. This is not an
+atomic directory snapshot against concurrent changes.
 
 Persistent cache entries include source path/content/recipe/settings identities,
 source file metadata, full PCM hash and checked metadata body. WAV recipe remains

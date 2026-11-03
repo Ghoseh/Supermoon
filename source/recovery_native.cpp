@@ -63,15 +63,14 @@ extern "C" uint32_t RecoverySourceInit(void* object,void* allocator,void* contex
     auto phase=s->phase.load(std::memory_order_acquire);
     if((phase!=allocated&&phase!=ready)||!s->phase.compare_exchange_strong(phase,initializing,std::memory_order_acq_rel)){s->executing.clear(std::memory_order_release);registry.refused.fetch_add(1);return 2;}
     auto old_id=s->id.load(std::memory_order_acquire);auto previous=invocation;auto previous_lease=invocation_lease;Event* init_lease=nullptr;invocation=s;invocation_lease=nullptr;uint32_t result=2;bool complete=false;
-    // Borrowed parameters must be valid here. Accepted audit C2: these loads
-    // precede __try, so a synthetic invalid parameter fault bypasses its cleanup.
-    // No valid-caller occurrence was established; behavior is unchanged in v1.0.
     void* stable_params=params;
-    if(params&&!registry.parameter(params)){
-        s->shadow_parameters.vtable=read<void*>(params,0);s->shadow_parameters.gain.store(read<uint32_t>(params,8),std::memory_order_relaxed);
-        s->external_parameters.store(reinterpret_cast<uintptr_t>(params),std::memory_order_release);stable_params=&s->shadow_parameters;
-    }
     __try {
+        // Protect every borrowed read after TLS/phase/latch changes. A fault
+        // still propagates; finally retires the failed source and restores state.
+        if(params&&!registry.parameter(params)){
+            s->shadow_parameters.vtable=read<void*>(params,0);s->shadow_parameters.gain.store(read<uint32_t>(params,8),std::memory_order_relaxed);
+            s->external_parameters.store(reinterpret_cast<uintptr_t>(params),std::memory_order_release);stable_params=&s->shadow_parameters;
+        }
         // Borrow the native context ONLY in Init's caller-live scope. The
         // subsequent original Init/Execute/gain bodies query owned interfaces.
         if(context){

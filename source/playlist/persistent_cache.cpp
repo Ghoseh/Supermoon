@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <bcrypt.h>
 #include "persistent_cache.hpp"
+#include "discovery_io.hpp"
 #include "mp3_reader.hpp"
 #include <algorithm>
 #include <cmath>
@@ -48,14 +49,14 @@ void publish(const std::filesystem::path& p,const std::string& s){auto temp=p;te
     CloseHandle(f.h);f.h=INVALID_HANDLE_VALUE;
     need(MoveFileExW(temp.c_str(),p.c_str(),MOVEFILE_WRITE_THROUGH)!=0,"Cache metadata publication failed");}
 bool owned(const std::filesystem::path& p){auto name=p.filename().u8string();return name.size()>65&&digest(name.substr(0,64))&&(name.substr(64)==".pcm"||name.substr(64)==".meta"||name.substr(64)==".pcm.raw"||name.substr(64)==".pcm.tmp"||name.substr(64)==".meta.pending");}
-bool remove_file(const std::filesystem::path& p,CachedLibrary& out){std::error_code ec;if(std::filesystem::remove(p,ec)){++out.removed;return true;}return false;}
+bool remove_file(const std::filesystem::path& p,CachedLibrary& out){if(!out.discovery_complete)return false;std::error_code ec;if(std::filesystem::remove(p,ec)){++out.removed;return true;}return false;}
 struct Entry {std::filesystem::path pcm,meta;uint64_t bytes{};std::filesystem::file_time_type age;};
 void checkpoint(const CacheOptions& o,const char* s){if(o.checkpoint)o.checkpoint(s);}
 }
 CachedLibrary prepare_cached_library(const std::filesystem::path& music,const std::filesystem::path& root,const CacheOptions& options){
     const auto wav_settings_hash=hash_bytes(normalization_identity(options.normalization));
     CachedLibrary out;auto& lib=out.library;lib.cache_directory=root/"v2";
-    auto found=discover(music);lib.diagnostics=std::move(found.diagnostics);
+    auto found=options.discovery_io?discover(music,*options.discovery_io):discover(music);out.discovery_complete=found.complete;lib.diagnostics=std::move(found.diagnostics);
     try {
         for(auto p=std::filesystem::absolute(lib.cache_directory);!p.empty();){auto a=GetFileAttributesW(p.c_str());need(a==INVALID_FILE_ATTRIBUTES||!(a&FILE_ATTRIBUTE_REPARSE_POINT),"Cache ancestry contains a reparse point");auto parent=p.parent_path();if(parent==p)break;p=parent;}
         std::filesystem::create_directories(lib.cache_directory);
@@ -95,6 +96,7 @@ CachedLibrary prepare_cached_library(const std::filesystem::path& music,const st
         };
         auto evict=[&](uint64_t reserve,const std::filesystem::path& keep){
             if(reserve>options.bytes)return false;
+            if(!found.complete)return total<=options.bytes-reserve;
             for(auto& e:entries){if(total<=options.bytes-reserve)break;if(!e.bytes||e.pcm==keep)continue;
                 // Delete PCM first. Active/referenced Windows pins veto deletion;
                 // metadata then remains intact. No waiting, force or sharing bypass.
@@ -126,11 +128,9 @@ CachedLibrary prepare_cached_library(const std::filesystem::path& music,const st
         // Reopen misses and verify the snapshot before DSP; prepare hashes again
         // under its own write/delete-denying pin before the pair is published.
         for(auto& s:sources)s.hold.reset();
-        // Empty diagnostics are the current obsolete-entry eviction gate.
-        // Accepted C1: interrupted enumeration can silently truncate discovery,
-        // so this gate can evict otherwise valid decoded pairs and force rebuilds.
-        // It is not a proven discovery-complete signal; original songs stay intact.
-        if(lib.diagnostics.empty()){std::set<std::filesystem::path> current;for(auto& s:sources)current.insert(s.pcm);for(auto& e:entries)if(!current.count(e.pcm))evict_entry(e);}
+        // Decode diagnostics alone cannot prove enumeration completeness. A
+        // partial scan never authorizes obsolete, quota or orphan removal.
+        if(found.complete&&lib.diagnostics.empty()){std::set<std::filesystem::path> current;for(auto& s:sources)current.insert(s.pcm);for(auto& e:entries)if(!current.count(e.pcm))evict_entry(e);}
         evict(0,{});
         for(auto& s:sources){try{
             if(s.hit){++out.reused;std::error_code ec;std::filesystem::last_write_time(s.meta,std::filesystem::file_time_type::clock::now(),ec);}

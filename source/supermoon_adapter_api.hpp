@@ -25,6 +25,8 @@ ADAPTER_API DWORD WINAPI AdapterFinishCapture(void*);
 ADAPTER_API uint32_t AdapterRead(uint32_t,AdapterRecord*);
 ADAPTER_API uint32_t AdapterCount();
 ADAPTER_API uint64_t AdapterDropped();
+// Cold bootstrap diagnostic only; preserves existing exports/native contracts.
+ADAPTER_API DWORD WINAPI AdapterActivationStage(void*);
 // Offline native-context fixture invokes helpers/bridges in its OWN process.
 // Not exported by production DLL; never a target-process control API.
 extern "C" void AdapterFrame(void*,const unsigned char*) noexcept;

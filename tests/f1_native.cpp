@@ -24,7 +24,7 @@ int main(int argc,char** argv){
         auto base=static_cast<char*>(VirtualAlloc(nullptr,(pages+2)*si.dwPageSize,MEM_RESERVE|MEM_COMMIT,PAGE_NOACCESS));if(!base)return 2;
         DWORD old{};if(!VirtualProtect(base+si.dwPageSize,pages*si.dwPageSize,PAGE_READWRITE,&old))return 2;
         auto at=base+(pages+1)*si.dwPageSize-xml.size();memcpy(at,xml.data(),xml.size());
-        audited=true;bool authorized=bytebeat::startup::mods_enabled(std::string_view(at,xml.size()));audited=false;
+        audited=true;bool authorized=bytebeat::startup::global_mods_enabled(std::string_view(at,xml.size()));audited=false;
         VirtualFree(base,0,MEM_RELEASE);++checks;
 #if EXPECT_F1_CORRECTED
         if(authorized!=expected)++failures;

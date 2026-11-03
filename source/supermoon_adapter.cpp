@@ -15,6 +15,8 @@ extern "C" { void* FloorNativeUnlock=nullptr; }
 
 #include "native_clone.hpp"
 #include "pinned_build.hpp"
+#include "audio_dependency_preflight.hpp"
+#include "activation_status.hpp"
 #include <atomic>
 #include <cstdio>
 #include <cwchar>
@@ -24,6 +26,7 @@ extern "C" { void* FloorNativeUnlock=nullptr; }
 #ifdef ADAPTER_RECOVERY_BUILD
 #include "recovery_native.hpp"
 #include "recovery_pins.hpp"
+#include "recovery_diagnostics.hpp"
 #endif
 #ifdef ADAPTER_SELFTEST_BUILD
 namespace bytebeat::playback {inline bool location_matches(const wchar_t*){return false;}}
@@ -69,6 +72,7 @@ std::atomic<uint32_t> catalog_label_count{0},catalog_label_dropped{0};
 // may temporarily hold up the readable prefix; slots are never recycled.
 std::atomic<uint64_t> sequence{0},dropped{0},call_id{0};
 std::atomic<uint32_t> activation{0};
+std::atomic<uint32_t> activation_stage{uint32_t(bytebeat::activation::Stage::preflight)};
 std::atomic<bool> finished{false};
 bytebeat::SupermoonCore initial_core(nullptr);
 bytebeat::SupermoonCore* core=&initial_core; // Set at adoption; engine_ready gates early hooks.
@@ -184,6 +188,7 @@ void floor_log(uint64_t word,bool desired,int result) noexcept {
     r.requested=desired;r.produced=uint32_t(result);append(r);
 }
 bool floor_preflight(unsigned char* base,HMODULE module,const wchar_t* executable) {
+    if(bytebeat::startup::audio_dependency_preflight(executable).policy!=bytebeat::startup::AudioPolicy::allowed)return false;
     (void)module;
     {const uint8_t expected[]={0xff,0xac,0x6b,0xf1,0xc0,0x1f,0xae,0x4c,0x3a,0x2d,0xf2,0x0e,0x05,0xc2,0x0c,0x1d,0xe1,0xaa,0x97,0x60,0x25,0x1c,0x52,0xa6,0x45,0xbf,0xcf,0x8f,0x4e,0xc7,0xdb,0x76};if(!memory_digest(base+46634544,7,expected))return false;}
     {const uint8_t expected[]={0x34,0xf4,0x80,0x00,0x31,0xd1,0xe0,0xa4,0x21,0xde,0x8f,0xbf,0x9d,0xe0,0x1f,0x95,0xa2,0xda,0x09,0x70,0xf5,0x7d,0x34,0x1d,0x28,0x34,0x0e,0x95,0x8b,0x31,0xf3,0xeb};if(!memory_digest(base+52538576,39,expected))return false;}
@@ -236,6 +241,9 @@ DWORD WINAPI writer(void*) {
     write_line(line);FlushFileBuffers(log_file);SetEvent(writer_ready);
     uint32_t cursor=0,label_cursor=0,last_track=UINT32_MAX;uint64_t last_completed=0,last_position=0,last_serial=0;
     bool worker_scope_reported=false,worker_join_reported=false;uint64_t last_shuffle_failures=UINT64_MAX;int last_shuffle=-1;
+#ifdef ADAPTER_RECOVERY_BUILD
+    bytebeat::recovery::Reporter recovery_reporter;
+#endif
     for(;;){
 #ifdef ADAPTER_RECOVERY_BUILD
         if(auto token=deferred_retirement.exchange(0,std::memory_order_acq_rel))if(!core->retire_endpoint(token))deferred_retirement.store(token,std::memory_order_release);
@@ -302,6 +310,10 @@ DWORD WINAPI writer(void*) {
         health.ui_now=supermoon::ui::journal.calls[1].load();health.ui_rows=supermoon::ui::journal.calls[2].load();health.ui_dropped=supermoon::ui::journal.dropped.load();
         health.titles=supermoon::ui::time::title_replaced.load();health.times=supermoon::ui::time::time_replaced.load();health.fallbacks=supermoon::ui::time::fallbacks.load();
 #endif
+#ifdef ADAPTER_RECOVERY_BUILD
+        char recovery_line[768]{};
+        if(recovery_reporter.sample(bytebeat::recovery::registry.snapshot(),GetTickCount64(),recovery_line,sizeof(recovery_line)))write_line(recovery_line);
+#endif
         endurance.drain();endurance.heartbeat(health,diagnostic_io,diagnostic_limit,GetTickCount64());
         if(finished.load(std::memory_order_acquire))break;
         Sleep(25); // worker only
@@ -311,10 +323,9 @@ DWORD WINAPI writer(void*) {
     FlushFileBuffers(log_file);CloseHandle(log_file);log_file=INVALID_HANDLE_VALUE;return 0;
 }
 }
-// Private passive diagnostic. Runs only after the original native lock call.
-// Reads current invocation's borrowed stream while its native lock is held.
-// Kind 8: requested=enable byte, produced=initialized byte. No audio writes,
-// retained native pointers or gain writes; samples can only clear owned intent.
+// Control-side pump after the original selected native unlock; preserves LastError.
+// SDK submission stays outside the provider observation below. These selected
+// unlocks are not a guaranteed final Stop/retirement release service (A1-M2).
 extern "C" void FloorBeforeAudioUpdate() noexcept {
     auto saved=GetLastError();
     static std::atomic<uint64_t> entries{0};[[maybe_unused]] auto entry=entries.fetch_add(1,std::memory_order_relaxed);
@@ -324,6 +335,9 @@ extern "C" void FloorBeforeAudioUpdate() noexcept {
 #endif
     SetLastError(saved);
 }
+// Provider-side observation while the current invocation holds the native lock.
+// Kind 8: requested=enable byte, produced=initialized byte. Samples can only
+// clear owned intent; no SDK call or borrowed pointer retention occurs here.
 extern "C" void AdapterObserveState(void* stream) noexcept {
 #ifdef ADAPTER_RECOVERY_BUILD
     if(!engine_ready.load(std::memory_order_acquire))return;
@@ -481,6 +495,7 @@ uint32_t AdapterRead(uint32_t index,AdapterRecord* output) {
 }
 uint32_t AdapterCount(){auto n=sequence.load(std::memory_order_relaxed);return uint32_t(std::min<uint64_t>(n,capacity));}
 uint64_t AdapterDropped(){return dropped.load(std::memory_order_relaxed);}
+DWORD WINAPI AdapterActivationStage(void*){return activation_stage.load(std::memory_order_acquire);}
 DWORD WINAPI AdapterFinishCapture(void*){finished.store(true,std::memory_order_release);return 0;}
 #ifdef ADAPTER_PLAYBACK_BUILD
 #define ADAPTER_ACTIVATE AdapterActivatePlayback
@@ -493,9 +508,9 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
     // Refusals are not invitations to retry: later failures can occur after a
     // live pointer has already changed. Normal process exit is the rollback.
     uint32_t idle=0;if(!activation.compare_exchange_strong(idle,1))return 1;
-    wchar_t path[32768]{};auto module=GetModuleHandleW(nullptr);
-    if(!module||!GetModuleFileNameW(module,path,32768)||_wcsicmp(std::filesystem::path(path).filename().c_str(),L"NMS.exe")||!bytebeat::pinned_executable_file(path))return 2;
     try {
+        wchar_t path[32768]{};auto module=GetModuleHandleW(nullptr);
+        if(!module||!GetModuleFileNameW(module,path,32768)||_wcsicmp(std::filesystem::path(path).filename().c_str(),L"NMS.exe")||!bytebeat::pinned_executable_file(path))return 2;
         struct PublicationGuard {
             bool exposed{};
             ~PublicationGuard(){if(!exposed)finished.store(true,std::memory_order_release);}
@@ -528,6 +543,7 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
         void* native_functions[12]{};for(size_t n=0;n<12;++n)native_functions[n]=clone.function(n);
         bytebeat::recovery::initialize(reinterpret_cast<uintptr_t>(base),native_functions);
         publication.exposed=true;clone.published();
+        activation_stage.store(uint32_t(bytebeat::activation::Stage::lifecycle_exposed),std::memory_order_release);
         if(!bytebeat::recovery::publish(base))return 16;
 #endif
 #ifdef ADAPTER_PLAYBACK_BUILD
@@ -583,6 +599,10 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
 #ifdef ADAPTER_RECOVERY_BUILD
         core->endpoint_validator(&endpoint_live);
         engine_ready.store(true,std::memory_order_release);
+#endif
+        activation_stage.store(uint32_t(bytebeat::activation::Stage::core_ready),std::memory_order_release);
+        activation_stage.store(uint32_t(bytebeat::activation::Stage::publication_started),std::memory_order_release);
+#ifdef ADAPTER_RECOVERY_BUILD
         for(size_t n:{size_t(1),size_t(3),size_t(4),size_t(0)})if(ok&&
 #else
         for(size_t n:{size_t(2),size_t(1),size_t(3),size_t(4),size_t(0)})if(
@@ -598,6 +618,7 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
         supermoon::ui::start(base,&resident->engine,bytebeat::playback::configuration.carrier.data(),&resident->core,&resident->filenames);
 #endif
         if(!floor_publish(base))return 18;
+        activation_stage.store(uint32_t(bytebeat::activation::Stage::published),std::memory_order_release);
         return 0;
     }catch(...){return 11;} // Local payload RAII joins its worker; earlier exposed hooks/adopted state stay resident.
 }

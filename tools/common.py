@@ -2,20 +2,24 @@
 # SPDX-License-Identifier: MIT
 """Portable tooling; every output uses a fresh disposable directory."""
 from pathlib import Path
-import hashlib,json,os,shutil,subprocess,tempfile
+import hashlib,json,os,re,subprocess,tempfile
 ROOT=Path(__file__).resolve().parents[1]
 def digest(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def recipe():return json.loads((ROOT/'build/recipe.json').read_text(encoding='utf-8'))
 def fresh(label):
-    parent=Path(tempfile.gettempdir()).resolve(strict=True)
-    if parent==ROOT or parent.is_relative_to(ROOT) or ROOT.is_relative_to(parent):
-        raise ValueError('Temporary output must be outside and distinct from the source tree')
-    for p in (parent,*parent.parents):
-        if p.is_symlink() or getattr(p.stat(),'st_file_attributes',0)&0x400:
-            raise ValueError('Temporary ancestors may not be reparse points')
-        if (p/'NMS.exe').exists() or (p/'supermoon_playlist.dll').exists() or p.name.lower() in {'baselines','review'}:
-            raise ValueError('Temporary output may not be in a game/protected tree')
+    if not re.fullmatch('[A-Za-z0-9-]+',label):raise ValueError('Invalid output label')
+    def ancestry(path):
+        for p in (path,*path.parents):
+            if p.is_symlink() or getattr(p.lstat(),'st_file_attributes',0)&0x400:
+                raise ValueError('Temporary ancestors may not be reparse points')
+            if (p/'NMS.exe').exists() or (p/'supermoon_playlist.dll').exists() or p.name.lower() in {'baselines','review'}:
+                raise ValueError('Temporary output may not be in a game/protected tree')
+    parent=Path(tempfile.gettempdir()).absolute();ancestry(parent);parent=parent.resolve(strict=True)
+    if parent==ROOT or parent.is_relative_to(ROOT):raise ValueError('Temporary output may not be inside the source tree')
     work=Path(tempfile.mkdtemp(prefix='Supermoon-'+label+'-',dir=parent))
+    ancestry(work);work=work.resolve(strict=True)
+    if work==ROOT or work.is_relative_to(ROOT) or ROOT.is_relative_to(work):
+        raise ValueError('Reserved output must be outside and distinct from the source tree')
     (work/'OWNED_DISPOSABLE_OUTPUT.txt').write_text('Outputs created by Supermoon public tooling. No historical fixture inputs.\n',encoding='utf-8')
     return work
 def environment(work):

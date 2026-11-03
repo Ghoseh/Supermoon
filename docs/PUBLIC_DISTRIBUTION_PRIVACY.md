@@ -1,5 +1,11 @@
 # Distribution privacy and portability
 
+Public **v1.1.0** uses unchanged Phase 6 DLLs with a separate public recipe policy.
+Source/member manifests and checksums are refreshed for its new ZIPs; sealed Phase 5
+archives and private records remain untouched. See [the policy](V1_1_0_VERSION_TRANSITION.md).
+The requirements below apply to every selected member. External verification
+receipts record the actual scans; pattern scans are not proof against encoded secrets.
+
 The selected public files include production source, pinned generated inputs,
 portable build/test tooling, dependency notices, public summaries and exact release
 DLLs in the separate installation ZIP. This is an explicit selection, not a copy

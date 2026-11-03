@@ -1,23 +1,28 @@
-# Compatibility maintenance
+# v1.1.0 artifact handoff — publication approval pending
 
-Version 1.0.2 targets NMS Steam build 26295378. The behavior reference remains
-v1.0.0 commit d5ff3ca, starting from published v1.0.1 commit 5ff0801.
-Keep playlist, preparation, controls, normalization and manual recovery behavior.
+Local public installation/source ZIPs are prepared under the owner-approved v1.1.0
+policy. The exact Phase 6 DLLs from production checkpoint `50a8577` are retained;
+no DLL rebuild or runtime change occurred. Public recipe version is `1.1.0`.
+The owner's installed RC record and matching tools stay `1.0.4-rc1-private` and
+unchanged. Wrong-version recovery refuses; no record import/rewrite is supplied.
 
-Offline and live acceptance passed for the exact installed/reproduced DLL pair.
-See MIGRATION_STATUS.md for actual tests, diagnostics and limits. No new
-four-hour endurance or multiplayer certification is claimed.
+The owner approved Ready with Caveats and explicitly accepted unresolved M2
+(original Medium; three FAILs) and H1/U1 (A1 High conditional; isolated TIMEOUT,
+NMS reachability unproven). Original tests, evidence and historical audit labels
+remain intact. Neither issue is fixed, harmless or a confirmed gameplay failure.
+Finite Phase 6 listening and normal exits do not prove all-schedule safety.
 
-The owner confirmed warm-relaunch music and the session remains active. Leave
-it running. The prior DLL pair, compatibility state and diagnostics are backed
-up privately. Only the saved No for the formerly unsupported exact executable
-was cleared to allow the verified profile; all identity gates remain intact.
+New setup validation: 39 cases each normal/applicable UBSan and 17 genuine-input
+CLI scenarios passed in disposable fixtures. Python/native NMS are not sanitized;
+game/DLL instructions did not run. Final ZIPs reproduce with verified inventories,
+source correspondence, links, notices/privacy and new archive hashes in the external
+receipt and release SHA256SUMS. Existing private ZIPs and sealed v1.0.3 are intact.
 
-Local final packages are prepared under releases/v1.0.2. The prelive directory
-is historical and does not contain current qualification prose. The owner
-authorized publishing 1.0.2 as the hook update. Subsequent work investigates
-Discovery/pause-menu audio interruption and background soundtrack overlap.
-Do not mix untested audio behavior changes into the qualified 1.0.2 pair.
+Review [release notes](RELEASE_NOTES.md), [offline Nexus draft](NEXUS_DESCRIPTION.md),
+[qualification](QUALIFICATION.md), [limitations](SUPERMOON_V1_KNOWN_LIMITATIONS.md),
+[installation](../INSTALL.md) and [version policy](V1_1_0_VERSION_TRANSITION.md).
+Source/member manifests are refreshed deliberately. The original Phase 5 packaging
+summary remains separately retained; new checks are not a new runtime qualification.
 
-Private native images, instructions, music and raw test receipts stay outside
-the repository. Existing accepted findings and unverified contracts remain.
+STOP for explicit approval before any public upload or remote release creation.
+No installed migration, NMS launch/attach, tag or publication is authorized here.

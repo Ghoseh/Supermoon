@@ -5,6 +5,7 @@
 #include <memory>
 #include <functional>
 namespace bytebeat::playlist {
+struct DiscoveryIO;
 // Container/preparation recipe: 24 kHz float mono, 64-tap sinc and reconstructed
 // peak headroom. Entry identity also hashes normalization settings/measurement
 // recipe and, for MP3 only, mp3_recipe. Keep all identities aligned with DSP changes.
@@ -14,6 +15,7 @@ struct CacheOptions {
     uint64_t bytes=3072ull*1024*1024;
     // Offline failure injection only. Production leaves this empty.
     std::function<void(const char*)> checkpoint;
+    const DiscoveryIO* discovery_io{}; // Cold owned-fixture injection; production null.
 };
 struct CachedLibrary {
     Library library;
@@ -21,6 +23,7 @@ struct CachedLibrary {
     // Prepared copies also hold the lease, so Engine lifetime is independent.
     std::vector<std::shared_ptr<void>> leases;
     uint64_t reused{},rebuilt{},removed{},disk_bytes{},hashed_bytes{};
+    bool discovery_complete{}; // False prohibits removal, including quota eviction.
 };
 // Nonblocking exclusive manager lock; busy/inaccessible roots return diagnostics.
 // All hashes, preparation, eviction and file handles are off native callbacks.

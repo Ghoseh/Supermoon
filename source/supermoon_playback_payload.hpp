@@ -59,7 +59,7 @@ inline std::unique_ptr<Payload> prepare(const Configuration& config){
     for(size_t i=0;i<library.tracks.size();++i){auto& n=library.tracks[i].normalization;
         journal<<"normalization track_id="<<i<<" enabled="<<n.enabled<<" loudness_defined="<<n.defined<<" input_lufs="<<n.input_lufs<<" output_lufs="<<n.output_lufs<<" true_peak="<<n.true_peak<<" peak_limited="<<n.limited<<'\n';}
     journal.close();if(!journal)throw std::runtime_error("Preparation diagnostics flush failed");
-    if(library.tracks.empty())throw std::runtime_error("No valid songs within experimental cache budget");
+    if(library.tracks.empty())throw std::runtime_error("No valid songs within configured cache budget");
     uint32_t seed{};if(BCryptGenRandom(nullptr,reinterpret_cast<PUCHAR>(&seed),sizeof(seed),BCRYPT_USE_SYSTEM_PREFERRED_RNG)<0)throw std::runtime_error("Shuffle seed unavailable");
     auto payload=std::make_unique<Payload>(std::move(cached),seed,base,keys,notifications);
     std::ofstream status(log,std::ios::app);

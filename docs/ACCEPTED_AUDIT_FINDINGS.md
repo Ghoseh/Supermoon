@@ -1,4 +1,34 @@
-# Accepted noncritical findings for v1.0
+# Current accepted unresolved findings — v1.1.0
+
+The owner approved Ready with Caveats and explicitly accepted M2 and H1/U1 risks
+for the limited desktop release, subject to final publication verification.
+The v1.1.0 public policy retains the DLL pair qualified as `1.0.4-rc1-private`.
+The installed RC record/tools remain unchanged. Public upload awaits explicit
+owner approval. See [qualification](QUALIFICATION.md) and
+[known limitations](SUPERMOON_V1_KNOWN_LIMITATIONS.md).
+
+- **A1-M2, original Medium:** three final-release regressions still fail; native
+  soundtrack volume may fail to restore after Stop under certain callback conditions.
+  Normal restoration passed live checks; universal restoration is not guaranteed.
+  No confirmed gameplay failure, likelihood or duration is established. The audit's
+  historical release-blocker classification remains preserved; it originated in
+  the independent audit, not the owner.
+- **A1-H1, original High conditional / historical U1:** isolated cleanup self-wait
+  still times out; actual NMS reachability is unproven. No gameplay occurrence is
+  confirmed. Both normal exits do not prove exclusion. Historical qualification-hold
+  and earlier conditional Medium U1 classifications remain.
+
+Acceptance changes release disposition, not severity, assertions or evidence.
+Neither is fixed or proven harmless. C1 discovery and C2 Init cleanup are corrected
+in the retained pair under deterministic owned tests; C3 reporting uses explicit
+exposure stages. U3 visibility improved without removing finite capacity/headroom
+limits. See [Phase 4](REMEDIATION_PHASE4.md).
+
+# Historical accepted noncritical findings for v1.0
+
+Everything below describes the older baseline, including its then-current code
+and capacities/diagnostics. It does not override current dispositions above or
+transfer historical endurance to the later pair.
 
 The final comprehensive independent audit found no confirmed Critical or High
 release blocker. The owner accepted the following noncritical findings for v1.0

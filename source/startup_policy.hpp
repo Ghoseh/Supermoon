@@ -59,7 +59,11 @@ inline bool xml_attribute_equals(std::string_view raw,std::string_view expected)
 // a nested alias or any second logical DisableAllMods refuses authorization.
 // Unsupported markup never
 // authorizes startup. No allocation, recursive entity expansion or external resources.
-inline bool mods_enabled(std::string_view xml) noexcept {
+struct ModSettingsToken {
+    std::string_view property,value,type;
+    uint32_t index{};size_t attributes{};bool indexed{},valued{};
+};
+template<class Observer> inline bool parse_mod_settings(std::string_view xml,Observer& observer) noexcept {
     if (xml.empty() || xml.size()>65536)return false;
     // XML 1.0 characters and well-formed UTF-8, including non-ASCII filenames.
     for(size_t i=0;i<xml.size();){
@@ -93,8 +97,9 @@ inline bool mods_enabled(std::string_view xml) noexcept {
         if(decl){if(root||declaration||p!=document_start)return false;declaration=true;p+=2;}
         else p+=closing?2:1;
         auto tag=name();if(tag.empty())return false;
-        if(closing){space();if(p==xml.size()||xml[p++]!='>'||!depth||tag!=(depth==1?"Data":"Property"))return false;if(--depth==0)closed=true;continue;}
+        if(closing){space();if(p==xml.size()||xml[p++]!='>'||!depth||tag!=(depth==1?"Data":"Property"))return false;if(--depth==0)closed=true;observer.close(depth);continue;}
         std::string_view property,value,type,version,encoding,standalone;
+        bool indexed=false,valued=false;uint32_t entry_index=0;
         std::array<std::string_view,16> attrs{};size_t count=0;bool self=false;
         for(;;){
             auto before=p;space();
@@ -114,7 +119,7 @@ inline bool mods_enabled(std::string_view xml) noexcept {
                 }++p;
             }
             if(p==xml.size())return false;auto text=xml.substr(begin,p++-begin);
-            if(attr=="name")property=text;else if(attr=="value")value=text;else if(attr=="template")type=text;
+            if(attr=="name")property=text;else if(attr=="value"){value=text;valued=true;}else if(attr=="template")type=text;
             else if(!decl&&tag=="Property"&&attr=="_index"){
                 // NMS emits indexed, typed containers for installed mod entries.
                 // The index is metadata, never a policy name/value override.
@@ -122,6 +127,7 @@ inline bool mods_enabled(std::string_view xml) noexcept {
                 uint64_t index=0;
                 for(char digit:text){if(digit<'0'||digit>'9')return false;index=index*10+unsigned(digit-'0');}
                 if(index>0xffffffffULL)return false;
+                indexed=true;entry_index=uint32_t(index);
             }
             else if(decl&&attr=="version")version=text;else if(decl&&attr=="encoding")encoding=text;else if(decl&&attr=="standalone")standalone=text;
             else return false;
@@ -135,8 +141,17 @@ inline bool mods_enabled(std::string_view xml) noexcept {
         }
         if(!depth){if(root||closed||tag!="Data"||!xml_attribute_equals(type,"GcModSettings")||count!=1||self)return false;root=true;}
         else {if(tag!="Property"||property.empty())return false;if(xml_attribute_equals(property,"DisableAllMods")){if(depth!=1||++matches!=1)return false;enabled=xml_attribute_equals(value,"false");}}
-        if(!self){if(depth==32)return false;++depth;}
+        if(!self&&depth==32)return false;
+        observer.open(depth,{property,value,type,entry_index,count,indexed,valued});
+        if(self)observer.close(depth);else ++depth;
     }
     return root&&closed&&!depth&&matches==1&&enabled;
 }
+// Global-only grammar/policy API retained for the original parser corpus.
+// Runtime audio admission additionally requires required_audio_policy.hpp.
+inline bool global_mods_enabled(std::string_view xml) noexcept {
+    struct GlobalOnly {void open(unsigned,const ModSettingsToken&) noexcept {} void close(unsigned) noexcept {}} observer;
+    return parse_mod_settings(xml,observer);
 }
+}
+#include "required_audio_policy.hpp"

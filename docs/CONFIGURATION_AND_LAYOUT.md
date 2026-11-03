@@ -3,6 +3,12 @@
 This describes the current portable runtime layout. Current qualification is in QUALIFICATION.md. `<game-executable-directory>` means the directory
 containing NMS.exe, independent of the Steam library/drive or developer workspace.
 
+Public package/recovery version is **v1.1.0**, retaining the DLL pair qualified as
+**1.0.4-rc1-private** in Phase 6. M2 and H1/U1 are explicitly owner-accepted unresolved
+limitations; see [qualification](QUALIFICATION.md). The installed RC record and
+matching tools remain RC-specific and unchanged. See the approved
+[version policy](V1_1_0_VERSION_TRANSITION.md).
+
 ```text
 <game-executable-directory>/
   NMS.exe
@@ -11,18 +17,31 @@ containing NMS.exe, independent of the Steam library/drive or developer workspac
   SETTINGS/GCMODSETTINGS.MXML
   Supermoon/
     supermoon_playlist.dll
-    tools/prepare_audio.py
-    tools/audio_patch.json
-    build/recipe.json
     Music/
     playlist.ini          (optional)
     Cache/                (managed preparation data)
     State/                (preferences and compatibility/attempt ownership)
 ```
 
-Version 1.0.3 also requires the locally derived override at
+Supermoon v1.1.0 also requires the locally derived override at
 `<game>/GAMEDATA/MODS/Supermoon_MenuAudio_Test/audio/windows/init.bnk`.
-The setup tool, patch plan and recipe must retain the relative paths shown above.
+Tools are kept separately in the persistent extracted staging package:
+
+```text
+<staging>/
+  winmm.dll
+  bytebeat-playlist-experimental.enabled
+  Supermoon/
+    supermoon_playlist.dll
+    tools/install_supermoon.py
+    tools/installation_safety.py
+    tools/prepare_audio.py
+    tools/audio_patch.json
+    build/recipe.json
+    playlist.example.ini
+```
+
+The staging tools, patch plan and recipe must retain these relative paths.
 See INSTALL.md for generation, backup, conflict handling and removal.
 
 The existing enable-marker filename is intentional runtime data, despite its
@@ -38,8 +57,11 @@ not the shell's working directory. Discovery reads top-level supported WAV/MP3
 files, sorts paths and excludes the reserved shuffle on.wav/off.wav cue names.
 See SUPPORTED_FORMATS.md for strict finalized RIFF/data header requirements;
 Supermoon does not repair malformed files. Cold preparation may delay availability.
-Accepted C1 means interrupted discovery can silently omit tracks and evict their
-decoded cache entries; use a stable, preverified local library for endurance.
+Incomplete discovery now blocks all cache removal; a later complete scan can
+recover omitted pairs. Stable local music is recommended; enumeration is not an
+atomic snapshot or a promise of network/removable-media reliability.
+Installation preserves Cache; a complete runtime scan may still evict obsolete
+managed pairs. This is separate from original music, which is not removed.
 Subfolder recursion and runtime library refresh are not implemented. Do not bundle
 private music. Respect the content owner's rights when preparing a public package.
 
@@ -91,8 +113,14 @@ restore only files changed by that installation and retain user data unless the
 owner explicitly requests deletion. No such operation is performed by these docs.
 On any failed activation after possible hook exposure, exit NMS normally before
 another attempt. Generic no-retry logs do not prove that no hooks were published
-(accepted C3). Never unload/retry/revert individual hooks in the running process.
+(historical C3; stage reporting is now explicit). Never unload/retry/revert individual hooks in the running process.
 
 Startup/preparation/UI/health logs can include local paths, filenames, identities
 and opaque runtime addresses. Treat raw diagnostic/review/rollback archives as
 private evidence; prepare a separately selected public issue excerpt if needed.
+
+Candidate desktop admission additionally requires a unique enabled registered
+Supermoon audio entry, known loose-resource conflict checks and the pinned bank.
+No launch arguments are required. VR and opaque-package winning-bank selection
+remain unqualified. Tools stay in persistent staging; only four managed resources
+are installed. See INSTALL.md for durable recovery and preservation of personal data.
