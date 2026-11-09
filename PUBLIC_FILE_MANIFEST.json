@@ -1,5 +1,6 @@
 {
-  "purpose": "Supermoon 1.1.0 source; unchanged Phase 6 DLL production inputs, owner-accepted M2/H1 limitations; upload pending",
+  "purpose": "Supermoon1.2.0 public source closure; frozen26540391 native runtime; Python-free end-user tooling",
+  "native_checkpoint": "5d4671694eb0f020f10a63b2a600dbc820f05534",
   "files": {
     ".gitattributes": {
       "bytes": 38,
@@ -10,64 +11,68 @@
       "sha256": "8f9bcf51183849a91c46f0d8c41e4517eefd73b6e35612cba370a85b6e80bb49"
     },
     "AGENTS.md": {
-      "bytes": 2471,
-      "sha256": "434d49f150f97d71faaef748a8708f850a67ffdbd28a08efa718405ccd024cb7"
+      "bytes": 1011,
+      "sha256": "c28326513509f0d5c3a4c4e6daca48491bdf3a6ba0b5cef12e371b889ae65714"
     },
     "ASSET_NOTICE.md": {
       "bytes": 566,
       "sha256": "91eaaef87995254e16a793b2f5981b95a3b76a4539c69034f0076ecd341bac82"
     },
     "CHANGELOG.md": {
-      "bytes": 13003,
-      "sha256": "f69c30055efbdf4f6634b15a4cfaad4e9b0f04914c249d8bf4145c86b4b4fe6d"
+      "bytes": 885,
+      "sha256": "c7cba38a0da1671df0407343053f301dcf29d68eeacc582a3987d24ddb68cfcf"
     },
     "COPYING": {
       "bytes": 1059,
       "sha256": "d6b4754bb67bdd08b97d5d11b2d7434997a371585a78fe77007149df3af8d09c"
     },
     "INSTALL.md": {
-      "bytes": 16917,
-      "sha256": "a9489b2621c3c1c054f98ccfd82c11ecd25a87cf0e172efa8313db4d14f747a5"
+      "bytes": 7707,
+      "sha256": "0f4cf8af1d88cad4152cae1b893b9f329aa826c7a8b49d63c40a9ce954897ec1"
     },
     "LICENSE": {
-      "bytes": 1066,
-      "sha256": "22d99184a97c790f60e86f5ee0c5f16409c846fca19fee63475a96ea9eb56209"
+      "bytes": 1097,
+      "sha256": "9b9012f8f0861a5452256a9f60228e728d929ae0c0489a3f14b5cafc60cfd15d"
     },
     "LICENSING.md": {
-      "bytes": 1897,
-      "sha256": "53c8ee0a64aad4c9e2febad2ee7c6c531c41d2597f1ebbbee439c27ec190f7c8"
+      "bytes": 1927,
+      "sha256": "dc9bcab9d66a35a9a85a75200bf3f92abbee0c4262a1b99ea0b3903e9d4a6074"
     },
     "README.md": {
-      "bytes": 6817,
-      "sha256": "ce18b4f83da694d37b6ee7931fe236b0ce81130b9b0bad9be72ef8e27dc671cd"
+      "bytes": 3942,
+      "sha256": "311b69ee05da4b9b74806dda72cf6376c4367ef5f182d02c9568d43278279039"
     },
-    "RELEASE_DLL_SHA256SUMS": {
-      "bytes": 165,
-      "sha256": "b266579a8fa9fe6d4c4a5a09ca83d8f3f04ba126b9fe5d6dc10a24ae9bbf58f8"
+    "SETUP_README.txt": {
+      "bytes": 2208,
+      "sha256": "e6fdf473e95a4d33bc5cc53c0b5054ea4223daea0615e467b527470f619c0b16"
+    },
+    "SETUP_SECURITY.txt": {
+      "bytes": 5000,
+      "sha256": "d8970d8ae9e7780bcaafe1e125bc52cb3f3b64b65dd3d5d1fbb795fa5ce50cf3"
+    },
+    "Setup.cmd": {
+      "bytes": 947,
+      "sha256": "a04d050b3043333230db1f40b1a1133bdb6a04906cad3589e78c5deb9f3c708a"
     },
     "THIRD_PARTY_NOTICES.md": {
       "bytes": 2068,
       "sha256": "fad15a8827f03a57e015cbd049bda1280aadb94da86a17d3d479a022492ef8a9"
     },
     "build/recipe.json": {
-      "bytes": 2333,
-      "sha256": "bedaa27ae6cbef61659bce0db3dca440bb8f063de8c4250b9f05faed04cd44a4"
-    },
-    "docs/ACCEPTED_AUDIT_FINDINGS.md": {
-      "bytes": 5855,
-      "sha256": "34f86d130b1055a30afa905ca19598284e6f43cf103e49de06af556e14e2c551"
+      "bytes": 2572,
+      "sha256": "24bbc93788c60cbcc8c78a5f1e94de3efe655ab587c8562251656a5f6c66c8a1"
     },
     "docs/BUILD_AND_PROVENANCE.md": {
-      "bytes": 5252,
-      "sha256": "affe1a2d52dfa8fec90fc79ddfdc6dd3b87e02eb02c82b64a1d06024f4fbff79"
-    },
-    "docs/COMPILER_TOKEN_EQUIVALENCE.json": {
-      "bytes": 8277,
-      "sha256": "d172d681be7557235dbd509b7cf2c07a5bbca6997305c87441bb624c49a6b631"
+      "bytes": 3417,
+      "sha256": "99e6ba4ded9166886ca2a8faa878885bd9359f5cc038b883ddad310e16a3b2aa"
     },
     "docs/CONFIGURATION_AND_LAYOUT.md": {
-      "bytes": 6284,
-      "sha256": "c5cc72747b27b22443011347755dcc6719def1fd30b67c20c9ea966608198a39"
+      "bytes": 2628,
+      "sha256": "fa40f6dfede2aef533ca1184480887ca010111b4417c75264110a473bac0f727"
+    },
+    "docs/CONTROLLED_LIVE_TEST.md": {
+      "bytes": 3372,
+      "sha256": "eb5290cad019b4400825bd572e1834bc507932983d23c6177c882bd417d210f8"
     },
     "docs/DEPENDENCIES.json": {
       "bytes": 20035,
@@ -78,96 +83,36 @@
       "sha256": "46c5711dd3d3283ec739fe732e0bfd2e44ad2d27dace1bec9ab1c9869869c96b"
     },
     "docs/DEVELOPER_GUIDE.md": {
-      "bytes": 16079,
-      "sha256": "c6cad9de77bf0f6c43dd46f48a28992d6cae63599ac7c58165c75c21edda8989"
+      "bytes": 2060,
+      "sha256": "a086de8fcb74c1efe7cea32c5c92804653c4fddf8aaafbaa72064cd837daa03f"
     },
-    "docs/HANDOFF.md": {
-      "bytes": 1861,
-      "sha256": "15c1189821e925b7bb0d0f3125046c9e2b4124b663801b7601b643fd9a3d4e81"
-    },
-    "docs/MIGRATION_STATUS.md": {
-      "bytes": 26970,
-      "sha256": "d5db2a7f4ff4e13b2444d905f55d6c17dce35f0911c2b296cb1b809c0eaaca92"
-    },
-    "docs/NEXUS_DESCRIPTION.md": {
-      "bytes": 8605,
-      "sha256": "a55b085cec6198b47b877107abfb4c716607f75b9a90cf32a8860c03f3ac2efa"
-    },
-    "docs/PACKAGING_VERIFICATION.json": {
-      "bytes": 3696,
-      "sha256": "b4645043d867b6fca63a35c6798fc7d224193bd8009f710065bfc88215edc5eb"
-    },
-    "docs/PUBLIC_DISTRIBUTION_PRIVACY.md": {
-      "bytes": 2390,
-      "sha256": "03361bf7ed97a7b83206733c31c97ea5e77db497fbbfd7e853365191c699f92d"
+    "docs/NMS26540391_MIGRATION.md": {
+      "bytes": 4712,
+      "sha256": "7c71d254504fd5dff2d6501066fed85438c2647af239119028d29386f185b971"
     },
     "docs/QUALIFICATION.md": {
-      "bytes": 13943,
-      "sha256": "4c0d85d1f0548d8da9e6d93ed76710b27eb960f58434e35bd8bfabb98035deaf"
+      "bytes": 2249,
+      "sha256": "7c4f0a07b4505b06749b91cad09fd8c9c0b255d647734f6206a3429d71635684"
     },
     "docs/RELEASE_NOTES.md": {
-      "bytes": 6474,
-      "sha256": "aaa6f2580bfe6b09614027d0458795a4cc00be05b80656a199808a79e78f295d"
-    },
-    "docs/REMEDIATION_PHASE0.md": {
-      "bytes": 5740,
-      "sha256": "ffd724e8f96dabdaef768f3978bc6e98b238d873c1fb3bdc4064b000d0a4d30b"
-    },
-    "docs/REMEDIATION_PHASE1.md": {
-      "bytes": 8585,
-      "sha256": "3d826daa9e30ca6ed225326acc62c6973ec7540c88d651923db63f12426b83ec"
-    },
-    "docs/REMEDIATION_PHASE2A.md": {
-      "bytes": 8217,
-      "sha256": "3618028e9c1906d229e3f7c2b58fee03dcc3d4115917b652b05ec45e386d8d17"
-    },
-    "docs/REMEDIATION_PHASE3.md": {
-      "bytes": 7553,
-      "sha256": "7cf11e5c1a0f91a6a4f21a42b9c2021cbd2cb2dad97b5bcd6b4496aeaa05bf0c"
-    },
-    "docs/REMEDIATION_PHASE4.md": {
-      "bytes": 5507,
-      "sha256": "887aaf2acfbae6c10b40dcf6e91ada747672055d98cb7441eff45721509f04f3"
-    },
-    "docs/REMEDIATION_PHASE5.md": {
-      "bytes": 2585,
-      "sha256": "8375930dfb6837aa5fc1c7a76d7f22bab203c25b58c9f73c145d6ceb677fed4e"
+      "bytes": 2775,
+      "sha256": "d6c753c1ae445e4d1d751d4795217a5513326f03483d600b261b38486f5a0867"
     },
     "docs/SUPERMOON_V1_KNOWN_LIMITATIONS.md": {
-      "bytes": 12795,
-      "sha256": "938e4a8b999c4a38db349bd0f332c1282ac2f0c50a736db433b63d98bcc6a29d"
+      "bytes": 3234,
+      "sha256": "56568ed68eaf147e5d37347d328144276e29260a180f467dfc13113387f9d9e0"
     },
     "docs/SUPPORTED_FORMATS.md": {
-      "bytes": 2548,
-      "sha256": "330b55d9b07d6ca22724e25bc3366ff0f7c42227291af17a8b882cfc0b732751"
+      "bytes": 1562,
+      "sha256": "15af585a1f74e3f1915fe2dfbb35cad098383d10b88d0c41ca0f225d01858352"
     },
     "docs/TROUBLESHOOTING.md": {
-      "bytes": 5201,
-      "sha256": "b19ee49d259e0b75a00b7bbd0f00e3b35f8165f512f9729fe0200790b4655681"
+      "bytes": 4414,
+      "sha256": "c802bb27473ec7362edd764dc450c76be512e32a041d886e799241e8cf7c6763"
     },
-    "docs/V1_0_0_PACKAGING_VERIFICATION.json": {
-      "bytes": 7192,
-      "sha256": "14037eb2a8abff3c2d99215834c56ac82e1b10b8e3ca2efdc2c49cb0ecc9fed2"
-    },
-    "docs/V1_0_1_MIGRATION_STATUS.md": {
-      "bytes": 3005,
-      "sha256": "66d22a5ab4595b2c591e34e0e6118e633512da72e2ed2330e50408615675fe2d"
-    },
-    "docs/V1_0_1_PACKAGING_VERIFICATION.json": {
-      "bytes": 1185,
-      "sha256": "ee1ea295aca925a8b35315418bd80f431b302bb76fa2c47803c782a4ec505d7f"
-    },
-    "docs/V1_0_3_PACKAGING_VERIFICATION.json": {
-      "bytes": 1787,
-      "sha256": "701c31637994977def6ef4bf89aa07aefffdf0d4503911cb40c0b17abdeac0ef"
-    },
-    "docs/V1_0_4_RC1_PRIVATE_PACKAGING_VERIFICATION.json": {
-      "bytes": 1755,
-      "sha256": "0b13dd91c9bbffd18f610c586eb776dc044bc2c6e3e3c976556e78c1fb754d14"
-    },
-    "docs/V1_1_0_VERSION_TRANSITION.md": {
-      "bytes": 7728,
-      "sha256": "ae9cbd8ce0d67101a28918a31af15122d089d82c02cc7d14f1bdbbfdd31260d9"
+    "docs/VERSION_TRANSITION.md": {
+      "bytes": 1961,
+      "sha256": "e9f3fb1919e85eb22feea4716aac42849ef6bed3ad06ca5c6f3895fdd08a6d14"
     },
     "ebur128_peak.c": {
       "bytes": 54809,
@@ -262,12 +207,12 @@
       "sha256": "2a16e01d7dfb8192d3a5b88612de94159573a360cde24c95b562ec4f49c814b2"
     },
     "source/native_layout.hpp": {
-      "bytes": 80210,
-      "sha256": "24f5b7e26c9287a64b39b26d83f12dc54b9d9c08ef721a2d6fdcadbcc07ffd26"
+      "bytes": 80205,
+      "sha256": "08b5ee75678c57ccd5afefb5cf90df1e827dccacaa4d370eadc65dcf83791d0c"
     },
     "source/native_stream_tests.cpp": {
       "bytes": 12246,
-      "sha256": "0f8c91aaf998c5fb832a1f35e248939021ed43e2418a8f99222e41389fb3e23f"
+      "sha256": "8dddfdbe0e369cf7d5f0bd6287ddb682474a25063e42f5f9beda9340378c6f88"
     },
     "source/observer.cpp": {
       "bytes": 3121,
@@ -279,7 +224,7 @@
     },
     "source/pinned_build.hpp": {
       "bytes": 1494,
-      "sha256": "85403d6f4db90831c8271451ca1edc4a20d7532f30f43166d496dacdc88bb151"
+      "sha256": "1a9e9c65dbd4e34b6729dd85254f6b1ede0acbe8d41d1fdbe666d685fe713f45"
     },
     "source/playback_intent_prototype.hpp": {
       "bytes": 3771,
@@ -438,8 +383,8 @@
       "sha256": "6c541048cddc788a483b00fcb9125114db9c1f9e3420b950af8e3e795550fd60"
     },
     "source/recovery_layout.hpp": {
-      "bytes": 106881,
-      "sha256": "a62517f6ca1ea164b0fab5fae2d93fbb712b1af9adfbc87b7e79f3112d430918"
+      "bytes": 106906,
+      "sha256": "919ee4f0bc45c19f8943c7b2555cc4909fc65fd7ec37dbb4c77f6a7e8ec790a6"
     },
     "source/recovery_lifecycle.hpp": {
       "bytes": 10041,
@@ -447,19 +392,19 @@
     },
     "source/recovery_native.cpp": {
       "bytes": 14095,
-      "sha256": "f071c1b8204234794431e126bc6c7e307be9a8201c4ba44c21a547e3b74b853c"
+      "sha256": "92b7c81b97158609832447d6eac23c31101d882c59723db1d4513f10a1d1cecf"
     },
     "source/recovery_native.hpp": {
       "bytes": 1206,
       "sha256": "25f4815bd6f42d533e8836989cb47a0618f9522ff36c8dcb10e14d701de4169e"
     },
     "source/recovery_pins.hpp": {
-      "bytes": 1608,
-      "sha256": "9abc0ca30c3c2ce5c8e72dc4dcc52deed523d488183572e3df84019e9c644ebe"
+      "bytes": 1610,
+      "sha256": "f9ccb2234983af54b73f4497bc7655e8ebd03166b0813d082cc6595f99635ac8"
     },
     "source/register_profile.hpp": {
-      "bytes": 549,
-      "sha256": "10a6fca980ccd7ff72902576ceb17947ff9fe3471f583afa3d02b828a146ff20"
+      "bytes": 550,
+      "sha256": "92f5abd1f51b4392a4620b494261e233b967b134d768928b770893dbe9bce071"
     },
     "source/register_value.hpp": {
       "bytes": 885,
@@ -471,7 +416,7 @@
     },
     "source/startup_policy.hpp": {
       "bytes": 9053,
-      "sha256": "978c0e53700305f4f037eeb452851db784747df812325344f1e75127c754f22a"
+      "sha256": "09ea77782ffbcb78b188b61da740b44649a608ff723ee31b04f53c996d5bea1d"
     },
     "source/stream_regression_tests.cpp": {
       "bytes": 7450,
@@ -479,7 +424,7 @@
     },
     "source/supermoon_adapter.cpp": {
       "bytes": 45656,
-      "sha256": "392694838fc273cb11aef8b40bc9e403e55b43504ca51f4daa56038b6eb96949"
+      "sha256": "7cd6627618846032ca5f669249567fff43b5828e0fd47bb8492cb2ac3c828a76"
     },
     "source/supermoon_adapter_api.hpp": {
       "bytes": 2469,
@@ -503,7 +448,7 @@
     },
     "source/time.cpp": {
       "bytes": 9437,
-      "sha256": "c4bf482e4546e0e70d5da903084de22405afc0793a63ff4497ff08c4f9dc99b8"
+      "sha256": "a6ecc6df58cccd2d55f1275453d5bae89e2e9395142fe5988457c1f4f7dfc1c1"
     },
     "source/time.hpp": {
       "bytes": 1918,
@@ -518,8 +463,8 @@
       "sha256": "454d9ca90ae335efbd0aed56409e27c4cff75ab29b0016b8a520cea8fcfeba0e"
     },
     "source/time_profile.hpp": {
-      "bytes": 1927,
-      "sha256": "57dd45e7864816b86d72b2117eeb3deae7bfbac8b242079d0ceefaf02e0a30cd"
+      "bytes": 1929,
+      "sha256": "c2052bcf882729014c3023be36dca345a6b074d99a360265eae31dc07625d549"
     },
     "source/title_test.cpp": {
       "bytes": 2968,
@@ -534,8 +479,8 @@
       "sha256": "6e0836a2ddcffd9c0f8658d10b7eb83b4be76260aca61fe26c70f1f79b117f1b"
     },
     "source/ui_profile.hpp": {
-      "bytes": 1057,
-      "sha256": "afe2237594d08e0d91eb051057b84aff031ac559f0908dd897c52361d6c7df7f"
+      "bytes": 1058,
+      "sha256": "7742685e3ef3900c89d71ba7d797634d30f6af3918275ab1c1876257ab3e38ac"
     },
     "source/vendor/dr_mp3/LICENSE": {
       "bytes": 2598,
@@ -591,11 +536,11 @@
     },
     "source/winmm_bootstrap.cpp": {
       "bytes": 14708,
-      "sha256": "0f44aef7b8cdfcb70d08ff651050a5fb182267f0874bf78739209381aac84019"
+      "sha256": "a1d71d23ed189484547daf7a52a8cb67df0f02af2b9c744c7e3b896ab2050959"
     },
     "source/winmm_bootstrap_config.hpp": {
       "bytes": 935,
-      "sha256": "bb5e9c97c28ed0484c2cb36325a661fe647eba03a84315563b7dea7edbb0b96e"
+      "sha256": "cdd68ad147f66c3929f2b16f6ec0231302be052255b742961840afd9b13916e8"
     },
     "source/winmm_exports.hpp": {
       "bytes": 10129,
@@ -607,11 +552,11 @@
     },
     "source/writer.cpp": {
       "bytes": 9515,
-      "sha256": "0b3c1c96df5978ca22d188163f230246ad236b27371846f80a8a93bd491941a5"
+      "sha256": "4228159015711bf20a65dcd1a6ae74f8fed62fb5532958cda9dc9e40ee0c1d74"
     },
     "tests/README.md": {
-      "bytes": 11515,
-      "sha256": "caf960eb8ac2d5ce536299911fdf805ca3285f6b9a3340cc72ef7aa21ca0c817"
+      "bytes": 2206,
+      "sha256": "7fd762c0a61e11987d74814c3323a6dcf36e2e7adf33373104a375c566b49126"
     },
     "tests/activation_status_tests.cpp": {
       "bytes": 3732,
@@ -669,6 +614,10 @@
       "bytes": 17253,
       "sha256": "146f53d619779a68f78eee9db09add41e6a2667563a8fabe1c12416acebab62c"
     },
+    "tests/manifest_verification_tests.py": {
+      "bytes": 2257,
+      "sha256": "e4f8ae4544c994f2b89c7ebc0ac5f6f05bbde61e0482cdb67c6f768c111093cb"
+    },
     "tests/music_control_recovery_tests.cpp": {
       "bytes": 8469,
       "sha256": "74fc45fa936ced0e18a3c9d060d5ea82d087b66736f55fc3702f3331d58fc1ae"
@@ -676,6 +625,10 @@
     "tests/music_control_tests.cpp": {
       "bytes": 9034,
       "sha256": "56b97ceb4707214ffca778b0b8d53ef45fbf787955a27db337464ded60cd1abe"
+    },
+    "tests/native_profile_tests.py": {
+      "bytes": 5233,
+      "sha256": "34b3bdae2acbd72567edb1a86ae2661daec9a12e3268f83341a7a72b484d27ac"
     },
     "tests/native_recovery_wrapper_tests.cpp": {
       "bytes": 3443,
@@ -689,9 +642,25 @@
       "bytes": 13381,
       "sha256": "4ec2ad1789fc78de5b7f60276db4eb5ab7278840d765aef6e15d79fd82ec0fdc"
     },
+    "tests/package_installation_tests.py": {
+      "bytes": 6216,
+      "sha256": "b551b64424957beb81308bfb38dc911197224815c82ec4f7e1d3ff4b7c6872e9"
+    },
     "tests/parser_cases.py": {
       "bytes": 6022,
       "sha256": "9a0084cf8795a6a6e4bbcc813fe75af382503307f4f38a69c8d433a9e62e653b"
+    },
+    "tests/powershell_setup_cases.ps1": {
+      "bytes": 18907,
+      "sha256": "7d616cc86a2e7e1cdd8c09ef1890524f93feece6caf49df75b3089b8f6c002ab"
+    },
+    "tests/powershell_setup_integration.py": {
+      "bytes": 15980,
+      "sha256": "23d7459b03719e22cf91c15bb4f2af64aa48928f486c7e37a98fcbbe0aa5cb0e"
+    },
+    "tests/powershell_setup_remediation.py": {
+      "bytes": 14947,
+      "sha256": "45302a00f613d3d573c94c948e80f981a2b31d79316cf959e92b756d95b02f41"
     },
     "tests/recovery_tests.cpp": {
       "bytes": 7642,
@@ -699,7 +668,7 @@
     },
     "tests/reliability_recovery_tests.cpp": {
       "bytes": 7727,
-      "sha256": "bfbccbb46ec4fa7dcc87c43684b56c8575f7698b21f1381cdc632bf19fea5d4c"
+      "sha256": "efd0e1b1ab60fd1014565a36215050d910ff12c534c5a8710a74493c56b20a8c"
     },
     "tests/remediation_harness.hpp": {
       "bytes": 1124,
@@ -709,9 +678,13 @@
       "bytes": 9250,
       "sha256": "992606ea79531c9ad5d4880ec69355ef54a82371a908a0cf1c444492740b9d2b"
     },
+    "tests/setup_discovery_guard.ps1": {
+      "bytes": 849,
+      "sha256": "346d197798aad0b5a62ad6cf091e3f468e703fbb52516e1b9248c959ad27d84c"
+    },
     "tests/startup_policy_tests.cpp": {
       "bytes": 4129,
-      "sha256": "65c59e82dfda4dade8141d9783a293e3ff0e38374f122e54cd98cdaaf3290345"
+      "sha256": "5bb013d95060eabadde53a73dd3b145a264fb44c0ea09d6817d4490adbcbd186"
     },
     "tests/stream_engine_tests.cpp": {
       "bytes": 7337,
@@ -724,6 +697,10 @@
     "tests/wav_pipeline_tests.cpp": {
       "bytes": 6107,
       "sha256": "c301191206fd7d78ebf70b415e6a188158c9fb2e99ec74efb624d65c3e63f239"
+    },
+    "tools/Setup.ps1": {
+      "bytes": 10244,
+      "sha256": "3ceb3d177b42edb0d4b72eae00de2e71dff8279eb9e95fedb20944c95bb7b300"
     },
     "tools/audio_patch.json": {
       "bytes": 4440,
@@ -750,8 +727,8 @@
       "sha256": "fb7a0bf7d7ab9c4626e4ebdc7a969c98ce6aab1600c33b2e441011e234d9612d"
     },
     "tools/package_installation.py": {
-      "bytes": 4597,
-      "sha256": "fe8641a91e13a2a9a20889486eeda1946460aa8a432dcf3653ab88e57af57c36"
+      "bytes": 5354,
+      "sha256": "8691cd318b2596ce9bdeff90fc9c5019194adea16d154de199b9377280f3f7d5"
     },
     "tools/package_source.py": {
       "bytes": 2355,
@@ -781,9 +758,17 @@
       "bytes": 4013,
       "sha256": "aa052feffaf45fdb32193dbdfb4a32bb4e6d62809bbe2950df0d55a08b89a611"
     },
+    "tools/setup/Native.cs": {
+      "bytes": 11734,
+      "sha256": "aa603e5b64bd8a574db2ff956660002d924bba354950dbb10f8fea1bdf53cd26"
+    },
+    "tools/setup/Supermoon.Setup.psm1": {
+      "bytes": 24472,
+      "sha256": "4285edd47f50a849fe755358a47fc1b20fddefe3aaf49d2f85826e8394b4c28f"
+    },
     "tools/verify.py": {
-      "bytes": 2216,
-      "sha256": "ae269c56d588d0b20e2fb5e95ccafee078a54732f5ed193bd17095e3425e32e9"
+      "bytes": 2606,
+      "sha256": "3f243c5030f96b8dd02d4fda0f8d9300e2936d4049ed7c906fadd0bef474f284"
     },
     "winmm.def": {
       "bytes": 6484,

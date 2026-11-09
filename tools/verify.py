@@ -15,12 +15,16 @@ def main():
             if p.is_absolute() or '..' in p.parts or '\\' in n or ':' in n:raise ValueError('Unsafe member name')
         actual={n for n in names if not n.endswith('/')};read=z.read
     else:
-        paths=list(root.rglob('*'))
+        # Git's root administrative file/directory is not release payload. Keep
+        # rejecting other unlisted files rather than hiding arbitrary workspaces.
+        paths=[p for p in root.rglob('*') if p.relative_to(root).parts[0]!='.git']
         if any(p.is_symlink() or getattr(p.lstat(),'st_file_attributes',0)&0x400 for p in paths):raise ValueError('Reparse point in tree')
         actual={p.relative_to(root).as_posix() for p in paths if p.is_file()};read=lambda n:(root/n).read_bytes()
     raw=read('PUBLIC_FILE_MANIFEST.json');pin=hashlib.sha256(raw).hexdigest()
     if args.manifest_sha256 and pin!=args.manifest_sha256:raise ValueError('Manifest pin mismatch')
     rows=json.loads(raw)['files']
+    if root.is_file() and {n for n in names if n.endswith('/')}!=set(json.loads(raw).get('directories',[])):
+        raise ValueError('Archive directory set differs from manifest')
     if actual!=set(rows)|{'PUBLIC_FILE_MANIFEST.json','SHA256SUMS'}:raise ValueError('File set differs from manifest')
     for n,e in rows.items():
         p=PurePosixPath(n)

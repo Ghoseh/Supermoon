@@ -1,97 +1,58 @@
-# Build and provenance
+# Source, dependencies and reproducible build
 
-Supermoon **v1.1.0** retains the exact DLL pair qualified as **1.0.4-rc1-private**
-in Phase 6. The public recipe/recovery version is `1.1.0`; the installed RC remains
-on its original record/tools. No DLL rebuild or PE metadata edit occurred.
-Scope is Windows x64 ordinary desktop NMS Steam build **26385139** only.
+Public policy/version:1.2.0. Runtime source basis:5d46716 (packaging basis0acfd0b).
+The complete source/ tree, ebur128_peak.c, winmm.def and native build scripts are
+unchanged from the frozen live-tested pair. Public packaging/qualification prose
+and recovery-policy metadata do not alter those bytes. Runtime PE labels can retain
+the private build's metadata; this is intentional preservation, not a mismatched pair.
 
-The supported `NMS.exe` is 89,535,560 bytes, SHA-256:
+| File | Bytes | SHA-256 |
+| --- | ---: | --- |
+| winmm.dll | 948224 | `e2ff82fec494f62549a9de6e94fee90a07292170d57ec1b94e8e2cbf94533b56` |
+| supermoon_playlist.dll | 6165504 | `0bb13ce24c6adaf351245ce95fcecfd4373e43c0ef9b17531ced23e15543d2fe` |
+| NMS.exe | 89540680 | `092236962ee050e419424699b5c343a0173f7773d5ad0866b7ec366d334c07d4` |
+| Native NMSARC.audioBNK.pak | 67842512 | `29682a3015f0ffcfa1ac236e4d49a9670e6d2a79e50a25315f8faecf45cde940` |
+| Generated init.bnk (not distributed) | 36017 | `65bcbdd3cd9aaae513d21865e504f194afba584ee012f9d3d558e9c04f71a54f` |
 
-`a77fc29877789c3da9181afeb5941b9b85a27d3df24919a24403cf8e194c6109`
+## Developer requirements (not end-user requirements)
 
-Startup verifies the executable, loaded native sites and payload separately.
-A matching general game version label is insufficient. Do not change identity
-pins to force an unknown update to activate.
+Use Windows x64, Python 3.10+ standard library, and the Windows x64 Zig 0.15.2
+toolchain archive (Clang 20.1.2, target x86_64-unknown-windows-gnu). No pip packages
+are needed for the build. No NMS SDK/headers, game binary or private music is part
+of the source/build inputs. Windows supplies its UCRT and system APIs.
+Zig archive SHA-256:3a0ed1e8799a2f8ce2a6e6290a9ff22e6906f8227865911fb7ddedc3cc14cb0c.
+zig.exe SHA-256:d408dd38eed3e5204af841bcebf70502a4dbbb8399a3a3262be55059370bc018.
+Obtain the matching archive from the official Zig download archive, verify the
+trusted hash and extract the whole toolchain together. It is not redistributed.
 
-## Toolchain
-
-Use Python 3.10+ and Zig 0.15.2 for Windows x86_64. Official archive:
-<https://ziglang.org/download/0.15.2/zig-x86_64-windows-0.15.2.zip>.
-
-- Archive SHA-256: `3a0ed1e8799a2f8ce2a6e6290a9ff22e6906f8227865911fb7ddedc3cc14cb0c`
-- `zig.exe` SHA-256: `d408dd38eed3e5204af841bcebf70502a4dbbb8399a3a3262be55059370bc018`
-- Driver: Clang 20.1.2; target `x86_64-unknown-windows-gnu`.
-
-The toolchain is not bundled. No game executable, SDK or private native fixture
-is required to compile the mod.
-
-## Build
-
-From this source checkout, run:
+From the extracted source root, using an explicit path to that zig.exe:
 
 ```powershell
-python -B tools/build.py --zig <zig.exe> --dry-run
-python -B tools/build.py --zig <zig.exe>
+python -B tools/verify.py
+python -B tools/build.py --zig 'C:\Tools\zig-0.15.2\zig.exe' --dry-run
+python -B tools/build.py --zig 'C:\Tools\zig-0.15.2\zig.exe'
 ```
 
-The wrapper creates a fresh disposable directory outside the checkout and isolates
-compiler caches and temporary paths. It builds the pinned modified
-`ebur128_peak.c`, nineteen payload units and four proxy units. `build/recipe.json`
-records the unit list and expected binary identities. The C++ recipe uses C++17,
-Microsoft extensions, `ADAPTER_RECOVERY_BUILD`, O2 and preserved warning flags;
-the meter uses gnu99. Do not substitute unmodified vendor `ebur128.c` or omit
-`recovery_native.cpp`.
+build.py copies source into fresh isolated temporary output, uses the pinned
+recipe's19 payload/four proxy units and generated meter, normalizes PE metadata,
+and requires both exact hashes. It never installs, updates pins or launches NMS.
+Wrong compiler/payload refuses. Build outputs go outside source; copy only verified
+DLLs when deliberately packaging. This release copied the frozen pair and did not
+rebuild it; prior independent review compared two retained reproducible outputs.
+Final preparation verifies byte-for-byte input correspondence and dry-run commands.
 
-Post-link normalization clears informational CodeView records and COFF/export
-timestamps while preserving runtime PE directories. The wrapper checks the existing
-payload pin and both final hashes; it does not rewrite source pins or install its
-output. Keep private debug files and command receipts out of distributions.
+## Packaging and tests
 
-The tested pair retains its deliberate Phase 5 identity pins. The Phase 5
-private report records seed linking, pinned-wrapper reproduction in independent
-output directories, individual production-unit compilation and archive verification.
-The wrapper uses the existing expected identities and never silently repins them.
-No game/native-site/bank pin was relaxed. Reproducible bytes do not imply runtime
-qualification. Phase 6 separately supplies finite live evidence. M2 and H1/U1
-remain unresolved with unchanged failed tests/severities and historical audit
-classifications; the owner explicitly accepted their risks for the limited scope.
+```powershell
+python -B tools/package_installation.py --dll-dir 'C:\VerifiedDLLs' --output 'C:\Output\Supermoon-1.2.0-windows-x64.zip'
+python -B tools/package_source.py --output 'C:\Output\Supermoon-1.2.0-source.zip'
+python -B tools/verify.py 'C:\Output\Supermoon-1.2.0-windows-x64.zip'
+python -B tools/verify.py 'C:\Output\Supermoon-1.2.0-source.zip'
+```
 
-## Verification scope
-
-Phase 6 verified installation and the owner-run desktop checklist in two sessions,
-including normal Stop restoration and normal exits. SDK submission and listening
-remain separate evidence. Direct winning-bank identity, all native schedules,
-representative long-session headroom and a new four-hour endurance remain unqualified.
-Historical v1.0.3 hashes differ from this pair. See [qualification](QUALIFICATION.md),
-[Phase 5](REMEDIATION_PHASE5.md) and [migration status](MIGRATION_STATUS.md).
-
-The required audio override is generated from the user's supported native bank
-using tools/prepare_audio.py and tools/audio_patch.json. Python 3.10+ needs no
-additional packages. The persistent staging package retains those two files under
-Supermoon/tools and the recipe under Supermoon/build. The native archive is not
-modified; neither native nor generated bank is distributed. See INSTALL.md.
-
-`PUBLIC_FILE_MANIFEST.json` and `SHA256SUMS` describe the deliberately selected
-v1.1.0 source closure. Recipe qualification reflects Phase 6 and owner-accepted
-risks; `PACKAGING_VERIFICATION.json` distinguishes retained runtime tests from new
-public setup/package checks. The original Phase 5 summary is retained separately
-as `V1_0_4_RC1_PRIVATE_PACKAGING_VERIFICATION.json`. No identity gate is relaxed.
-The installation ZIP has its own manifest and checksums. No music, caches, state,
-logs, saves, game files or private fixtures are included. `.gitattributes`
-preserves source bytes and marks embedded asset include files as generated for
-GitHub language statistics.
-
-## Reproducible archive assembly
-
-The owner approved local v1.1.0 artifact preparation and the separate recovery
-policy. Packaging uses the retained DLLs, not a rebuild. See the
-[version policy](V1_1_0_VERSION_TRANSITION.md). This does not authorize uploading,
-creating a remote release or changing the owner's installed RC.
-
-After checking DLLs against the recipe, `tools/package_installation.py --dll-dir
-<build-output> --output <fresh-install.zip>` creates and verifies the deterministic
-installation ZIP without a live INI. `tools/package_source.py --output <fresh-source.zip>`
-selects the manifest-pinned source closure, verifies its bytes and makes
-a deterministic source ZIP. Both use exclusive output creation. Verify either ZIP
-with `python -B tools/verify.py <zip>`. Retain the external trusted archive/manifest
-hashes; a self-consistent archive is not a publisher signature.
+Outputs require new names and never overwrite releases. The source builder selects
+only PUBLIC_FILE_MANIFEST.json's pinned portable files. It does not discover or
+refresh private files. SHA256SUMS covers files and manifest; final ZIP hashes are
+external to avoid circularity. Compare against a separately trusted receipt.
+See [Developer guide](DEVELOPER_GUIDE.md) and [Tests](../tests/README.md).
+Licenses/notices accompany source and binaries; author attributions are unchanged.

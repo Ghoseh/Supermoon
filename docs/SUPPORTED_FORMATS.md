@@ -1,45 +1,34 @@
-# Supported audio and container requirements
+# Supported music files
 
-Discovery uses top-level `.wav` and `.mp3` files in the configured Music folder.
-The default is `Supermoon/Music`, relative to the mod installation. The reserved
-`shuffle on.wav` and `shuffle off.wav` names are notification cues, not selectable
-tracks. Subfolder discovery, live refresh, embedded metadata titles, stereo output
-and other codecs such as OGG/FLAC are not implemented.
+Use WAV or MP3 files directly inside the configured Music folder. Subfolders,
+live library refresh, OGG and FLAC are not supported. Restart the game after changes.
+Track titles come from filenames rather than embedded song metadata.
 
 ## WAV
 
-The implemented reader supports little-endian RIFF PCM8/16/24/32 or float32/64,
-supported extensible variants, mono/stereo input and 8–384 kHz sample rates, subject
-to its channel/format/alignment/finite-value and bounded-length checks. This is not
-a claim that every WAV encoding or container variant is supported.
+Supported inputs are little-endian RIFF PCM at 8/16/24/32 bits, float32/64 and
+supported extensible variants, mono or stereo, at 8–384 kHz. Not every WAV format
+or container variant is supported.
 
-WAV files must contain correctly finalized RIFF and data chunk length fields.
-Some files contain usable PCM samples but are rejected because their headers have
-unfinished or inconsistent lengths. Re-exporting the WAV through an audio editor
-such as FL Studio may produce a compatible file; the resulting encoding must also
-be supported. Supermoon does not automatically repair malformed WAV headers.
-Preserve originals and make any user-directed re-export as a separate file.
+RIFF and data chunk sizes must be finalized and consistent. If a file is rejected,
+check the preparation log and re-export to a supported format as a separate file.
+Keep the original. Supermoon does not repair malformed WAV headers automatically.
 
 ## MP3
 
-Production uses the patched low-level dr_mp3 Layer III decoder for MPEG1/2/2.5,
-mono/stereo, within its supported rates and header/frame/tag/count limits. Layer
-I/II, free-format and streams that change format are rejected. Compressed files
-are limited to 512 MiB, frame count to one million and recognized tags to 16 MiB.
-Recognized Xing/LAME-family metadata may trim padding; unfamiliar metadata can
-retain it. MPEG CRC authenticity and rejection of every semantically corrupt
-finite stream are not guaranteed.
+Supported inputs are Layer III MPEG-1/2/2.5, mono or stereo. Layer I/II, free-format
+files and streams that change format are rejected. Compressed files are limited
+to 512 MiB, one million frames and recognized tags of up to 16 MiB.
 
-Mandatory internal decode errors propagate to the wrapper: a failed frame returns
-zero samples and is not exposed as a successful complete frame. Valid bit-reservoir
-and synthesis state are retained across successful frames. Guard-page, malformed
-input, UBSan and known-good reference comparisons cover recorded cases, not every
-possible compressed input or an unproven exploitability claim.
+Recognized gapless metadata may remove padding; unfamiliar metadata may leave
+padding. Malformed or unsupported files may be refused. Keep original recordings
+and check the log if preparation fails.
 
-## Prepared playback
+## Playback output
 
-Supported inputs become disk-backed 24 kHz mono float PCM; stereo is downmixed.
-Optional normalization applies constant gain and conservative peak checks, not a
-compressor or limiter. Cache identities include source content, path, recipe and
-settings. A changed source requires revalidation/rebuilding; cached PCM is not a
-replacement for preserving the user's original audio.
+Supported files are prepared as 24 kHz mono audio; stereo is downmixed. Optional
+normalization applies constant gain with peak checks, not a compressor or limiter.
+Prepared cache files are not replacements for your original music.
+
+The reserved names `shuffle on.wav` and `shuffle off.wav` are excluded from song
+discovery. Shuffle notifications are supplied separately within the mod.

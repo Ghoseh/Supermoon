@@ -190,10 +190,10 @@ void floor_log(uint64_t word,bool desired,int result) noexcept {
 bool floor_preflight(unsigned char* base,HMODULE module,const wchar_t* executable) {
     if(bytebeat::startup::audio_dependency_preflight(executable).policy!=bytebeat::startup::AudioPolicy::allowed)return false;
     (void)module;
-    {const uint8_t expected[]={0xff,0xac,0x6b,0xf1,0xc0,0x1f,0xae,0x4c,0x3a,0x2d,0xf2,0x0e,0x05,0xc2,0x0c,0x1d,0xe1,0xaa,0x97,0x60,0x25,0x1c,0x52,0xa6,0x45,0xbf,0xcf,0x8f,0x4e,0xc7,0xdb,0x76};if(!memory_digest(base+46634544,7,expected))return false;}
-    {const uint8_t expected[]={0x34,0xf4,0x80,0x00,0x31,0xd1,0xe0,0xa4,0x21,0xde,0x8f,0xbf,0x9d,0xe0,0x1f,0x95,0xa2,0xda,0x09,0x70,0xf5,0x7d,0x34,0x1d,0x28,0x34,0x0e,0x95,0x8b,0x31,0xf3,0xeb};if(!memory_digest(base+52538576,39,expected))return false;}
-    {const uint8_t expected[]={0x27,0x04,0xcd,0x72,0x22,0x4b,0x88,0x4b,0xe7,0x1b,0x80,0xb8,0x9f,0x1b,0x26,0x94,0x47,0x61,0x2f,0x9e,0x42,0xc4,0xdd,0x97,0x86,0x1a,0xa9,0x35,0x30,0xc0,0x0c,0x2e};if(!memory_digest(base+52549312,254,expected))return false;}
-    {const uint8_t expected[]={0xe6,0x3f,0x8b,0xe6,0x36,0xbf,0x0b,0xc2,0x0d,0x0f,0x5b,0xd9,0xa4,0x47,0xbf,0x15,0x44,0x8e,0x84,0x22,0x02,0x3c,0x73,0x15,0x00,0xa6,0xd8,0x5a,0x5a,0xab,0x56,0x2b};if(!memory_digest(base+52508160,8,expected))return false;}
+    {const uint8_t expected[]={0xcf,0x91,0x84,0x2a,0xc0,0x16,0x90,0x51,0x07,0x83,0xa3,0x65,0x5b,0x4e,0x25,0x1c,0x15,0x64,0x54,0xb0,0x3f,0x54,0xb2,0xfe,0xf8,0xda,0xa4,0xea,0xf7,0xe0,0x4e,0x07};if(!memory_digest(base+46636048,7,expected))return false;}
+    {const uint8_t expected[]={0x34,0xf4,0x80,0x00,0x31,0xd1,0xe0,0xa4,0x21,0xde,0x8f,0xbf,0x9d,0xe0,0x1f,0x95,0xa2,0xda,0x09,0x70,0xf5,0x7d,0x34,0x1d,0x28,0x34,0x0e,0x95,0x8b,0x31,0xf3,0xeb};if(!memory_digest(base+52540528,39,expected))return false;}
+    {const uint8_t expected[]={0x1d,0x6c,0x21,0xc3,0x13,0x85,0x44,0xda,0xdd,0x97,0xbd,0x3e,0x2f,0xd3,0x24,0x81,0x05,0x03,0x24,0x16,0x0b,0xeb,0x47,0x27,0xdd,0xdb,0xd2,0xd0,0x31,0x4d,0xe8,0xc1};if(!memory_digest(base+52551264,254,expected))return false;}
+    {const uint8_t expected[]={0x8e,0xea,0x82,0x27,0xa7,0x46,0xc4,0x31,0xb2,0xbe,0x8c,0x96,0xc5,0x69,0x80,0x05,0x02,0xdc,0x90,0xb3,0xc2,0x60,0xf0,0xcb,0x2b,0x96,0xb0,0xcb,0x8a,0xfe,0x3e,0x55};if(!memory_digest(base+52510112,8,expected))return false;}
 
     auto bank=std::filesystem::path(executable).parent_path().parent_path()/L"GAMEDATA/MODS/Supermoon_MenuAudio_Test/audio/windows/init.bnk";
     HANDLE file=CreateFileW(bank.c_str(),GENERIC_READ,FILE_SHARE_READ,nullptr,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr);
@@ -206,8 +206,8 @@ bool floor_preflight(unsigned char* base,HMODULE module,const wchar_t* executabl
 #ifdef ADAPTER_PLAYBACK_BUILD
     floor_carrier_key=bytebeat::playback::configuration.carrier;
 #endif
-    FloorNativeUnlock=base+0x2c79630;
-    floor_control.prepare(658155624,reinterpret_cast<supermoon::floor_prototype::MusicControl::Set>(base+0x321acd0),reinterpret_cast<supermoon::floor_prototype::MusicControl::Initialized>(base+0x3213600),&floor_live,&floor_log);
+    FloorNativeUnlock=base+0x2c79c10;
+    floor_control.prepare(658155624,reinterpret_cast<supermoon::floor_prototype::MusicControl::Set>(base+0x321b470),reinterpret_cast<supermoon::floor_prototype::MusicControl::Initialized>(base+0x3213da0),&floor_live,&floor_log);
     return true;
 }
 bool floor_publish(unsigned char* base) noexcept {
@@ -421,7 +421,7 @@ extern "C" void AdapterBefore(void* component,void* controller,void* playlist,co
     AdapterRecord r{};r.kind=selection;r.component=reinterpret_cast<uintptr_t>(component);r.stream=r.component+0x28;
     if(pending.valid){observed_fault(reentry_fault);r.faults|=reentry_fault;}
     pending={};pending.component=r.component;
-    pending.personal=component&&key&&reinterpret_cast<uintptr_t>(controller)==r.component+0x7D5C&&reinterpret_cast<uintptr_t>(playlist)==native_base+0x6f8ef30;
+    pending.personal=component&&key&&reinterpret_cast<uintptr_t>(controller)==r.component+0x7D5C&&reinterpret_cast<uintptr_t>(playlist)==native_base+0x6f8ffb0;
     // Selected key is a native resolver argument: valid borrowed 16-byte identifier.
     if(key){memcpy(pending.key.data(),key,16);memcpy(r.key,key,16);pending.valid=true;}
     else r.faults|=key_fault;
@@ -522,7 +522,7 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
         if(!bytebeat::recovery::validate(base,module))return 15;
 #endif
         if(!floor_preflight(base,module,path))return 17;
-        const uint32_t slots[]={0x4b845b0,0x4b844f8,0x4b84578,0x4b83cb0,0x4b83cb8};const uint32_t targets[]={0xf8abb0,0xf8a110,0xf8a720,0xfbf1f0,0xfbf150};
+        const uint32_t slots[]={0x4b865c0,0x4b865d8,0x4b86658,0x4b85d70,0x4b85d78};const uint32_t targets[]={0xf8b970,0xf8aed0,0xf8b4e0,0xfbffb0,0xfbff10};
         DWORD slot_protection{};
         for(size_t n=0;n<5;++n){MEMORY_BASIC_INFORMATION info{};auto slot=reinterpret_cast<void* volatile*>(base+slots[n]);if(!VirtualQuery(const_cast<void**>(slot),&info,sizeof(info))||info.State!=MEM_COMMIT||info.Type!=MEM_IMAGE||info.AllocationBase!=module||(info.Protect&(PAGE_GUARD|PAGE_NOACCESS))||*slot!=base+targets[n])return 4;if(n==0)slot_protection=info.Protect;else if(info.Protect!=slot_protection)return 4;}
         HMODULE self{};
@@ -534,7 +534,7 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
 #endif
             ,reinterpret_cast<void*>(&AdapterStateLockBridge),reinterpret_cast<void*>(&FloorControlUnlockBridge)
         };
-        StateNativeLock=base+0x2c772f0;
+        StateNativeLock=base+0x2c778d0;
         clone.prepare(base,bridges);void* original=clone.function(0);memcpy(&provider,&original,sizeof(provider));
 #ifdef ADAPTER_RECOVERY_BUILD
         // Capture owner/source births BEFORE potentially long cold preparation.
@@ -577,7 +577,7 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
         // original protections above so restoring one saved protection cannot
         // accidentally change a page that previously had different permissions.
         // Only the pointer cells are written; native instruction bytes stay intact.
-        DWORD old{};auto first=base+0x4b83cb0;constexpr size_t span=0x908;
+        DWORD old{};auto first=base+0x4b85d70;constexpr size_t span=0x8f0;
         if(!VirtualProtect(first,span,PAGE_READWRITE,&old))return 9;
         void* replacements[]={reinterpret_cast<void*>(&adapter_provider),clone.function(1),clone.function(4),clone.function(5),clone.function(6)};
         // A component vtable redirect does not catch a pool's direct CALL.

@@ -1,275 +1,131 @@
-# Installation, updates and recovery
+# Install, update and disable Supermoon v1.2.0
 
-This describes the **v1.1.0** public installation/recovery policy, retaining the
-exact DLL pair installed and owner-tested as **1.0.4-rc1-private** in Phase 6.
-The public recipe version is `1.1.0`. Existing RC installations keep their original
-record and matching tools; these instructions do not authorize changing the
-owner's installed RC or rewriting its records.
-The owner accepted M2 and H1/U1 as unresolved known limitations for the limited
-desktop scope. See [qualification](docs/QUALIFICATION.md) and
-[the approved version policy](docs/V1_1_0_VERSION_TRANSITION.md).
+Windows x64 desktop Steam NMS **26540391** only. NMS.exe must be 89,540,680 bytes,
+SHA-256 `092236962ee050e419424699b5c343a0173f7773d5ad0866b7ec366d334c07d4`.
+Other builds/stores and VR are unsupported. Never force an executable mismatch.
 
-The sealed v1.0.3 ZIP remains unchanged and has different tools/pins and a live INI.
-Never extract it over personal configuration or combine its DLLs with this pair.
+Fresh setup uses Windows PowerShell Desktop 5.1 and built-in .NET Framework support.
+No Python, external compiler, audio converter, installer EXE or third-party runtime
+installation is required. The source ZIP's Python/Zig tools are for developers,
+not the ordinary installation path. Matching old recovery can still need Python.
 
-## Supported boundary
+## Before setup
 
-Use Windows and Python 3.10+ with a supported, persistent local NMS installation.
-No extra Python packages, elevation or Steam launch arguments are needed.
-Close NMS completely and keep it closed throughout installation and recovery.
-Keep Steam updates, other installers, extractors, backup restoration and other
-filesystem writers idle. One operator/tool may change the installation at a time.
+Close NMS completely. Keep Steam updates, other installers and file writers idle.
+Back up current INI, Music (external paths too), Cache, State, settings, logs and
+matching recovery records outside game/TEMP. Preserve data; do not delete whole
+Supermoon or MODS directories. Use persistent fixed local disks. UNC/device paths,
+SUBST/network/removable mappings, reparse points and hard-linked managed files
+refuse. Some unusual local storage also refuses conservatively.
 
-The tools serialize cooperating operations using an exclusive Windows handle to
-the game's `.supermoon-install.lock`. The empty file remains after completion;
-process termination releases its handle automatically. A lock or closed-game
-snapshot does **not** prevent Steam from starting later, or another program from
-changing files/directories. Rechecks narrow those windows; arbitrary concurrent
-changes and hostile path replacement are unsupported. Reparse-point paths,
-hard-linked managed files and indeterminate process enumeration are refused.
+Verify Supermoon-1.2.0-windows-x64.zip against the separately trusted release
+SHA256SUMS. Extract completely into a durable stage outside the game and TEMP.
+Do not run inside the ZIP, merge it over Binaries, or use the source ZIP as an
+installation package. Keep the complete stage/recipe for future recovery.
 
-Only four program resources are managed: `Binaries/winmm.dll`,
-`Binaries/Supermoon/supermoon_playlist.dll`, the exact activation marker, and
-`GAMEDATA/MODS/Supermoon_MenuAudio_Test/audio/windows/init.bnk`.
-Personal `playlist.ini`, Music, Cache, State, settings, saves, other mods and
-unknown files are never installation destinations. Unknown managed-file bytes
-are refused rather than automatically overwritten. This policy recognizes the
-exact pair in the accompanying trusted recipe; it is not an arbitrary-version updater.
+## Fresh install
 
+1. Double-click Setup.cmd. Confirm the detected Steam installation or enter the
+   root containing Binaries and GAMEDATA, not Binaries alone.
+2. Choose Install. Inspect the displayed target and type INSTALL to authorize it.
+   Unknown files/conflicts, unsupported inputs and mismatched records refuse.
+3. Require Completed: verified. Run Status afterward: require candidate_present,
+   game_supported true and journal phase verified. File status is not audio proof.
+4. Retain stage and recovery. Put supported WAV/MP3 files directly in the installed
+   Binaries/Supermoon/Music folder, creating it if absent, or retain your INI path.
+   No subfolder scanning. The ZIP includes an empty reference Music folder; setup
+   does not copy songs or examples from staging into your library.
+5. Launch normally and enable mods/Supermoon through normal settings. First-time
+   registration may require ordinary exit/restart. Select Supermoon in personal
+   ByteBeat and Play. Do not manufacture MXML records or add launch arguments.
 
-## Update and migration after approval
+Portable defaults use Music, Cache and State relative to the installed Supermoon
+folder. No INI is required; default cache budget is 3072 MiB. The optional
+playlist.example.ini must never overwrite an existing playlist.ini. See configuration.
 
-An update is staged outside the game; never merge/extract the ZIP over Binaries.
-The installer changes only the four named resources, not documentation, tools or
-personal data. Keep trusted tools in staging for future recovery. It recognizes
-only its exact recipe's DLL pair, marker and accepted banks: it is not a cross-version updater.
+Unsigned downloaded files may be blocked by RemoteSigned/Mark-of-the-Web,
+SmartScreen or application/organization policy. Read ../SETUP_SECURITY.txt.
+Verify provenance/hash before any deliberate individual Properties > Unblock on a
+personally managed device. Never recursively unblock a folder, disable antivirus,
+change persistent policy, use Bypass or elevate to evade restrictions. Managed
+policy may require an administrator-approved workflow or prevent installation.
+Setup does not download code, silently elevate, launch NMS or change persistent policy.
 
-For the same v1.1.0 policy, run `status`, then `install --package $stageDir` (or
-`resume` for its unfinished record), then `status`. Original backups remain intact.
+## Resources and preservation
 
-Version matching applies even when two versions have identical DLLs. The current
-RC record must remain with its RC recipe and tools. The v1.1.0 recipe
-refuses it; `--record` does not bypass that check. Keep the installed RC unchanged
-until a separate transition is approved. Never change a record's release or hash.
+Setup manages only:
 
-For sealed v1.0.3 or any different pair, the new installer deliberately refuses
-those DLLs as unknown. Before migration, with the game closed and writers idle:
-
-1. Make a durable backup outside the game and TEMP of the existing proxy, payload,
-   marker and loose bank, recording exact relative paths, SHA-256, sizes and which
-   files were absent. Separately preserve `playlist.ini`, Music (including external
-   paths), Cache, State, unrelated files and any `.Supermoon-Recovery` records.
-2. Verify known v1.0.3 bytes against the sealed release's trusted checksums. A foreign
-   proxy/bank or ambiguous ownership is a stop condition; retain it and investigate.
-3. Resolve an older active recovery record through step 4 first, if present. After
-   verification, quarantine only the individually identified old Supermoon proxy,
-   payload, marker and generated bank outside the game. Keep their original
-   relative-path map and all backups. Do not delete/rename whole Supermoon or MODS
-   directories, personal data, native banks or unrelated mods.
-4. If an older active recovery record exists, use that exact version's trusted tool
-   to inspect/disable it and verify the managed files are absent first. Preserve
-   and verify a full durable copy of its `.Supermoon-Recovery` tree, then move that
-   old recovery tree out of the game to the durable migration backup. The old
-   selector remains part of that backup; the new installer needs a fresh recovery
-   root and cannot read/overwrite a different-version active record. Never edit
-   records to change their release. If the old tool cannot disable/verify its record,
-   stop for review before quarantining or installing anything.
-5. Run the clean installation procedure below from the new staging directory.
-   Existing personal files remain. A new record backs up the resulting absence,
-   not the quarantined historical pair: cross-version automatic rollback is not supplied.
-
-Do not blindly reactivate a quarantined pair: it requires its matching
-bank, supported executable and separate qualification. Disable the candidate to
-return to absence; keep historical bytes available for an explicitly reviewed restore.
-
-## Clean install after approval
-
-1. Keep the downloaded/extracted package in a persistent staging directory
-   **outside the game tree and TEMP**. Verify the v1.1.0 archive against the
-   accompanying release `SHA256SUMS` obtained through the owner's trusted release
-   channel. Until publication is approved, only local prepared artifacts exist.
-   A self-consistent manifest is not a signature. The old private ZIP hashes do
-   not identify the public packages; never relabel those ZIPs or mix policies.
-   Never merge a package over the game as the installation/update procedure.
-2. Check the supported executable identity in `build/recipe.json` and
-   `docs/BUILD_AND_PROVENANCE.md`. The tool independently verifies the exact
-   executable, package DLL pair/marker, native archive, inner bank and generated
-   output. A game update requires a newly qualified policy; do not bypass refusal.
-3. With NMS closed and exclusive access established, use the trusted v1.1.0 tool:
-
-```powershell
-$gameDir = 'D:\SteamLibrary\steamapps\common\No Man''s Sky'
-$stageDir = 'D:\Mod Staging\Supermoon'
-$setup = Join-Path $stageDir 'Supermoon\tools\install_supermoon.py'
-python --version
-python $setup status --game $gameDir
-python $setup install --game $gameDir --package $stageDir
-python $setup status --game $gameDir
+```
+<game>/Binaries/winmm.dll
+<game>/Binaries/Supermoon/supermoon_playlist.dll
+<game>/Binaries/bytebeat-playlist-experimental.enabled
+<game>/GAMEDATA/MODS/Supermoon_MenuAudio_Test/audio/windows/init.bnk
 ```
 
-`$stageDir` contains `winmm.dll`, the activation marker and `Supermoon/`.
-Use the same canonical game path for later operations. The installation tool
-does not load DLLs or execute NMS. The bank is derived locally from your game;
-neither the native archive nor any native game file is replaced.
-
-Before changing a target, the tool creates
-`<game>/.Supermoon-Recovery/records/<record-id>/`. It saves and reads back prior
-and replacement bytes, an immutable hash-checked manifest, game/release/DLL/bank
-identities and prior absence/presence. An atomic `ACTIVE.json` selector is published
-only after these records verify. Copies and records are flushed to storage.
-Recovery storage is outside TEMP by policy; an installation under TEMP is refused.
-Keep the printed record location, all prior records and the trusted setup tools.
-Copy recovery storage outside the game before uninstalling/moving the game.
-
-Activation's marker is removed first, the proxy/payload/bank are updated as needed,
-and the marker is restored last. Each target is rehashed. A mutable journal records
-prepared, in-progress, failed and verified stages. This is **not an atomic four-file
-transaction**. A failure can leave a complete new bank and incomplete other work.
-The tool reports that possibility and preserves recovery data instead of attempting
-an unsafe automatic rollback. Filesystem/directory persistence through power loss
-is not established by flush/readback or process-termination tests.
-
-Repeated `install` on an unfinished/current record validates and reuses its original
-prior state. It does not replace the first backup with the newly installed bank.
-After an explicit completed rollback/disable, a later install creates a new record
-and retains the old one. Unknown existing proxy/payload/marker/bank bytes must first
-be preserved and investigated by the operator; there is no force-overwrite option.
-
-
-Successful installation reports JSON `result: verified` and a durable record
-location; status reports actual identities separately from the journal. A refusal
-may report `REFUSED_OR_INCOMPLETE`; files may already have changed. Use status and
-the recovery procedure below. Phase 6 verified the actual candidate installation
-and recovery record; these labels alone do not prove audible operation or which
-bank NMS loads.
-
-For read-only identity checks (compare DLL hashes with `build/recipe.json` or
-`RELEASE_DLL_SHA256SUMS` in the matching source package):
-
-```powershell
-Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $gameDir 'Binaries\NMS.exe')
-Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $stageDir 'winmm.dll')
-Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $stageDir 'Supermoon\supermoon_playlist.dll')
-```
-
-Only Steam build 26385139 is targeted: NMS.exe is 89,535,560 bytes with SHA-256
-`a77fc29877789c3da9181afeb5941b9b85a27d3df24919a24403cf8e194c6109`.
-The required generated bank is 36,017 bytes, SHA-256
+It creates necessary parents, cooperative lock and .Supermoon-Recovery records.
+The bank is generated from your verified native archive, never distributed; the
+native archive is not replaced. Expected generated bank: 36,017 bytes, SHA-256
 `65bcbdd3cd9aaae513d21865e504f194afba584ee012f9d3d558e9c04f71a54f`.
-Generation is mandatory; do not download a native/generated bank from another user.
-The four-file install command derives and installs it without modifying the native
-archive. `prepare_audio.py --game $gameDir` alone verifies derivation in memory.
+Setup preserves personal Music, INI, Cache, State, settings, logs and unrelated mods.
+Runtime separately updates Cache/State/settings/saves and replaces latest logs.
+Archive logs before another launch; do not restore normal gameplay changes merely
+to satisfy old preservation hashes. Opaque packed-bank conflicts are not fully visible.
 
-## Personal configuration and desktop registration
+## Updates and legacy migration
 
-The new package builder supplies `playlist.example.ini`, never a live `playlist.ini`.
-The installer does not copy either into a personal configuration. A clean install
-uses runtime defaults: `Music` relative to Supermoon and a 3072 MiB cache budget.
-If desired, copy the example to `playlist.ini` **only when no personal INI exists**,
-then edit it deliberately while the game is closed. Preserve existing music paths,
-normalization, keyboard settings, cache budget, Cache and State during updates.
-Installation preserves these files; normal runtime cache maintenance can still
-remove obsolete managed entries after a complete scan. Original music is separate.
+For the exact same recovery policy 1.2.0, run Status, Update, Status with matching
+tools. The original prior-state backup is retained. Use Resume for interrupted work.
+Keep personal data in place. Different policy versions cannot import/merge/relabel
+records even when DLL bytes match. See [Version transition](docs/VERSION_TRANSITION.md).
 
-Add personal supported WAV/MP3 files to `Binaries/Supermoon/Music` unless your
-existing INI selects another directory. Top-level files only; no music is shipped.
-Retain original licenses/notices with binary redistribution.
+Existing public 1.1.0/RC DLLs target the old executable and MUST NOT reactivate on
+26540391. Use their matching legacy Disable, possibly Python, then verify all four
+paths absent. Preserve verified original and disabled records/tools outside game/TEMP;
+archive the complete old recovery root before making the new policy's root. Install
+1.2.0 only after absence. Never rewrite selectors/manifests to force compatibility.
+The live-tested private candidate has matching runtime bytes but a separate private
+policy; its matching PowerShell tools must Disable it before any public-policy
+transition. Release preparation does not require converting a working private install.
 
-Ordinary desktop launches require no new arguments. Use NMS's normal mod settings
-to register/enable the required bank entry; the tools do not edit settings or
-fabricate entries. First-time registration may require normal exit/restart after
-NMS saves its settings. See [Phase 2A](docs/REMEDIATION_PHASE2A.md) for admission
-and VR limitations. An enabled entry and valid disk bank do not prove effective
-resource selection or audible behavior. Resolve actual required-bank conflicts;
-unrelated mods are not blanket-prohibited.
+## Recovery and uninstall
 
-VR is unsupported and not reliably detected. Other stores/builds and Vortex/MO2/
-other mod-manager deployment are unqualified. Manual staging is the documented
-path. Known enabled loose init.bnk conflicts refuse; packed/legacy resource
-priority is not fully inspected. Keep incompatible overrides of that resource out
-of the supported stack, while retaining unrelated mods. Never infer effective
-loading from a hash or an enabled entry alone.
+Keep NMS closed after any failure. Some files may already have changed despite
+REFUSED_OR_INCOMPLETE. Run matching Status and preserve all records. Choose one:
 
-The Discoveries workaround changes ByteBeat volume in the Frontend state,
-including native tracks. It persists independently of DLL activation. Suppression
-is based on custom carrier intent through silence/EOF, but M2 prevents a guarantee
-of native soundtrack restoration after every Stop. H1's isolated cleanup self-wait
-has unproven gameplay reachability. Both are explicitly owner-accepted unresolved
-limitations; original severities, failed tests and audit classifications remain.
-Normal Stop restoration and menu behavior passed Phase 6 by owner report, not an
-all-schedule proof. Lifecycle capacity is cumulative
-and finite; manual Play after native Stop/travel/reload remains necessary.
+- Resume completes from verified saved candidate copies, with compatible executable.
+- Rollback restores only the verified coherent recorded prior state. For the legacy
+  migration above that state must be all absent, never old incompatible DLLs.
+- Disable removes recognized candidate resources, including the bank, retaining
+  personal data/records. It remains available for recognized installs after game
+  updates even when activation/Resume/Rollback is blocked.
 
-## Diagnose, retry, roll back or uninstall (disable)
+Each modifying action requires typed confirmation. To uninstall: Status, Disable,
+Status, then verify all four paths actually absent. Retained records/empty directories
+are expected. DLL absence alone is incomplete if the menu bank remains.
+For sharing failures release the identified writer, inspect Status and deliberately
+retry matching recovery. Missing/corrupt backups, unknown files or path/policy
+mismatch require ownership-qualified review, never edited hashes, deleted records,
+blind reinstall or old-DLL restoration. Keep NMS closed if fallback is incomplete.
+See [Detailed inactive fallback](docs/NMS26540391_MIGRATION.md).
+The operation is not one atomic transaction; cooperative locks do not exclude
+Steam or hostile writers, and universal power-loss durability is unproved.
 
-Keep NMS closed and retain exclusive access. Use the trusted tool, not a legacy
-TEMP receipt or files of unknown origin:
+## Optional explicit CLI
 
-```powershell
-python $setup status --game $gameDir
-python $setup resume --game $gameDir
-python $setup rollback --game $gameDir
-# Alternative: remove only recognized program resources, preserving personal data.
-python $setup disable --game $gameDir
-```
-
-Choose the action deliberately; these are alternatives, not a sequence to run blindly.
-
-- `status` is read only. It reports actual file identities separately from the
-  recorded journal, prior/candidate/absent/UNKNOWN classifications, record IDs and
-  matching scratch candidates. A candidate bank present on disk is not proof that
-  the full operation completed, even if the last journal write failed.
-- `resume` verifies immutable backups and the supported executable, then completes
-  the saved candidate without requiring the original package or native archive.
-  It preserves the first prior-state manifest. A missing/corrupt journal is not
-  trusted as proof of completion; actual files are checked again.
-- `rollback` verifies **all** current targets and backups before changing any target.
-  It restores the exact prior state, including absence, only for an all-absent
-  clean prior state or a known matching prior DLL/marker pair with the current
-  qualified bank (or an absent bank/inactive prior setup). It refuses incomplete
-  or unqualified prior combinations. The accepted historical menu-only bank may
-  be backed up during an update, but is not qualified for automatic reactivation.
-- `disable` removes only managed files whose current identities are recognized
-  by this record. It keeps personal files and every backup. After an incompatible
-  NMS update, use disable rather than force old DLLs/banks to activate. Unknown
-  current files still block the operation; they are not treated as ours to delete.
-
-A corrupt active selector or a fully prepared but unselected record can be
-inspected explicitly, using the 32-hex ID reported in the recovery directory:
+From built-in Windows PowerShell 5.1, adjust these generic example paths:
 
 ```powershell
-python $setup status --game $gameDir --record '<record-id>'
-python $setup resume --game $gameDir --record '<record-id>'
+$stage = 'C:\Mods\Supermoon-1.2.0'
+$game = 'C:\Games\No Man''s Sky'
+$setup = Join-Path $stage 'Supermoon\tools\Setup.ps1'
+& "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy RemoteSigned -File $setup -Action status -Game $game
 ```
 
-The explicit record still must pass schema, game-path, release, identity and backup
-verification. It does not authorize arbitrary paths or unknown bytes. Records
-without complete verified manifests were interrupted **before target replacement**;
-preserve them for diagnosis. Do not edit JSON/hashes to make a damaged record pass.
-If a backup is damaged, retrieve a separately verified copy of the same record.
-If current files are unknown, preserve and hash them outside the game and establish
-their ownership before deliberately quarantining them. Only then can absence be
-repaired from verified bytes. Never silently overwrite a foreign proxy or bank.
-
-Termination immediately before replacement can leave a `.supermoon-<id>-*.tmp`
-file. Status lists candidates but never deletes unknown scratch automatically.
-Keep records first; remove a scratch file manually only after checking its exact
-location, recorded ID and candidate identity with NMS closed/exclusive access.
-Do not delete whole Supermoon/MODS directories as cleanup. Recovery does not remove
-native archives, executable files, settings, saves, personal data or unrelated mods.
-
-The compatibility command `prepare_audio.py --game <game> --install` now uses the
-same durable record mechanism, and requires the exact DLL pair **and marker** to
-already be present. It cannot recover what an earlier manual DLL extraction
-overwrote. Prefer the four-file installer so its first backup precedes all changes.
-Without `--install`, preparation remains generation in memory with no game writes.
-
-Hot unload is unsupported. Any activation refusal after possible native hook
-exposure requires normal process exit before another attempt. Installation and
-recovery success do not resolve M2/H1 or expand the finite Phase 6 qualification.
-
-For complete removal or after an incompatible game update, disable BOTH proxy
-activation and this verified loose bank. Removing only the DLL leaves the bank's
-Frontend effect enabled. `disable` preserves user files and recovery storage;
-leave empty directories and unrelated mod resources alone. The tool is not a
-general-purpose uninstaller and does not remove package documentation or personal data.
+Actions: status, generate, install, update, resume, rollback, disable. Install/Update
+accept -Package $stage (default is extracted root). Modifying actions prompt;
+-ConfirmAction INSTALL or the corresponding uppercase action is explicit automation
+consent. Actions/options are case-insensitive, supplied as separate named values.
+Stdout is one UTF-8 JSON object; diagnostics/prompts use stderr. Check exit code;
+host/policy errors before script execution cannot produce script JSON. Generate
+only derives in memory. -Record accepts a verified lowercase32-hex ID and bypasses
+nothing. Pass CLI arguments to Setup.ps1, not the interactive Setup.cmd launcher.

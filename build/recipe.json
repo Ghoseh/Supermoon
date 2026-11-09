@@ -40,22 +40,28 @@
   "DLLs": {
     "winmm.dll": {
       "bytes": 948224,
-      "sha256": "41241c0b8ba3c0aaad2cbb5501631b0559fef862767e2179113b786ddf6103f3"
+      "sha256": "e2ff82fec494f62549a9de6e94fee90a07292170d57ec1b94e8e2cbf94533b56"
     },
     "supermoon_playlist.dll": {
       "bytes": 6165504,
-      "sha256": "6c0cf4dc66217dfcf08cf790b61e932c7e8012584455d41f6932dc7ec7eb6fb3"
+      "sha256": "0bb13ce24c6adaf351245ce95fcecfd4373e43c0ef9b17531ced23e15543d2fe"
     }
   },
-  "game_executable_sha256": "a77fc29877789c3da9181afeb5941b9b85a27d3df24919a24403cf8e194c6109",
-  "game_executable_bytes": 89535560,
-  "steam_build_id": 26385139,
-  "qualification": "Ready with Caveats for exact-build ordinary desktop scope. Retains Phase 6-tested DLL bytes. Owner explicitly accepted unresolved M2 Medium (three failing regressions) and H1 High conditional cleanup risk (isolated timeout; NMS reachability unproven). No universal Stop restoration or all-schedule liveness guarantee. Public upload requires separate approval.",
-  "version": "1.1.0",
+  "game_executable_sha256": "092236962ee050e419424699b5c343a0173f7773d5ad0866b7ec366d334c07d4",
+  "game_executable_bytes": 89540680,
+  "steam_build_id": 26540391,
+  "qualification": "Exact live-tested 26540391 DLL pair retained. Focused independent native review and one owner-run desktop session passed; not four-hour endurance or all-schedule safety. M2 three failures, conditional H1 timeout and RADAR_PRE_LEAK_64 observation remain unresolved; see release notes.",
+  "version": "1.2.0",
   "binary_provenance": {
-    "production_source_checkpoint": "50a8577f879b21e1c9ecefcd81de4e374d666869",
-    "first_qualified_as": "1.0.4-rc1-private",
-    "retained_byte_for_byte": true,
-    "DLL_rebuilt_for_public_packaging": false
+    "base_checkpoint": "e0add1a063adbf7e5512bcbda948f09d6260ffcf",
+    "native_contract_base": "Steam 26385139",
+    "retained_byte_for_byte": false,
+    "new_pair_awaiting_build_and_offline_tests": false,
+    "private_pair_built": true,
+    "live_qualified": true,
+    "independent_review_pending": false,
+    "focused_live_test_passed": true,
+    "public_pair_retained_byte_for_byte": true,
+    "live_qualification_scope": "One focused owner-run desktop session on26540391, not four-hour endurance or all-schedule safety"
   }
 }
