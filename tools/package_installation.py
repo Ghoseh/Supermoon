@@ -18,23 +18,26 @@ def members(dll_dir,recipe):
         if raw is None or identity(raw)!=recipe['DLLs'][name]:raise ValueError('Unqualified DLL input: '+name)
         files[rel]=raw
     files['bytebeat-playlist-experimental.enabled']=MARKER
-    for name in ['prepare_audio.py','install_supermoon.py','installation_safety.py','audio_patch.json']:
+    # Ordinary installation/recovery uses only Windows PowerShell 5.1. Python
+    # development/oracle and version-specific legacy tools stay in source.
+    for name in ['Setup.cmd','SETUP_README.txt','SETUP_SECURITY.txt']:
+        files[name]=(ROOT/name).read_bytes()
+    for name in ['Setup.ps1','setup/Supermoon.Setup.psm1','setup/Native.cs','audio_patch.json']:
         files['Supermoon/tools/'+name]=(ROOT/'tools'/name).read_bytes()
     files['Supermoon/build/recipe.json']=(json.dumps(recipe,indent=2)+'\n').encode()
     files['Supermoon/playlist.example.ini']=(ROOT/'source/playlist/playlist.example.ini').read_bytes()
     for name in ['INSTALL.md','README.md','CHANGELOG.md','COPYING','LICENSING.md','ASSET_NOTICE.md','THIRD_PARTY_NOTICES.md']:
         files['Supermoon/'+name]=(ROOT/name).read_bytes()
     # Include the documentation linked by README/INSTALL in the end-user package.
-    for name in ['ACCEPTED_AUDIT_FINDINGS.md','BUILD_AND_PROVENANCE.md','CONFIGURATION_AND_LAYOUT.md',
-                 'DEPENDENCIES.md','DEVELOPER_GUIDE.md','HANDOFF.md','MIGRATION_STATUS.md',
-                 'PUBLIC_DISTRIBUTION_PRIVACY.md','QUALIFICATION.md','REMEDIATION_PHASE0.md',
-                 'REMEDIATION_PHASE1.md','REMEDIATION_PHASE2A.md','REMEDIATION_PHASE3.md',
-                 'REMEDIATION_PHASE4.md','REMEDIATION_PHASE5.md','SUPERMOON_V1_KNOWN_LIMITATIONS.md',
-                 'SUPPORTED_FORMATS.md','TROUBLESHOOTING.md','V1_0_1_MIGRATION_STATUS.md',
-                 'RELEASE_NOTES.md','NEXUS_DESCRIPTION.md','V1_1_0_VERSION_TRANSITION.md']:
+    # Current user guides only. Historical release/qualification prose stays in
+    # source rather than being presented as this rebuilt pair's qualification.
+    for name in ['BUILD_AND_PROVENANCE.md','DEVELOPER_GUIDE.md','QUALIFICATION.md','VERSION_TRANSITION.md','CONFIGURATION_AND_LAYOUT.md',
+                 'DEPENDENCIES.md','DEPENDENCIES.json','SUPERMOON_V1_KNOWN_LIMITATIONS.md',
+                 'SUPPORTED_FORMATS.md','TROUBLESHOOTING.md','RELEASE_NOTES.md',
+                 'NMS26540391_MIGRATION.md','CONTROLLED_LIVE_TEST.md']:
         files['Supermoon/docs/'+name]=(ROOT/'docs'/name).read_bytes()
     files['Supermoon/tests/README.md']=(ROOT/'tests/README.md').read_bytes()
-    files['Supermoon/LICENSE']=(ROOT/'COPYING').read_bytes()
+    files['Supermoon/LICENSE']=(ROOT/'LICENSE').read_bytes()
     for name in ['Zig-MIT.txt','toolchain-only-winpthreads-MIT.txt','musl-derived-math-per-file-NOTICES.txt',
                  'musl-COPYRIGHT.txt','MinGW-COPYING-ZPL-2.1.txt','Lucent-gdtoa-per-file-NOTICES.txt',
                  'LLVM-libunwind-LICENSE.txt','LLVM-libcxxabi-LICENSE.txt','LLVM-libcxx-LICENSE.txt',
@@ -42,7 +45,12 @@ def members(dll_dir,recipe):
                  'Berkeley-queue-BSD-3-Clause.txt']:
         files['Supermoon/licenses/'+name]=(ROOT/'licenses'/name).read_bytes()
     assert not any(Path(n).name.casefold()=='playlist.ini' for n in files)
-    manifest=(json.dumps({'purpose':'Supermoon '+recipe['version']+' installation; retained Phase 6 DLL pair; accepted M2/H1 limitations','files':{n:identity(b) for n,b in sorted(files.items())}},indent=2)+'\n').encode()
+    manifest=(json.dumps({'purpose':'Supermoon '+recipe['version']+' Windows x64 Python-free installation',
+                         'qualification':recipe.get('qualification','Unspecified; no live qualification implied'),
+                         'native_checkpoint':'5d4671694eb0f020f10a63b2a600dbc820f05534',
+                         'end_user_setup':'Windows PowerShell Desktop 5.1 via Setup.cmd; no Python or external build tools',
+                         'directories':['Supermoon/Music/'],
+                         'files':{n:identity(b) for n,b in sorted(files.items())}},indent=2)+'\n').encode()
     files['PUBLIC_FILE_MANIFEST.json']=manifest
     files['SHA256SUMS']=(''.join(identity(b)['sha256']+'  '+n+'\n' for n,b in sorted(files.items()) if n!='PUBLIC_FILE_MANIFEST.json')+identity(manifest)['sha256']+'  PUBLIC_FILE_MANIFEST.json\n').encode()
     return files
@@ -53,11 +61,13 @@ def package(dll_dir,output,recipe):
     # Exclusive creation: never rewrite a release/archive supplied by the caller.
     with output.open('xb') as f:
         with zipfile.ZipFile(f,'w',zipfile.ZIP_DEFLATED) as z:
+            info=zipfile.ZipInfo('Supermoon/Music/',(2026,1,1,0,0,0))
+            info.external_attr=(0o40755<<16)|0x10;z.writestr(info,b'')
             for name,data in sorted(files.items()):
                 info=zipfile.ZipInfo(name,(2026,1,1,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED
                 info.external_attr=0o100644<<16;z.writestr(info,data)
     with zipfile.ZipFile(output) as z:
-        if z.testzip() is not None or {n:z.read(n) for n in z.namelist()}!=files:raise ValueError('Archive verification failed')
+        if z.testzip() is not None or {n:z.read(n) for n in z.namelist() if not n.endswith('/')}!=files or {n for n in z.namelist() if n.endswith('/')}!={'Supermoon/Music/'}:raise ValueError('Archive verification failed')
     return {'files':len(files),'output':str(output),'identity':identity(output.read_bytes())}
 
 

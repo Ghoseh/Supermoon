@@ -1,3 +1,9 @@
+# Supermoon v1.2.0 known limitations
+
+Read RELEASE_NOTES.md for exact unresolved M2/H1 and the RADAR_PRE_LEAK_64
+resource observation. The focused current-pair test does not fix these findings
+or provide four-hour endurance/all-schedule qualification.
+
 # Known limitations
 
 ## Background soundtrack after Stop
@@ -35,7 +41,7 @@ actions. Do not replace DLLs or banks while the game is running.
 
 ## Compatibility
 
-Only Windows x64 desktop NMS Steam build 26385139 is supported. VR and other
+Only Windows x64 desktop NMS Steam build 26540391 is supported. VR and other
 stores/builds are unsupported. Mod-manager deployment, multiplayer compatibility
 and arbitrary packed audio-bank priorities have not been established.
 

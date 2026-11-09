@@ -1,95 +1,66 @@
-# Supermoon v1.1.0
+# Supermoon v1.2.0
 
-Play your own music in No Man's Sky through the personal ByteBeat player.
-Supermoon supports WAV and MP3 playlists, loudness normalization, filename titles,
-shuffle and keyboard navigation. Stereo sources are mixed to mono for playback.
-No playlist music is included.
+Play your own WAV and MP3 music through No Man's Sky's personal ByteBeat player,
+with filename titles, normalization, shuffle and keyboard navigation. Playback is
+mono. No playlist music or game audio is distributed.
 
-[Download v1.1.0](https://github.com/Ghoseh/Supermoon/releases/tag/v1.1.0)
-and follow [Installation](INSTALL.md) before copying files into the game.
+**Windows x64 desktop Steam NMS build 26540391 only.** Other builds/stores and VR
+are unsupported. Fresh installation uses built-in **Windows PowerShell Desktop
+5.1** through **Setup.cmd**. No Python, compiler, standalone installer EXE or extra
+third-party runtime is needed. Windows/.NET Framework support and writable local
+storage are required; managed script restrictions can prevent setup.
 
-## Features
+## Install and play
 
-- Play a folder of supported WAV and MP3 songs, with automatic playlist transitions.
-- Keep the game's background soundtrack quiet during custom playback, including
-  quiet and silent passages. Soundtrack restoration after Stop has a limitation below.
-- Keep ByteBeat audio audible through Discoveries and menu transitions.
-- Show filename titles and use shortcuts for previous, next and shuffle.
-- Prepare a reusable disk cache to reduce work on later launches.
+1. Close NMS, verify the ZIP hash and extract the complete Windows ZIP into a
+   persistent staging folder outside the game and TEMP.
+2. Double-click Setup.cmd. Confirm or enter the root containing Binaries and
+   GAMEDATA. Choose Install and type INSTALL for the displayed target.
+3. Require verified completion and Status showing candidate_present/verified.
+4. Add songs directly to the installed Binaries/Supermoon/Music folder (create
+   it if absent), or retain your configured library. Restart after library changes.
+5. Launch normally. Enable mods and Supermoon in normal game mod settings. First
+   registration may need a normal exit/restart. Select Supermoon in personal
+   ByteBeat and press Play. No Steam arguments or hand-edited registration needed.
 
-## Requirements
+Read [Installation, updates and removal](INSTALL.md), including script restrictions
+and legacy transitions. The ZIP's empty Music folder is a layout reference;
+setup manages four program resources, not a library copy. Keep personal files.
+Defaults work without playlist.ini (relative Music, 3072 MiB cache); copy the
+example only if no personal INI exists. Never extract over an existing game folder.
 
-- Windows x64, ordinary desktop No Man's Sky on Steam.
-- **Steam build 26385139 only.** Other game builds are unsupported.
-- **Python 3.10 or newer for installation, updates and recovery.** No extra Python
-  packages are required. Python is not used during gameplay.
-- Generate the required audio-bank override from your own game files, then enable
-  it in NMS's normal mod settings. The setup tool handles generation.
-- No additional Steam launch arguments are required.
+## Controls
 
-VR and other stores are unsupported. Mod-manager deployment, multiplayer
-compatibility and a full Windows-version matrix have not been established.
-Use the documented manual installation method.
+Use native Play/Stop. Ctrl+Shift+F6 is Previous/restart, F7 Next, F8 toggle shuffle,
+and F9 shuffle-and-advance. Each shortcut includes Ctrl+Shift. Focus/overlays can
+interfere. After native playback stops during travel/reload, press Play manually;
+automatic resume is not provided. Preparation of a new library can take time.
 
-## Playing your music
+## Compatibility and limitations
 
-Put supported songs in `Binaries/Supermoon/Music`, or keep your existing
-`playlist.ini` music-folder setting. Only files directly inside that folder are
-scanned. Restart the game after changing the library. Preparing a new library
-can take time; later launches can reuse the cache.
+Another winmm.dll loader or incompatible bank override conflicts. Unrelated mods
+can remain, but opaque packed-bank priorities, multiplayer, mod managers and a
+broad Windows/storage matrix are not qualified. The locally generated menu bank
+also affects built-in ByteBeat while installed; remove it along with the DLLs.
 
-Select Supermoon in the personal ByteBeat player and press Play. Travel or loading
-a save may stop playback; press Play manually afterward. Automatic resume is not
-provided.
+Three M2 tests still fail: native music may remain quiet after Stop/retirement.
+The conditional H1 cleanup fixture still times out; gameplay reachability remains
+unproved. One focused live session passed owner-observed functions, but does not
+fix those findings or qualify every schedule. No four-hour endurance claim applies
+to this DLL pair. A Windows RADAR_PRE_LEAK_64 resource observation remains unresolved;
+no cause has been attributed to Supermoon. See [Known limitations](docs/SUPERMOON_V1_KNOWN_LIMITATIONS.md)
+and [Qualification](docs/QUALIFICATION.md). Brief Next/refill gaps, finite session
+storage and bounded diagnostics remain limitations.
 
-Default shortcuts:
-
-| Action | Shortcut |
-| --- | --- |
-| Previous / restart | Ctrl+Shift+F6 |
-| Next | Ctrl+Shift+F7 |
-| Toggle shuffle | Ctrl+Shift+F8 |
-| Shuffle and advance once | Ctrl+Shift+F9 |
-
-Focus, overlays and other key bindings can affect shortcuts.
-
-## Compatibility and known limitations
-
-Unrelated mods can remain enabled. Another `winmm.dll` loader or an incompatible
-`audio/windows/init.bnk` override conflicts with Supermoon. The installer cannot
-detect every packaged audio-bank conflict; do not overwrite another mod's files.
-
-The game's soundtrack may remain quieter after custom playback stops under some
-conditions. Normal restoration worked in listening checks, but it is not guaranteed
-after every Stop. A potential freeze during audio cleanup has also been reproduced
-in isolated tests; whether normal gameplay can trigger it is unproven. No such
-gameplay occurrence was confirmed in the reviewed tests.
-
-Brief restart/Next gaps, finite per-session audio storage and manual Play after
-travel/reload remain limitations. No guaranteed maximum session length is established.
-See [Known limitations](docs/SUPERMOON_V1_KNOWN_LIMITATIONS.md) and
-[Troubleshooting](docs/TROUBLESHOOTING.md).
-
-The menu audio change also affects built-in ByteBeat tracks and remains active
-while its bank override is installed. Removal must handle both the DLLs and that
-override. Keep personal music, configuration and backups when updating or removing
-the mod.
-
-## More information
-
-[Installation and recovery](INSTALL.md) · [Audio formats](docs/SUPPORTED_FORMATS.md) ·
-[Configuration](docs/CONFIGURATION_AND_LAYOUT.md) · [Changelog](CHANGELOG.md) ·
-[Release notes](docs/RELEASE_NOTES.md)
-
-Developer test and qualification details remain in the engineering documentation.
+[Music formats](docs/SUPPORTED_FORMATS.md) · [Configuration](docs/CONFIGURATION_AND_LAYOUT.md) ·
+[Troubleshooting](docs/TROUBLESHOOTING.md) · [Release notes](docs/RELEASE_NOTES.md) ·
+[Build instructions](docs/BUILD_AND_PROVENANCE.md)
 
 ## Credits and permissions
 
-Original code and documentation are MIT-licensed. Retain the supplied third-party
-notices and licenses. The two embedded shuffle notification recordings have
-separate terms in `ASSET_NOTICE.md`; the code license does not grant standalone
-reuse of those recordings.
-
-Development and documentation used OpenAI Codex AI assistance with human direction
-and listening checks. No Man's Sky and ByteBeat belong to their rights holders;
-Supermoon is an independent mod without implied affiliation or endorsement.
+Original code/documentation: MIT, copyright Malik Seals and Supermoon contributors. Existing
+copyright attributions and third-party notices remain intact. The project owner's
+two embedded notification recordings retain separate terms in ASSET_NOTICE.md;
+the MIT source grant is not a standalone recording-reuse license. Development and
+documentation used OpenAI Codex assistance under human direction and owner testing.
+No Man's Sky/ByteBeat belong to their rights holders; this is an independent mod.

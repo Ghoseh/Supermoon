@@ -1,8 +1,8 @@
 # Licensing
 
 Supermoon's original source code, new build/test scripts and original documentation
-are licensed under MIT; see LICENSE. Copyright uses the public project credit
-"Supermoon contributors" rather than a private personal name.
+are licensed under MIT; see LICENSE. The MIT notices credit Malik Seals and retain the existing Supermoon contributors
+attribution. Frozen source headers and all third-party notices remain unchanged.
 
 Third-party components retain their own licenses, even where they also use MIT.
 The top-level MIT grant does not replace vendor, runtime-library, operating-system

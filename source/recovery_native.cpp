@@ -8,8 +8,8 @@ Registry registry;thread_local Source* invocation{};thread_local Event* construc
 namespace {
 uintptr_t image{};void* original[15]{};std::atomic<bool> active{false};
 void* context_vtable[16]{};void* sub_vtable[2]{};
-constexpr uint32_t cells[]={0x365e878,0x365e880,0x364a828,0x364a830,0x364a858,0x364a888,0x6ee3da8,0x6ee3da0,0x4b84570,0x4b84578,0x364a900,0x364a920,0x364a908,0x364a918,0x364a928};
-constexpr uint32_t targets[]={0x3294cd0,0x3294d10,0x31ac610,0x2eaede0,0x31acbf0,0x31ac6e0,0x2ea6ee0,0x2ea6e60,0xf89e60,0xf8a720,0x31acce0,0x2eaede0,0x31acd80,0x31acd60,0x31acdc0};
+constexpr uint32_t cells[]={0x365fdf8,0x365fe00,0x364bda8,0x364bdb0,0x364bdd8,0x364be08,0x6ee4e08,0x6ee4e00,0x4b86650,0x4b86658,0x364be80,0x364bea0,0x364be88,0x364be98,0x364bea8};
+constexpr uint32_t targets[]={0x3295470,0x32954b0,0x31acdb0,0x2eaf4c0,0x31ad390,0x31ace80,0x2ea75c0,0x2ea7540,0xf8ac20,0xf8b4e0,0x31ad480,0x2eaf4c0,0x31ad520,0x31ad500,0x31ad560};
 template<class T>T fn(unsigned n) noexcept {T f{};memcpy(&f,&original[n],sizeof(f));return f;}
 template<class T>T read(const void* p,size_t off) noexcept {T v;memcpy(&v,static_cast<const unsigned char*>(p)+off,sizeof(v));return v;}
 void stop_buffer(void* buffer) noexcept {if(buffer){uint16_t zero=0;uint32_t state=2;memcpy(static_cast<unsigned char*>(buffer)+0x12,&zero,2);memcpy(static_cast<unsigned char*>(buffer)+0xc,&state,4);}}
@@ -40,8 +40,8 @@ extern "C" __declspec(noinline) void* RecoveryAllocate(void* allocator,size_t by
 // Only the pinned factory/Clone callers and exact sizes receive owned slots.
 // Other allocation/Free paths keep the original allocator ownership.
 void* allocation(void* allocator,size_t bytes,const char* file,uintptr_t line,uintptr_t caller) {
-    if(caller==image+0x31ac65c&&bytes==64){auto s=registry.allocate_source();return s?static_cast<void*>(s->native):nullptr;}
-    if((caller==image+0x31ac6bc||caller==image+0x31acd37)&&bytes==16){auto p=registry.allocate_parameter();return p?static_cast<void*>(p->native):nullptr;}
+    if(caller==image+0x31acdfc&&bytes==64){auto s=registry.allocate_source();return s?static_cast<void*>(s->native):nullptr;}
+    if((caller==image+0x31ace5c||caller==image+0x31ad4d7)&&bytes==16){auto p=registry.allocate_parameter();return p?static_cast<void*>(p->native):nullptr;}
     return fn<void*(*)(void*,size_t,const char*,uintptr_t)>(0)(allocator,bytes,file,line);
 }
 extern "C" void RecoveryFree(void* allocator,void* object) {

@@ -1,11 +1,12 @@
 # Troubleshooting
 
-## Setup cannot find Python
+## Setup is blocked or cannot start
 
-Python 3.10+ is required by the supplied installation and recovery scripts.
-Check `python --version` in the same terminal. Make the Python command available
-before running setup. No extra Python packages are needed, and Python does not
-run as part of normal gameplay.
+Fresh setup uses Windows PowerShell Desktop 5.1, not Python. Extract the whole ZIP
+and run Setup.cmd. Read root SETUP_SECURITY.txt for downloaded-script and managed
+policy restrictions. Do not disable antivirus or change persistent policy. Keep
+the failure message. Legacy recovery needs matching tools, possibly Python;
+see NMS26540391_MIGRATION.md. Never force a mismatched game or record.
 
 ## The original track plays, or custom music is unavailable
 
@@ -43,8 +44,9 @@ mod folder to force an installation.
 
 ## Native music stays quieter after Stop
 
-This is a known unresolved limitation under some game conditions. Normal return
-worked in listening checks, but every Stop is not guaranteed. Preserve useful logs
+This is a known unresolved limitation under some game conditions. Historical old-pair return
+worked in listening checks; one focused current-pair session passed and every Stop
+is not guaranteed. Preserve useful logs
 and exit normally before another session. No timing or universal repair guarantee
 is established. Do not replace files or repeatedly change controls to hide a failed check.
 
@@ -81,3 +83,10 @@ all require Ctrl+Shift; focus, overlays and other bindings can interfere.
 
 Before sharing a diagnostic excerpt, redact personal paths and song names.
 Do not post music, caches, saves, credentials or full diagnostic archives.
+
+## Windows resource observation
+
+RADAR_PRE_LEAK_64 was recorded for NMS during the focused session. Preserve
+diagnostics and system observations if it recurs; no cause is attributed to this
+mod without comparison/evidence. Do not disable security software or delete user
+data as a repair. See RELEASE_NOTES.md.

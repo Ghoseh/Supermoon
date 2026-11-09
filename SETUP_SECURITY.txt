@@ -1,0 +1,72 @@
+Supermoon setup trust and Windows script restrictions
+
+Setup.cmd uses Windows' built-in Windows PowerShell 5.1, with no profile. Its
+RemoteSigned execution policy applies only to that child process; it does not
+change CurrentUser or LocalMachine policy or override organization Group Policy.
+It does not use Bypass, remove download marks, elevate, access the network, launch
+NMS, change antivirus settings or execute text supplied as a path/command.
+
+The implementation is currently unsigned code. Checksums detect byte
+changes relative to a trusted reference; they do not establish publisher identity
+when the script and checksum both come from an untrusted source. Independent
+setup verification and selected new-build native review are complete; this unsigned
+release has finite focused desktop validation, not universal qualification. PowerShell
+and DLL code are not inherently safer than Python.
+
+Downloaded unsigned scripts may be blocked by RemoteSigned and Mark-of-the-Web.
+If Windows or organization restrictions block execution, stop and retain the
+message. Do not disable antivirus or change machine/user execution policy. On a
+managed device, ask its administrator for an approved signed workflow. Restricted
+language mode may also prevent the .NET interop used by this setup.
+
+For this exact verified release on a personally managed device,
+the security-conscious manual alternative is to inspect the exact local scripts
+and compare them with a trusted approved source, then deliberately unblock only
+the reviewed files in Properties, if that option is offered. The relevant code is
+Supermoon/tools/Setup.ps1, setup/Supermoon.Setup.psm1 and setup/Native.cs.
+Do not recursively unblock a download directory or run commands copied from an
+untrusted website. Relaunching Setup still uses session-only RemoteSigned; enforced
+organization policy remains effective. There is no automatic fallback to Bypass.
+
+Native.cs is readable first-party source, compiled by built-in Add-Type for the
+setup process only. It supplies narrow Win32 file/process operations and strict JSON
+parsing. Framework compilation may use temporary files and its built-in compiler;
+no installer EXE or third-party runtime is shipped. Windows security controls may
+refuse it; report that refusal rather than weakening them.
+
+Supported filesystem contract: persistent fixed local disk paths; NMS closed; one
+cooperating writer; Steam updates and other writers idle. UNC/device paths,
+alternate streams, ambiguous components, reparse points and hard-linked managed
+files refuse. Before filesystem discovery, the drive-letter DOS-device mapping
+must be an ordinary HarddiskVolume mapping and the drive must be fixed. Mapped
+network drives, SUBST aliases, removable and unknown mappings refuse. Nonstandard
+local volume mappings may also refuse; this conservative restriction is intentional.
+Ancestry is checked root-to-leaf before probing children through it. TEMP reparse
+aliases refuse. Handle-resolved directory names catch short-name TEMP containment;
+this comparison does not change an existing record's bound game-path spelling.
+Long-path and enterprise-policy matrices are not qualified.
+The new tool conservatively refuses a differing loose init.bnk in another MODS
+folder even if that mod is disabled. It never deletes it. Packed resource priorities
+and the actual winning bank remain unobserved, as in the original runtime policy.
+
+The writer lock coordinates the original Python tool and the PowerShell tool; it
+cannot prevent Steam, the game or a hostile writer from changing files. Prechecks
+are not an atomic namespace security boundary. The four program files are not one
+atomic transaction. A failed operation may leave completed individual replacements.
+Backups are flushed and read back, but universal power-loss durability is not proved.
+Records are locally integrity-checked, not signed against a malicious local actor.
+No automatic sharing-error retry, old-record conversion or scratch-file deletion
+is attempted beyond cleaning the temporary file owned by the current operation.
+
+Microsoft reference:
+https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-5.1
+https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/add-type?view=powershell-5.1
+
+Explorer/SmartScreen may also warn about downloaded launchers/native files. Wording
+and availability vary. Verify origin and trusted ZIP hash first; do not blindly
+dismiss warnings. Stop if provenance is uncertain or application control blocks it.
+If deliberately using Properties > Unblock on a personally managed device, inspect
+and verify only individual marked files (including Setup.cmd and named companions).
+Do not recursively unblock other files. No paid certificate or signing requirement
+is introduced by this package. Managed signature requirements may still refuse it;
+use an administrator-approved workflow or do not install, never bypass policy.

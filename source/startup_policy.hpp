@@ -13,8 +13,8 @@ inline Readiness classify(uintptr_t base, uintptr_t execute, uintptr_t format, u
     if (!execute && !format && !gain) return Readiness::waiting;
     // The setter publishes execute then format then gain. Its intermediate
     // expected/zero state is not an error and must not authorize activation.
-    if ((!execute || execute == base+0x2ea6e60) &&
-        (!format || format == base+0x2ea6ee0) && !gain)
+    if ((!execute || execute == base+0x2ea7540) &&
+        (!format || format == base+0x2ea75c0) && !gain)
         return execute && format ? Readiness::ready : Readiness::waiting;
     return Readiness::conflict;
 }
