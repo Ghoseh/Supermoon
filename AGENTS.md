@@ -1,9 +1,10 @@
 # Supermoon public source maintenance
 
-Version/policy 1.2.0 targets only Windows x64 desktop Steam NMS26540391. Preserve
+Version/policy 1.2.1 targets only Windows x64 desktop Steam NMS26540391. Preserve
 exact executable, native, payload and bank identity gates. Never bypass mismatches.
-The runtime source corresponds to the frozen live-tested pair; do not rebuild or
-change native logic during packaging. Keep all copyright/license attributions.
+The gain precursor was live-tested at +3 dB; final default/keyboard changes and
+upgrade are offline-qualified. Preserve the recorded final DLL identities during
+packaging. Keep all copyright/license attributions.
 No game files, copied-native byte fixtures, music, private paths, caches, logs,
 PDBs, credentials or recovery records belong in this source tree/archive.
 Use owned disposable fixtures. Preserve user Music, INI, Cache, State and unrelated

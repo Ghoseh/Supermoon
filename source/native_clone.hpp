@@ -33,7 +33,7 @@ public:
     ~NativeClone(){if(!published_){if(registered_)RtlDeleteFunctionTable(table_.data());if(memory_)VirtualFree(memory_,0,MEM_RELEASE);}}
     NativeClone()=default; NativeClone(const NativeClone&)=delete;
     template<size_t Count>
-    void prepare(unsigned char* base,void* const (&bridges)[Count]) {
+    void prepare(unsigned char* base,void* const (&bridges)[Count],void* personal_post=nullptr) {
         static_assert(Count==sizeof(layout::stubs)/sizeof(layout::stubs[0]));
         if(memory_)throw std::runtime_error("No repeated clone preparation");
         // Reserve private memory near the host, never replace an existing mapping.
@@ -49,6 +49,13 @@ public:
         }
         if(!memory_)throw std::runtime_error("No near private allocation");
         memset(memory_,0xCC,layout::allocation_size);
+        auto personal_stub=memory_+layout::allocation_size-16;
+        if(personal_post){
+            for(const auto& f:layout::functions)if(f.offset+f.size>layout::allocation_size-16)throw std::runtime_error("Personal stub overlaps function");
+            for(const auto& u:layout::unwind)if(u.offset+u.size>layout::allocation_size-16)throw std::runtime_error("Personal stub overlaps unwind");
+            for(auto s:layout::stubs)if(s+14>layout::allocation_size-16)throw std::runtime_error("Personal stub overlaps existing bridge");
+            personal_stub[0]=0xff;personal_stub[1]=0x25;memset(personal_stub+2,0,4);memcpy(personal_stub+6,&personal_post,8);
+        }
         for(const auto& i:layout::instructions) {
             // Metadata describes each original instruction and its new address.
             // Internal targets follow the relocated copy; external native calls
@@ -59,7 +66,11 @@ public:
             uint32_t field=i.field;
             if(i.kind==2){output[1]=uint8_t(0x80+(output[0]&15));output[0]=0x0F;field=2;}
             if(i.kind==3){output[0]=0xE9;field=1;}
-            if(i.kind){uintptr_t target=i.target_offset==UINT32_MAX?reinterpret_cast<uintptr_t>(base+i.target):reinterpret_cast<uintptr_t>(memory_+i.target_offset);rel32(output+field,target,reinterpret_cast<uintptr_t>(output+i.size));}
+            if(i.kind){uintptr_t target=i.target_offset==UINT32_MAX?reinterpret_cast<uintptr_t>(base+i.target):reinterpret_cast<uintptr_t>(memory_+i.target_offset);
+                // Optional experimental PostEvent wrapper; null preserves the
+                // original relocation target and all existing clone behavior.
+                if(personal_post&&i.rva==0x2eaa895&&i.target_offset==UINT32_MAX&&i.target==0x3215650)target=reinterpret_cast<uintptr_t>(personal_stub);
+                rel32(output+field,target,reinterpret_cast<uintptr_t>(output+i.size));}
         }
         for(size_t n=0;n<Count;++n){auto stub=memory_+layout::stubs[n];stub[0]=0xFF;stub[1]=0x25;memset(stub+2,0,4);memcpy(stub+6,&bridges[n],8);}
         // Windows needs unwind metadata to walk through private machine code.

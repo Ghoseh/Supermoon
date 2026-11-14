@@ -27,6 +27,7 @@ extern "C" { void* FloorNativeUnlock=nullptr; }
 #include "recovery_native.hpp"
 #include "recovery_pins.hpp"
 #include "recovery_diagnostics.hpp"
+#include "personal_voice_runtime.hpp"
 #endif
 #ifdef ADAPTER_SELFTEST_BUILD
 namespace bytebeat::playback {inline bool location_matches(const wchar_t*){return false;}}
@@ -313,6 +314,7 @@ DWORD WINAPI writer(void*) {
 #ifdef ADAPTER_RECOVERY_BUILD
         char recovery_line[768]{};
         if(recovery_reporter.sample(bytebeat::recovery::registry.snapshot(),GetTickCount64(),recovery_line,sizeof(recovery_line)))write_line(recovery_line);
+        if(bytebeat::personal_gain::runtime.diagnostics(recovery_line,sizeof(recovery_line),GetTickCount64()))write_line(recovery_line);
 #endif
         endurance.drain();endurance.heartbeat(health,diagnostic_io,diagnostic_limit,GetTickCount64());
         if(finished.load(std::memory_order_acquire))break;
@@ -471,6 +473,7 @@ extern "C" void AdapterCommit(void* component,void* payload) noexcept {
     bool accepted=bytebeat::recovery::enabled()&&matched&&pending.personal&&endpoint&&core->commit_endpoint(reinterpret_cast<uintptr_t>(endpoint),r.stream,pending.key,read<uint32_t>(component,0x38),&r.generation);
     if(!accepted){r.faults|=scope_fault;if(endpoint)AdapterRecoveryRetire(reinterpret_cast<uintptr_t>(endpoint));}
     if(endpoint&&r.generation)(void)floor_control.intent.commit(floor_index(reinterpret_cast<uintptr_t>(endpoint)),r.generation,accepted&&pending.key==floor_carrier_key);
+    if(accepted&&pending.key==floor_carrier_key)bytebeat::personal_gain::runtime.authorize(endpoint);
 #else
     if(!matched||!pending.personal||!core->commit(r.stream,pending.key,matched&&pending.personal,read<uint32_t>(component,0x38),&r.generation)) {r.faults|=scope_fault;core->retire(r.stream);}
 #endif
@@ -528,6 +531,15 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
         HMODULE self{};
         if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,reinterpret_cast<LPCWSTR>(&ADAPTER_ACTIVATE),&self))return 5;
         if(!GetModuleFileNameW(self,path,32768)||!bytebeat::playback::location_matches(path))return 6;
+        void* personal_post=nullptr;
+#ifdef ADAPTER_RECOVERY_BUILD
+        auto& personal_gain=bytebeat::personal_gain::runtime;
+        personal_gain.configure(std::filesystem::path(path).parent_path());personal_gain.base=native_base;
+        if(personal_gain.setting.db){
+            for(const auto& pin:bytebeat::personal_gain::profile::pins)if(!memory_digest(base+pin.rva,pin.size,pin.sha))return 22;
+            personal_post=reinterpret_cast<void*>(&bytebeat::personal_gain::PersonalVoiceGainPost);
+        }
+#endif
         void* bridges[]={reinterpret_cast<void*>(&AdapterFrameBridge),reinterpret_cast<void*>(&AdapterBeforeBridge),reinterpret_cast<void*>(&AdapterAfterBridge),reinterpret_cast<void*>(&AdapterCommitBridge),reinterpret_cast<void*>(&AdapterRetireBridge),reinterpret_cast<void*>(&AdapterCarrierBridge)
 #ifdef ADAPTER_RECOVERY_BUILD
             ,reinterpret_cast<void*>(&RecoveryPostedBridge)
@@ -535,7 +547,7 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
             ,reinterpret_cast<void*>(&AdapterStateLockBridge),reinterpret_cast<void*>(&FloorControlUnlockBridge)
         };
         StateNativeLock=base+0x2c778d0;
-        clone.prepare(base,bridges);void* original=clone.function(0);memcpy(&provider,&original,sizeof(provider));
+        clone.prepare(base,bridges,personal_post);void* original=clone.function(0);memcpy(&provider,&original,sizeof(provider));
 #ifdef ADAPTER_RECOVERY_BUILD
         // Capture owner/source births BEFORE potentially long cold preparation.
         // Only lifecycle/forwarding runs here; early wrappers return before
@@ -619,6 +631,9 @@ DWORD WINAPI ADAPTER_ACTIVATE(void*) {
 #endif
         if(!floor_publish(base))return 18;
         activation_stage.store(uint32_t(bytebeat::activation::Stage::published),std::memory_order_release);
+#ifdef ADAPTER_RECOVERY_BUILD
+        personal_gain.activate(); // No gain writes on any earlier failure/partial publication.
+#endif
         return 0;
     }catch(...){return 11;} // Local payload RAII joins its worker; earlier exposed hooks/adopted state stay resident.
 }

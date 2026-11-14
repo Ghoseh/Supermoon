@@ -31,7 +31,7 @@ try {
         $i++;Set-Variable -Name $names[$key] -Value $args[$i] -Scope Script
     }
     $Action=$Action.ToLowerInvariant()
-    if($Action -notin @('status','generate','install','update','resume','rollback','disable')){throw 'Unknown setup action'}
+    if($Action -notin @('status','generate','install','update','upgrade','resume','rollback','disable')){throw 'Unknown setup action'}
     Import-Module (Join-Path $PSScriptRoot 'setup/Supermoon.Setup.psm1') -Force -ErrorAction Stop
     $root=[IO.Path]::GetDirectoryName($PSScriptRoot)
     $recipe=Read-SMJson (Join-Path $root 'build/recipe.json')
@@ -73,6 +73,7 @@ try {
         Write-SMSetupMessage 'Close NMS. Keep Steam updates and other installation tools idle.'
         Write-SMSetupMessage 'Only the two DLLs, activation marker and locally generated bank are managed.'
         Write-SMSetupMessage 'Your music, settings, Cache, State and diagnostics are preserved.'
+        Write-SMSetupMessage 'Setup creates a complete playlist.ini, or adds only missing defaults with an original-file backup.'
         if(-not $Game){
             $found=@(Find-SteamGames)
             if($found.Count -eq 1){$Game=$found[0];Write-SMSetupMessage ('Detected supported Steam installation: '+$Game)}
@@ -95,14 +96,16 @@ try {
         }
         Write-SMSetupMessage '1 Status   2 Install   3 Update   4 Resume interrupted setup'
         Write-SMSetupMessage '5 Roll back to recorded prior state   6 Disable   7 Exit'
+        Write-SMSetupMessage '8 Upgrade published v1.2.0 to v1.2.1 (preserves and archives old records)'
         $choice=Read-Host 'Choose an action'
         if($choice -eq '7'){exit 0}
-        $menu=@{'1'='status';'2'='install';'3'='update';'4'='resume';'5'='rollback';'6'='disable'}
+        $menu=@{'1'='status';'2'='install';'3'='update';'4'='resume';'5'='rollback';'6'='disable';'8'='upgrade'}
         if(-not $menu.ContainsKey($choice)){throw 'No valid action selected; no installation changes made.'};$Action=$menu[$choice]
     }
     if($Action -notin @('status','generate')){
         Write-SMSetupMessage ('Requested action: '+$Action+'; target: '+$context.Game)
         Write-SMSetupMessage 'Backups/recovery records and the four program files may be written. The native archive is never replaced.'
+        if($Action -in @('install','update','upgrade','resume')){Write-SMSetupMessage 'playlist.ini will be created/completed with missing defaults; existing values/comments are kept and the original is backed up.'}
         if($Action -eq 'rollback'){Write-SMSetupMessage 'Rollback restores the recorded prior state, which may be absence. Personal files are not rolled back.'}
         $expected=$Action.ToUpperInvariant()
         if($ConfirmAction -cne $expected){
@@ -119,7 +122,7 @@ try {
         Write-SMSetupMessage ('Completed: '+$result['result'])
         if($result.ContainsKey('recovery')){Write-SMSetupMessage ('Keep this recovery folder: '+$result['recovery'])}
         if($Action -eq 'status'){Write-SMSetupMessage ('Recovery records: '+$result['recovery_root'])}
-        if($Action -in @('install','update','resume')){
+        if($Action -in @('install','update','upgrade','resume')){
             Write-SMSetupMessage ('Add WAV/MP3 songs to '+(Join-Path $context.Game 'Binaries/Supermoon/Music')+' or keep your existing configured library.')
             Write-SMSetupMessage 'Launch NMS normally; enable mods and the Supermoon audio entry in its normal settings.'
             Write-SMSetupMessage 'First registration may need a normal exit/restart. Select Supermoon in the personal ByteBeat player and press Play.'

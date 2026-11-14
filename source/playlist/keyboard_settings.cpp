@@ -18,11 +18,19 @@ Shortcut binding(std::wstring value){
     value.erase(std::remove_if(value.begin(),value.end(),[](wchar_t c){return c==L' '||c==L'\t';}),value.end());
     std::transform(value.begin(),value.end(),value.begin(),[](wchar_t c){return wchar_t(towupper(c));});
     if(value==L"NONE")return {0,3};
-    const std::wstring prefix=L"CTRL+SHIFT+F";need(value.rfind(prefix,0)==0,"Binding requires Ctrl+Shift+F1..F24 or None");
-    auto suffix=value.substr(prefix.size());need(!suffix.empty()&&suffix.size()<=2,"Invalid shortcut function key");
+    unsigned modifiers=0;size_t start=0;
+    for(auto end=value.find(L'+');end!=std::wstring::npos;end=value.find(L'+',start)){
+        auto token=value.substr(start,end-start);unsigned bit=token==L"CTRL"?1u:token==L"SHIFT"?2u:token==L"ALT"?4u:0u;
+        need(bit&&!(modifiers&bit),"Unknown or repeated shortcut modifier; use Ctrl with optional Shift/Alt");
+        modifiers|=bit;start=end+1;
+    }
+    need(modifiers&1,"Binding requires Ctrl with optional Shift/Alt and F1..F24, or None");
+    auto key=value.substr(start);need(key.size()>=2&&key[0]==L'F',"Invalid shortcut function key");
+    auto suffix=key.substr(1);need(suffix.size()<=2,"Invalid shortcut function key");
     unsigned n=0;for(auto c:suffix){need(c>=L'0'&&c<=L'9',"Invalid shortcut function key");n=n*10+unsigned(c-L'0');}
     need(n>=1&&n<=24&&n!=12,"Unsafe shortcut key: F12 reserved for debugger/Steam screenshot; choose another key");
-    return {0x70+n-1,3};
+    need(!(n==4&&(modifiers&4)),"Alt+F4 combinations reserved for window closing; choose another key");
+    return {0x70+n-1,modifiers};
 }
 }
 KeyboardConfiguration keyboard_configuration(const std::filesystem::path& mod){

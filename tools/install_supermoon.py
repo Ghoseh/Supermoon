@@ -76,7 +76,7 @@ def checkpoint(stage):
 class Installation:
     def __init__(self,game,recipe,plan):
         game=Path(game).absolute();no_reparse(game);self.game=game.resolve(strict=True)
-        self.recipe=recipe;self.plan=plan;self.store=self.game/'.Supermoon-Recovery'
+        self.recipe=recipe;self.plan=plan;self.store=self.game/('.Supermoon-Recovery-1.2.1' if recipe['version']=='1.2.1' else '.Supermoon-Recovery')
         self.expected={'proxy':recipe['DLLs']['winmm.dll'],
                        'payload':recipe['DLLs']['supermoon_playlist.dll'],
                        'bank':{'bytes':plan['output_bytes'],'sha256':plan['output_sha256']},
@@ -132,6 +132,8 @@ class Installation:
         return folder,m
 
     def stage(self,desired):
+        if self.recipe['version']=='1.2.1' and (self.game/'.Supermoon-Recovery').exists() and not self.active():
+            raise ValueError('Use the explicit Python-free Upgrade procedure for public v1.2.0 records')
         if set(desired)!=set(KEYS) or {k:identity(v) for k,v in desired.items()}!=self.expected:
             raise ValueError('Candidate does not match the exact DLL/marker/bank identities')
         no_reparse(self.store)

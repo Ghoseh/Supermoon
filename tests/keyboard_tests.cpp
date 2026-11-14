@@ -41,6 +41,25 @@ void inputs(){
     for(unsigned i=0;i<4;++i){keys={};edges.poll(cfg,c,keys,send);keys[i]=true;edges.poll(cfg,c,keys,send);check(sent[i]==(i?1u:2u),"All four independent input actions");}
     cfg.enabled=false;keys={};edges.poll(cfg,c,keys,send);keys[0]=true;edges.poll(cfg,c,keys,send);check(sent[0]==2,"Disabled controls refuse");
 }
+void configurable_modifiers(){
+    for(unsigned modifiers:{1u,3u,5u,7u}){
+        KeyboardConfiguration cfg;for(auto& b:cfg.bindings)b.modifiers=modifiers;
+        InputContext c{true,true,false,modifiers};KeyboardEdges edges;std::array<bool,4> keys{};unsigned sent[4]{};
+        auto send=[&](KeyAction a){++sent[unsigned(a)];};
+        for(unsigned i=0;i<4;++i){keys={};edges.poll(cfg,c,keys,send);keys[i]=true;edges.poll(cfg,c,keys,send);
+            for(unsigned n=0;n<100;++n)edges.poll(cfg,c,keys,send);
+            check(sent[i]==1,"Configured modifier sends exactly one action per edge");}
+        for(unsigned wrong=0;wrong<16;++wrong){if(wrong==modifiers)continue;
+            keys={};c.modifiers=modifiers;edges.poll(cfg,c,keys,send);c.modifiers=wrong;keys[0]=true;edges.poll(cfg,c,keys,send);
+            c.modifiers=modifiers;edges.poll(cfg,c,keys,send);check(sent[0]==1,"Wrong/extra modifiers consumed without replay");}
+        for(unsigned context=0;context<3;++context){
+            keys={};edges.poll(cfg,c,keys,send);if(context==0)c.foreground=false;if(context==1)c.carrier=false;if(context==2)c.captured=true;
+            keys[0]=true;edges.poll(cfg,c,keys,send);c.foreground=true;c.carrier=true;c.captured=false;edges.poll(cfg,c,keys,send);
+            check(sent[0]==1,"Configured shortcuts preserve focus/carrier/capture guards");}
+        keys={};edges.poll(cfg,c,keys,send);keys[0]=keys[1]=true;edges.poll(cfg,c,keys,send);
+        check(sent[0]==1&&sent[1]==1,"Configured simultaneous function keys remain rejected");
+    }
+}
 void order_cases(){
     Order normal({10,20,30},1,false);check(normal.next()==10&&normal.next()==20,"Normal library sequence");
     normal.set_shuffle(true);check(normal.current()==20,"Toggle never advances current identity");auto shuffled=normal.next();check(shuffled!=20,"Enabled mode next shuffled without immediate repeat");
@@ -55,9 +74,26 @@ void order_cases(){
 }
 void settings(const std::filesystem::path& root){
     auto cfg=keyboard_configuration(root);check(cfg.enabled&&cfg.bindings[0].key==0x75&&cfg.bindings[3].key==0x78,"Approved four default keys");
+    for(auto b:cfg.bindings)check(b.modifiers==3,"Missing INI preserves Ctrl+Shift defaults");
     text(root/"playlist.ini","[Keyboard]\nEnabled=1\nPrevious=Ctrl+Shift+F1\nNext=Ctrl+Shift+F2\nToggleShuffle=Ctrl+Shift+F3\nShuffleAndAdvance=None\n");
     cfg=keyboard_configuration(root);check(cfg.bindings[0].key==0x70&&cfg.bindings[2].key==0x72&&!cfg.bindings[3].key,"All shortcuts configurable/individually disabled");
     for(auto value:{"Next=Ctrl+Shift+F6","Next=F7","Next=Ctrl+Shift+F12","Enabled=maybe","Next=Ctrl+Shift+F25"}){text(root/"playlist.ini",std::string("[Keyboard]\n")+value+"\n");refused([&]{keyboard_configuration(root);});}
+    text(root/"playlist.ini","[Keyboard]\nPrevious=Ctrl+F6\nNext=Ctrl+Alt+F7\nToggleShuffle=Ctrl+Shift+F8\nShuffleAndAdvance=Alt+Shift+Ctrl+F9\n");
+    cfg=keyboard_configuration(root);check(cfg.bindings[0].modifiers==1&&cfg.bindings[1].modifiers==5&&cfg.bindings[2].modifiers==3&&cfg.bindings[3].modifiers==7,"Per-action Ctrl/Shift/Alt combinations and modifier ordering");
+    text(root/"playlist.ini","[Keyboard]\nEnabled=0\nPrevious= cTrL + f6 \nNext= aLt + cTrL + f7 \nToggleShuffle=None\nShuffleAndAdvance=none\n");
+    cfg=keyboard_configuration(root);check(!cfg.enabled&&cfg.bindings[0].modifiers==1&&cfg.bindings[1].modifiers==5&&!cfg.bindings[2].key&&!cfg.bindings[3].key,"Case spaces disabled actions and disabled keyboard preserved");
+    for(auto prefix:{"Ctrl+","Ctrl+Shift+","Ctrl+Alt+","Ctrl+Alt+Shift+"}){
+        for(unsigned n=1;n<=24;++n){
+            std::string value=std::string(prefix)+"F"+std::to_string(n);
+            text(root/"playlist.ini","[Keyboard]\nPrevious=None\nToggleShuffle=None\nShuffleAndAdvance=None\nNext="+value+"\n");
+            bool reserved=n==12||(n==4&&std::string(prefix).find("Alt")!=std::string::npos);
+            if(reserved)refused([&]{keyboard_configuration(root);});else{cfg=keyboard_configuration(root);check(cfg.bindings[1].key==0x70+n-1,"Every supported function-key range parsed");}
+        }
+    }
+    for(auto value:{"Ctrl+Ctrl+F7","Ctrl+Alt+Alt+F7","Ctrl+Shift+Shift+F7","Ctrl++F7","+Ctrl+F7","Ctrl+F7+","Ctrl+Win+F7","Win+F7","Alt+F7","Shift+F7","Ctrl+F","Ctrl+F0","Ctrl+F25","Ctrl+F-1","Ctrl+F7x","Ctrl+F123","Ctrl+F7+Alt","Ctrl+Alt+F4","Ctrl+Shift+Alt+F4","Ctrl+Alt+F12"}){
+        text(root/"playlist.ini",std::string("[Keyboard]\nNext=")+value+"\n");refused([&]{keyboard_configuration(root);});}
+    text(root/"playlist.ini","[Keyboard]\nPrevious=Ctrl+F7\nNext=Ctrl+Alt+F7\n");refused([&]{keyboard_configuration(root);});
+    text(root/"playlist.ini",std::string("[Keyboard]\nNext=Ctrl+")+std::string(150,' ')+"F7\n");refused([&]{keyboard_configuration(root);});
     auto dir=root/"State";
     {ShuffleStore store(dir);check(store.available()&&store.mode(),"Missing state preserves prior shuffle-on default");check(store.save(false)&&!store.mode(),"Persist shuffle off");ShuffleStore busy(dir);check(!busy.available()&&!busy.save(true),"Exclusive preference ownership");}
     {ShuffleStore store(dir);check(store.available()&&!store.mode(),"Restore preference across launches");auto before=read_file(dir/"shuffle-mode.txt");
@@ -128,7 +164,7 @@ int wmain(int argc,wchar_t** argv){
     handles("before child first use");child_persistence(root);handles("after child first use");
     check(GetProcessHandleCount(GetCurrentProcess(),&before)!=0,"Initial handles after child-launch API initialization");
     for(unsigned i=0;i<3;++i){child_persistence(root);DWORD n{};GetProcessHandleCount(GetCurrentProcess(),&n);check(n==before,"Repeated child launch closes exact handles");}
-    inputs();order_cases();settings(root);handles("settings");
+    inputs();configurable_modifiers();order_cases();settings(root);handles("settings");
     auto pcm=root/"pcm";std::filesystem::create_directories(pcm);engine_cases(pcm);handles("engine");
     delayed_persistence(make_tracks(pcm,4,100000));handles("delayed");
     scoped_queue(make_tracks(pcm,4,100000));handles("scoped");producers(make_tracks(pcm,4,100000));handles("producers");child_persistence(root);handles("child");

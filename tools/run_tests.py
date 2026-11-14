@@ -19,7 +19,7 @@ def main():
     wav=[source/'playlist/wav_pipeline.cpp',source/'playlist/mp3_reader.cpp',source/'playlist/normalization.cpp',work/'ebur128.o']
     cache=[source/'playlist/persistent_cache.cpp',source/'playlist/library.cpp']
     keys=[source/'playlist/keyboard_settings.cpp',source/'playlist/windows_keyboard.cpp']
-    groups={'startup_policy_tests':[],
+    groups={'startup_policy_tests':[],'personal_gain_tests':[],
       'wav_pipeline_tests':wav,'cache_tests':[*stream,*wav,*cache],
       'notification_tests':[*stream,*wav],'notification_peak_tests':[*stream,*wav],
       'stream_engine_tests':[*stream,*wav,source/'playlist/windows_controls.cpp'],

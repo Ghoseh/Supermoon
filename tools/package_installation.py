@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: MIT
 """Assemble a reproducible installation ZIP from an exact pinned DLL pair; never install/publish.
 
-The archive has an example INI only. The supported installation path is the
-four-file installer, not extraction onto an existing game directory.
+The archive has complete default and example INIs. Setup manages four activation
+resources and separately completes user configuration with a verified backup.
+Never extract directly over an existing game directory.
 """
 from pathlib import Path
 import argparse,json,zipfile
@@ -24,19 +25,19 @@ def members(dll_dir,recipe):
         files[name]=(ROOT/name).read_bytes()
     for name in ['Setup.ps1','setup/Supermoon.Setup.psm1','setup/Native.cs','audio_patch.json']:
         files['Supermoon/tools/'+name]=(ROOT/'tools'/name).read_bytes()
+    for name in ['Upgrade120.ps1','DefaultIni.ps1','legacy120/Supermoon120.psm1','legacy120/Native.cs','legacy120/recipe.json','legacy120/audio_patch.json']:
+        files['Supermoon/tools/setup/'+name]=(ROOT/'tools/setup'/name).read_bytes()
     files['Supermoon/build/recipe.json']=(json.dumps(recipe,indent=2)+'\n').encode()
     files['Supermoon/playlist.example.ini']=(ROOT/'source/playlist/playlist.example.ini').read_bytes()
+    files['Supermoon/playlist.ini']=files['Supermoon/playlist.example.ini']
+    if identity(files['Supermoon/playlist.ini'])!=recipe['configuration_defaults']:raise ValueError('Unqualified default INI template')
     for name in ['INSTALL.md','README.md','CHANGELOG.md','COPYING','LICENSING.md','ASSET_NOTICE.md','THIRD_PARTY_NOTICES.md']:
         files['Supermoon/'+name]=(ROOT/name).read_bytes()
     # Include the documentation linked by README/INSTALL in the end-user package.
     # Current user guides only. Historical release/qualification prose stays in
     # source rather than being presented as this rebuilt pair's qualification.
-    for name in ['BUILD_AND_PROVENANCE.md','DEVELOPER_GUIDE.md','QUALIFICATION.md','VERSION_TRANSITION.md','CONFIGURATION_AND_LAYOUT.md',
-                 'DEPENDENCIES.md','DEPENDENCIES.json','SUPERMOON_V1_KNOWN_LIMITATIONS.md',
-                 'SUPPORTED_FORMATS.md','TROUBLESHOOTING.md','RELEASE_NOTES.md',
-                 'NMS26540391_MIGRATION.md','CONTROLLED_LIVE_TEST.md']:
+    for name in ['CONFIGURATION_AND_LAYOUT.md','SUPPORTED_FORMATS.md','TROUBLESHOOTING.md','RELEASE_NOTES.md','UPGRADE_1_2_0.md']:
         files['Supermoon/docs/'+name]=(ROOT/'docs'/name).read_bytes()
-    files['Supermoon/tests/README.md']=(ROOT/'tests/README.md').read_bytes()
     files['Supermoon/LICENSE']=(ROOT/'LICENSE').read_bytes()
     for name in ['Zig-MIT.txt','toolchain-only-winpthreads-MIT.txt','musl-derived-math-per-file-NOTICES.txt',
                  'musl-COPYRIGHT.txt','MinGW-COPYING-ZPL-2.1.txt','Lucent-gdtoa-per-file-NOTICES.txt',
@@ -44,7 +45,7 @@ def members(dll_dir,recipe):
                  'libebur128-COPYING.txt','dr_mp3-repository-LICENSE.txt','dr_mp3-header-and-minimp3-notices.txt',
                  'Berkeley-queue-BSD-3-Clause.txt']:
         files['Supermoon/licenses/'+name]=(ROOT/'licenses'/name).read_bytes()
-    assert not any(Path(n).name.casefold()=='playlist.ini' for n in files)
+    assert files['Supermoon/playlist.ini']==files['Supermoon/playlist.example.ini']
     manifest=(json.dumps({'purpose':'Supermoon '+recipe['version']+' Windows x64 Python-free installation',
                          'qualification':recipe.get('qualification','Unspecified; no live qualification implied'),
                          'native_checkpoint':'5d4671694eb0f020f10a63b2a600dbc820f05534',

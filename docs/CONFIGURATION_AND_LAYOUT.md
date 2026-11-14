@@ -1,63 +1,63 @@
-# Music folders and settings
+# Configuration and music folders
 
-The usual music folder is `Binaries/Supermoon/Music`. Add supported WAV/MP3 files
-directly inside it; subfolders are not scanned. Restart NMS after library changes.
-
-Your optional `playlist.ini`, Cache and State are stored beside the payload DLL
-under `Binaries/Supermoon`. Cache contains prepared audio; State holds saved
-preferences and startup records. Keep these folders and your INI during updates.
-Preserve music stored at any external path too.
-
-## Optional configuration
-
-Defaults work without an INI. If no personal `playlist.ini` exists, you may copy
-the supplied example and edit it with NMS closed. Never overwrite an existing
-personal INI with the example.
+Setup creates a complete `Binaries/Supermoon/playlist.ini` automatically. All 12
+supported options are present at their defaults. On upgrades, existing values
+and comments are preserved; only missing options are added after an exact backup.
+Restart NMS after changes. Music, Cache, State and logs are preserved.
+Edit the installed file after setup; no need to add settings manually.
 
 ```ini
 [Playlist]
 Music=Music
 CacheMiB=3072
-[Normalization]
-Enabled=1
-TargetLUFS=-16
-TruePeakDBTP=-1
+[Audio]
+VoiceGainDb=3.0
 [Keyboard]
 Enabled=1
 Previous=Ctrl+Shift+F6
 Next=Ctrl+Shift+F7
 ToggleShuffle=Ctrl+Shift+F8
 ShuffleAndAdvance=Ctrl+Shift+F9
+[Normalization]
+Enabled=1
+TargetLUFS=-16
+TruePeakDBTP=-1
 [Notifications]
 ShuffleSounds=1
 ```
 
-Relative Music paths are resolved from the mod folder, not the terminal's current
-directory. Absolute paths are also supported. Use a stable local library and keep
-original music independently backed up.
+Music paths are relative to the installed Supermoon directory; absolute paths
+are supported. Add supported WAV/MP3 files directly, without subfolders. Cache
+holds prepared audio; State holds preferences/startup records. Keep originals.
+CacheMiB is 16..65536, default 3072; occupied/unknown files can limit preparation.
 
-CacheMiB accepts 16–65536 MiB. It covers the Cache folder, including temporary
-preparation data and unknown files, rather than original music or every diagnostic
-file. Unknown or in-use entries can prevent new cache entries. Incomplete folder
-scans preserve cache data; a complete scan can remove obsolete managed pairs.
+VoiceGainDb accepts finite decimals from 0.0 to 6.0, such as 1.5 or 4.5. Missing
+setting defaults to 3.0; explicit 0.0 gives neutral behavior. Invalid/empty values
+fall back to neutral. No live reload or volume hotkeys. Gain affects the verified
+personal ByteBeat voice; native personal ByteBeat can inherit it. Guards can
+skip an increase. No PCM multiplier, added compression/limiter or shared-bus gain.
 
-Normalization accepts finite TargetLUFS values from -60 to 0 and TruePeakDBTP
-from -20 to 0. It applies constant gain, not dynamic compression or limiting.
-Invalid settings may prevent preparation; check the preparation log.
+Each keyboard action accepts Ctrl with optional Shift and/or Alt followed by
+F1..F24, except F12 and Alt+F4 combinations. Order/case/spaces do not matter;
+duplicate modifiers, unknown tokens and duplicate function keys refuse. `None`
+disables an action; Enabled=0 disables keyboard controls. Invalid optional
+settings disable that feature and are reported in the preparation/startup logs.
+Examples: Next=Ctrl+F7, Next=Ctrl+Alt+F7, Next=Ctrl+Shift+F7. Native input is not
+blocked: Shift can boost/run, Alt can activate cockpit free look. Extra modifiers
+must match exactly. Overlays/custom/native bindings can still interfere.
 
-Shortcuts use unique Ctrl+Shift+F1–F24 combinations, excluding F12, or None.
-Plain F6–F9 are not the defaults. Overlays, focus and other bindings can interfere.
-Invalid optional keyboard/notification settings disable that feature and are logged.
+Optional normalization stays unchanged:
 
-Shuffle preference persists, but song position/history does not persist between
-sessions. The two shuffle cues are embedded notifications, not selectable songs.
+```ini
+[Normalization]
+Enabled=1
+TargetLUFS=-16
+TruePeakDBTP=-1
+[Notifications]
+ShuffleSounds=1
+```
 
-## Setup files and removal
-
-The installation guide lists the exact DLL, marker and bank paths. Keep the staged
-setup folder together with its recipe and tools, and keep matching recovery records.
-Do not rename the installed marker or bank folders. Use the same release's tools
-to inspect, recover or disable the installation with NMS closed.
-
-The menu bank also changes built-in ByteBeat audio. Removing only the DLLs leaves
-that effect installed. Preserve unrelated files and original game banks.
+TargetLUFS accepts -60..0 and TruePeakDBTP -20..0. Constant normalization preserves
+dynamics; no new compression is introduced by this release. Invalid processing
+settings can stop preparation; inspect preparation-latest.log. Shuffle preference
+persists, song position/history does not persist across sessions.

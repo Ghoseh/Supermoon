@@ -40,28 +40,31 @@
   "DLLs": {
     "winmm.dll": {
       "bytes": 948224,
-      "sha256": "e2ff82fec494f62549a9de6e94fee90a07292170d57ec1b94e8e2cbf94533b56"
+      "sha256": "2fccc5d3bbdb700a5b6f5acf72eb739d99b321f889013d413ef3e630c388efc4"
     },
     "supermoon_playlist.dll": {
-      "bytes": 6165504,
-      "sha256": "0bb13ce24c6adaf351245ce95fcecfd4373e43c0ef9b17531ced23e15543d2fe"
+      "bytes": 6341632,
+      "sha256": "50511f0ddf93be6da9d09ecb340fcb16961d76bc1f9e74f0635733fee472fbae"
     }
   },
   "game_executable_sha256": "092236962ee050e419424699b5c343a0173f7773d5ad0866b7ec366d334c07d4",
   "game_executable_bytes": 89540680,
   "steam_build_id": 26540391,
-  "qualification": "Exact live-tested 26540391 DLL pair retained. Focused independent native review and one owner-run desktop session passed; not four-hour endurance or all-schedule safety. M2 three failures, conditional H1 timeout and RADAR_PRE_LEAK_64 observation remain unresolved; see release notes.",
-  "version": "1.2.0",
+  "qualification": "Supermoon 1.2.1 maintenance: gain precursor live-tested at +3 dB; final default, keyboard and upgrade qualified offline. No final-pair live or endurance claim.",
+  "version": "1.2.1",
   "binary_provenance": {
-    "base_checkpoint": "e0add1a063adbf7e5512bcbda948f09d6260ffcf",
-    "native_contract_base": "Steam 26385139",
-    "retained_byte_for_byte": false,
-    "new_pair_awaiting_build_and_offline_tests": false,
-    "private_pair_built": true,
-    "live_qualified": true,
-    "independent_review_pending": false,
-    "focused_live_test_passed": true,
-    "public_pair_retained_byte_for_byte": true,
-    "live_qualification_scope": "One focused owner-run desktop session on26540391, not four-hour endurance or all-schedule safety"
+    "base_checkpoint": "a8d3c652edd98979aea1c9693a4e8867082d96f2",
+    "private_pair_built": false,
+    "live_qualified": false,
+    "focused_live_test_passed": false,
+    "gain_precursor_live_tested": true,
+    "gain_precursor_applications": 13666,
+    "final_pair_live_tested": false,
+    "default_voice_gain_db": 3,
+    "native_PCM_cache_lifecycle_unchanged": true
+  },
+  "configuration_defaults": {
+    "bytes": 913,
+    "sha256": "90c7720b6673c516a9062159ced3bdd79c916ce0e88cb5a614b17c63e4d81499"
   }
 }

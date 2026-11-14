@@ -1,32 +1,40 @@
-# Qualification of the v1.2.0 runtime pair
+# Qualification: Supermoon v1.2.1
 
-Scope: Windows x64 desktop Steam NMS26540391, exact pair in BUILD_AND_PROVENANCE.md.
-Focused independent static/native fixture review passed for the mapped compatibility
-contracts. Offline PowerShell installation/status/disable/recovery was tested with
-Python unavailable to setup. Public archive tests cover the actual extracted ZIP;
-the accompanying release receipt identifies final hashes and coverage.
+Steam NMS build 26540391 only. Final hashes are in BUILD_AND_PROVENANCE.md and
+build/recipe.json. Gain precursor was owner-tested at +3 dB, with 13,666 recorded
+gain applications and reported noticeable loudness improvement. Its 0 dB baseline
+recorded no gain registrations or applications. Native personal inheritance was
+explicitly accepted. These observations are not final-output peak measurements.
 
-One owner-run focused desktop session lasted about11 minutes of sampled game
-presence, not four hours. Owner reported all requested functions worked, including
-PCM playback/ambience, Stop/Play, Next/Previous/shuffle, teleport/hyperdrive,
-reload/source recreation and restored playback. Logs independently recorded32547
-provider callbacks,12671587 custom substituted frames and three source retirements,
-with zero recorded callback exceptions/fault rows. Three source/parameter/event
-slots were used; two rejected late admissions and3485 empty PCM frames were recorded.
-They are disclosed counts, not independent proof of an audible fault.
-Nine soundtrack-control commands returned acknowledged success. The winning bank
-and each travel type were not directly instrumented; audible/travel results are
-owner observations. Process exit was observed, not a proof of native draining.
+The final pair differs: missing VoiceGainDb now defaults to +3, and inaccessible,
+directory or reparse INI paths reject gain neutrally. Explicit 0..6 values remain
+unchanged. No new PCM boost, compressor, limiter, EQ or shared-bus adjustment.
+The callback/connection/lifetime implementation and keyboard polling/edge/dispatch
+code remain unchanged; modifier parsing extends the default-compatible grammar.
 
-The conditional H1 timeout and three M2 failures remain unresolved, with original
-severity and historical findings preserved. The retained native-remediation suite
-remains overall FAIL (81 PASS,3 FAIL,1 TIMEOUT). It was not rerun or weakened to package
-this release. A new RADAR_PRE_LEAK_64 resource observation was recorded for NMS;
-there was no owner-reported crash/instability and no cause attribution. No clean-game
-comparison, leak diagnosis or broad resource qualification follows from this run.
+Focused offline qualification covers actual startup INI API/default/failure
+behavior, neutral and positive target gains, nonaccumulation/reuse/concurrency,
+native callback fixture ownership/retirement/cancellation, keyboard parsing and
+input edges, existing playback/notifications and activation policy. No live
+keyboard test is claimed or required by the owner. The final pair was not run
+in NMS; no new audible output/effects or live routing conclusion is implied.
 
-Setup is not universally crash/power-loss durable and its cooperative lock cannot
-exclude hostile writers. Signed/managed-policy, storage and Windows-version matrices
-are limited. Legacy migration requires matching tools and archival, not record
-relabeling. These are finite observations and explicit caveats, not universal safety.
-Previous Phase 6/four-hour results belong to a different pair and do not transfer.
+Installation tests use the actual extracted final Windows package with Python
+absent from setup-child PATH. They cover fresh installation/status/disable,
+explicit public v1.2.0 upgrade with exact published DLLs and matching generated
+records, independent new records/verified old archives, preservation, interrupted
+phases, sharing failures, inactive rollback, unsupported builds and unknown/corrupt
+state rejection. Native game inputs are owner-supplied offline bytes, not executed.
+
+Release receipts outside the source identify final results/counts and artifacts.
+Checks also cover reproducible DLLs/ZIPs, exact manifests/checksums, licenses and
+private-path/asset exclusion. This is focused maintenance qualification, not a
+new comprehensive or endurance audit. Accepted M2/H1 findings and the historical
+RADAR observation remain unresolved/unchanged; no old severity or evidence is
+reclassified. No universal callback schedule, power-loss durability, hostile-writer
+or broad storage/Windows/overlay/VR/multiplayer matrix guarantee is made.
+
+INI distribution revision: complete active/template INI, additive missing-key
+completion with original backups and atomic writes, idempotent retry, retained
+user configuration on Disable/rollback. These installer-only changes do not
+change either qualified DLL. Separate INI and extracted-package tests apply.

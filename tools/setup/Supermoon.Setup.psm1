@@ -57,6 +57,7 @@ function New-SMContext($Game,$Recipe,$Plan) {
     $gamePath=[SupermoonSetup.Native]::PathName($Game);[SupermoonSetup.Native]::NoReparse($gamePath)
     if ($gamePath.Length -le 3 -or -not [IO.Directory]::Exists($gamePath)) { throw 'Select the existing game root containing Binaries and GAMEDATA.' }
     $c=@{Game=$gamePath;Recipe=$Recipe;Plan=$Plan;Store=(Join-Path $gamePath '.Supermoon-Recovery')}
+    if($Recipe['version'] -ceq '1.2.1'){$c.Store=Join-Path $gamePath '.Supermoon-Recovery-1.2.1'}
     $c.Expected=@{proxy=$Recipe['DLLs']['winmm.dll'];payload=$Recipe['DLLs']['supermoon_playlist.dll'];bank=@{bytes=$Plan['output_bytes'];sha256=$Plan['output_sha256']};marker=(Get-SMIdentity $script:Marker)}
     # Validate identities before they can authorize target/recovery operations.
     foreach($id in @($c.Expected.Values)+@(@{bytes=$Recipe['game_executable_bytes'];sha256=$Recipe['game_executable_sha256']})) {
@@ -172,7 +173,9 @@ function Invoke-SMMutation($C,$Action,$Desired=$null,$Record=$null) {
     try {
         if($Action -cin @('install','update')){Assert-SMGame $C;$r=New-SMRecord $C $Desired;$Action='install'}
         else {$r=Get-SMRecord $C $Record;[void](Assert-SMLive $C $r.Manifest);if($Record){$digest=(Get-SMCurrent (Join-Path $r.Folder 'manifest.json'))['sha256'];Write-SMJson (Join-Path $C.Store 'ACTIVE.json') @{record=$Record;manifest_sha256=$digest}}}
-        try {$apply=if($Action -ceq 'resume'){'install'}else{$Action};return Invoke-SMApply $C $r $apply}
+        try {$apply=if($Action -ceq 'resume'){'install'}else{$Action};$configuration=$null
+            if($apply -ceq 'install'){$configuration=Invoke-SMConfigDefaults $C}
+            $result=Invoke-SMApply $C $r $apply;if($null -ne $configuration){$result.configuration=$configuration};return $result}
         catch { $message=$_.Exception.Message;try{Write-SMJson (Join-Path $r.Folder 'journal.json') @{phase='failed';action=$Action;error=$message;observed=(Get-SMObserved $C)}}catch{}
             throw ('Operation incomplete; bank may already be replaced. Keep NMS closed. Recovery: '+$r.Folder+'; '+$message)
         }
@@ -184,6 +187,10 @@ function Get-SMStatus($C,$Record=$null) {
     $supported=$false;$gameError=$null
     try{$supported=Test-SMGame $C}catch{$gameError=$_.Exception.Message}
     $result=@{game=$C.Game;game_supported=$supported;recovery_root=$C.Store;observed=(Get-SMObserved $C);records=@()}
+    if($C.Recipe['version'] -ceq '1.2.1'){
+        $result.legacy_recovery_present=[IO.Directory]::Exists((Join-Path $C.Game '.Supermoon-Recovery'))
+        if(Test-SMUpgradePending $C){try{$result.upgrade_phase=(Read-SMJson (Get-SMUpgradePath $C))['phase']}catch{$result.upgrade_error=$_.Exception.Message}}
+    }
     if($gameError){$result.game_inspection_error=$gameError}
     $records=Join-Path $C.Store 'records';[SupermoonSetup.Native]::NoReparse($records)
     if([IO.Directory]::Exists($records)){$result.records=@([IO.Directory]::EnumerateDirectories($records) | ForEach-Object {[IO.Path]::GetFileName($_)} | Where-Object {$_ -cmatch '^[0-9a-f]{32}$'})}
@@ -247,17 +254,27 @@ function Invoke-SMOperation($C,$Action,$Package=$null,$Record=$null) {
     $Action=$Action.ToLowerInvariant()
     if($Action -ceq 'status'){return Get-SMStatus $C $Record}
     if($Action -ceq 'generate'){$bank=Get-SMAudioBank $C;return @{result='PASS_GENERATED_IN_MEMORY_NO_GAME_WRITES';identity=(Get-SMIdentity $bank)}}
+    if($Action -ceq 'upgrade'){if($Record){throw 'Upgrade does not accept Record.'};return Invoke-SMUpgrade120 $C $Package}
+    if($Action -ceq 'resume' -and -not $Record -and (Test-SMUpgradePending $C)){return Invoke-SMUpgrade120 $C $Package}
+    if($Action -cin @('resume','disable','rollback') -and -not $Record -and (Test-SMUpgradePending $C) -and $null -eq (Get-SMActive $C)){
+        if($Action -ceq 'resume'){return Invoke-SMUpgrade120 $C $Package}
+        return Stop-SMUpgrade120 $C
+    }
     if($Action -cin @('install','update')){
+        if($C.Recipe['version'] -ceq '1.2.1' -and [IO.Directory]::Exists((Join-Path $C.Game '.Supermoon-Recovery')) -and $null -eq (Get-SMActive $C)){throw 'Existing legacy recovery requires explicit Upgrade from verified public v1.2.0; do not delete or edit records.'}
         if(-not $Package -or $Record){throw 'Install/update requires a separately extracted package, without Record.'}
         $packagePath=[SupermoonSetup.Native]::PathName($Package);[SupermoonSetup.Native]::NoReparse($packagePath)
         if((Test-SMWithin $packagePath $C.Game) -or (Test-SMWithin $C.Game $packagePath)){throw 'Extract the package separately, outside the game tree.'}
         Assert-SMClosed;Assert-SMGame $C;Assert-SMNoLooseConflict $C
         $desired=@{proxy=(Read-SMFile (Join-Path $packagePath 'winmm.dll'));payload=(Read-SMFile (Join-Path $packagePath 'Supermoon/supermoon_playlist.dll'));marker=(Read-SMFile (Join-Path $packagePath 'bytebeat-playlist-experimental.enabled'))}
         foreach($k in @('proxy','payload','marker')){if(-not(Test-SMEqual (Get-SMIdentity $desired[$k]) $C.Expected[$k])){throw "Wrong/missing package $k"}}
-        $desired.bank=Get-SMAudioBank $C;return Invoke-SMMutation $C $Action $desired
+        $desired.bank=Get-SMAudioBank $C;$C.ConfigTemplate=Get-SMConfigTemplate $C $Package;return Invoke-SMMutation $C $Action $desired
     }
     if($Action -cnotin @('resume','rollback','disable')){throw 'Unknown setup action'}
+    if($Action -ceq 'resume'){$C.ConfigTemplate=Get-SMConfigTemplate $C $Package}
     if($Action -cne 'disable'){Assert-SMNoLooseConflict $C}
     return Invoke-SMMutation $C $Action $null $Record
 }
+. (Join-Path $PSScriptRoot 'Upgrade120.ps1')
+. (Join-Path $PSScriptRoot 'DefaultIni.ps1')
 Export-ModuleMember -Function New-SMContext,Read-SMJson,Get-SMStatus,Invoke-SMOperation

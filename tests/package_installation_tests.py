@@ -36,12 +36,13 @@ def main():
               'Supermoon/tools/setup/Supermoon.Setup.psm1', 'Supermoon/tools/setup/Native.cs',
               'Supermoon/tools/audio_patch.json', 'Supermoon/build/recipe.json',
               'Supermoon/INSTALL.md', 'Supermoon/THIRD_PARTY_NOTICES.md',
-              'Supermoon/ASSET_NOTICE.md', 'Supermoon/docs/NMS26540391_MIGRATION.md',
-              'Supermoon/docs/CONTROLLED_LIVE_TEST.md']
+              'Supermoon/ASSET_NOTICE.md', 'Supermoon/docs/UPGRADE_1_2_0.md',
+              'Supermoon/tools/setup/Upgrade120.ps1', 'Supermoon/tools/setup/legacy120/Supermoon120.psm1']
     assert all((extracted / n).is_file() for n in needed)
     forbidden = {'.py', '.pyc', '.exe', '.bnk', '.pak', '.wav', '.mp3', '.pdb'}
     assert not any(Path(n).suffix.casefold() in forbidden for n in names)
-    assert not any(Path(n).name.casefold() == 'playlist.ini' for n in names)
+    assert [n for n in names if Path(n).name.casefold() == 'playlist.ini']==['Supermoon/playlist.ini']
+    assert (extracted/'Supermoon/playlist.ini').read_bytes()==(extracted/'Supermoon/playlist.example.ini').read_bytes()
     assert {n for n in names if n.endswith('/')} == {'Supermoon/Music/'}
     assert (extracted / 'Supermoon/Music').is_dir() and not list((extracted / 'Supermoon/Music').iterdir())
     assert not any(set(PurePosixPath(n).parts) & {'Music', 'Cache', 'State', '.Supermoon-Recovery'} for n in names if not n.endswith('/'))

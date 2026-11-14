@@ -1,32 +1,26 @@
-Supermoon v1.2.0 - Windows x64 desktop Steam NMS26540391
+Supermoon v1.2.1 - Windows x64 desktop Steam NMS build 26540391
 
-1. Close NMS; keep Steam updates and other file writers idle.
-2. Verify the ZIP's trusted SHA-256 and extract the complete archive into persistent
-   staging outside game/TEMP. Never merge it directly over the game folder.
-3. Double-click Setup.cmd. Confirm/enter the root containing Binaries and GAMEDATA.
-4. Choose Install and type INSTALL for the target. Require verified completion,
-   then inspect Status (candidate_present, supported executable, verified journal).
-5. Add songs to the INSTALLED Binaries/Supermoon/Music folder (create if absent),
-   or retain your configured library. The ZIP's empty Music folder is a layout
-   reference; setup does not copy songs/configuration from staging.
-6. Launch normally, enable mods/Supermoon in normal settings, select Supermoon in
-   personal ByteBeat and Play. First registration can require normal exit/restart.
+Close NMS. Verify the ZIP checksum and extract completely to a persistent folder
+outside the game/TEMP. Run Setup.cmd and confirm the game root containing Binaries
+and GAMEDATA. Choose Install for a fresh game, or 8 Upgrade for public v1.2.0.
+Type INSTALL or UPGRADE, require verified completion, then inspect Status.
+Do not extract over the game or manually replace DLLs. Keep this complete stage
+and both versioned recovery stores. See Supermoon/INSTALL.md and SETUP_SECURITY.txt.
 
-Fresh setup/recovery needs built-in Windows PowerShell Desktop 5.1 and Framework
-support, not Python, an external compiler or installer EXE. Keep this whole stage
-and recovery backups. Read Supermoon/INSTALL.md and SETUP_SECURITY.txt.
-Existing legacy recovery can need matching old Python tools. Different policies
-must not merge/relabel records. Never restore old incompatible RC DLLs on 26540391.
+No Python/compiler/download is required. Built-in Windows PowerShell Desktop 5.1
+and Windows/.NET Framework support are needed; managed script policy may refuse.
+No elevation, AV disabling or persistent policy change is performed.
 
-Setup preserves personal music, INI, Cache, State, settings/logs and unrelated files.
-Runtime replaces latest logs and updates its data: archive before another launch.
-No bank/music assets ship. The bank is generated locally from verified game input.
-Uninstall/recovery: with NMS closed, matching Status then deliberate Disable,
-then Status and verify all four resources absent, including the bank. Keep records.
-On failure do not force files/hashes or delete whole folders; see INSTALL.md.
-No AV disabling, persistent-policy change, silent elevation or downloads.
+Add WAV/MP3 music directly to installed Binaries/Supermoon/Music. Existing personal
+files are preserved. Setup supplies a complete playlist.ini automatically, or
+backs up your original and adds only missing defaults. Existing values/comments
+are kept. Edit the installed file, not the staging copy. VoiceGainDb defaults to
++3 dB; configure 0..6 dB and restart NMS.
+Ctrl+Shift+F6..F9 remain defaults; Ctrl-only/Ctrl+Alt alternatives are configurable.
+Enable mods/Supermoon normally, restart if registration needs it, select personal
+ByteBeat Supermoon and Play. Initial library preparation takes time.
 
-Known unresolved M2/H1 and RADAR_PRE_LEAK_64 are documented in release notes and
-known limitations. This pair passed one focused live session, not a four-hour
-endurance test or every possible shutdown schedule. Manual Play after travel is
-intentional. Brief gaps, mono output and finite session storage remain limits.
+For removal, keep NMS closed, run matching Status/Disable/Status and verify all
+four managed resources absent, including the bank. Rollback after fresh setup or
+v1.2.0 Upgrade returns to absence, not old DLLs. Keep records/music/INI/Cache/State.
+On failure preserve records and use matching Resume/Disable; never edit hashes.
