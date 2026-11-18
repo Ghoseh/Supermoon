@@ -17,6 +17,13 @@ script-policy restrictions; setup does not elevate or change persistent policy.
 
 ## Fresh installation
 
+Choose either automatic Setup.cmd below or the optional [manual workflow](MANUAL_INSTALL.md)
+through ManualSetup.cmd. Manual preparation is restricted to fresh inactive
+installations without automatic recovery records. Both use the same v1.2.1 DLLs;
+manual preparation writes only a separate folder for you to copy. It does not
+bypass Windows script restrictions. Existing installations use matching automatic
+setup and recovery; v1.2.0 uses the explicit Upgrade procedure.
+
 Run Setup.cmd, select the game root containing Binaries and GAMEDATA, choose
 Install and type INSTALL. Require Completed: verified. Run Status: require
 candidate_present, game_supported true and journal phase verified.
@@ -26,6 +33,13 @@ Enable mods/Supermoon through normal game settings, restart if registration
 requires it, select Supermoon in personal ByteBeat, then Play.
 
 ## Upgrade published v1.2.0
+
+Manually installed copies use a different update path: close NMS, check and remove
+only the four recognized activation files, verify they are absent, then install
+the newer release using its supported procedure. Keep Music, playlist.ini, Cache,
+State and logs. In-place manual updates are unsupported. See
+[manual update instructions](MANUAL_INSTALL.md#updating-a-manual-installation).
+These steps do not replace the automatic v1.2.0 Upgrade procedure below.
 
 Choose **8 Upgrade published v1.2.0 to v1.2.1** and type UPGRADE. Do not choose
 ordinary Update for this version transition. The explicit procedure verifies

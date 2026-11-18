@@ -16,3 +16,11 @@ inherit gain; normalization, prepared PCM and the game's effects are unchanged.
 Native key/overlay conflicts remain possible. Higher gain does not fix every
 quiet source or mix. Gain was owner-tested in its precursor; final default,
 shortcuts and installer qualification are offline. Previous limitations remain.
+## Optional manual installation tools
+
+Automatic Setup.cmd installation, v1.2.0 upgrades and recovery remain supported.
+ManualSetup.cmd can prepare verified files for a fresh manual installation.
+Manual updates require removing the four activation files before installing the
+new release; in-place manual updates are unsupported. Keep Music, playlist.ini,
+Cache, State and logs. See the manual installation guide for checked removal
+and switching to automatic setup. Runtime DLLs and playback are unchanged.

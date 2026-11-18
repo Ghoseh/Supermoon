@@ -30,7 +30,8 @@ def main():
                    and '\\' not in n and ':' not in n for n in names)
         assert z.testzip() is None
         z.extractall(extracted)
-    needed = ['Setup.cmd', 'SETUP_README.txt', 'SETUP_SECURITY.txt',
+    needed = ['Setup.cmd', 'ManualSetup.cmd', 'MANUAL_INSTALL.md', 'SETUP_README.txt', 'SETUP_SECURITY.txt',
+              'Supermoon/tools/ManualSetup.ps1', 'Supermoon/tools/setup/Supermoon.Manual.psm1', 'Supermoon/MANUAL_INSTALL.md',
               'winmm.dll', 'bytebeat-playlist-experimental.enabled',
               'Supermoon/supermoon_playlist.dll', 'Supermoon/tools/Setup.ps1',
               'Supermoon/tools/setup/Supermoon.Setup.psm1', 'Supermoon/tools/setup/Native.cs',

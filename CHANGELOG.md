@@ -1,5 +1,12 @@
 # Changelog
 
+## Manual-tools revision 1 (v1.2.1 runtime unchanged)
+
+- Add optional fresh-install preparation and verification through ManualSetup.cmd.
+- Retain automatic installation, v1.2.0 upgrade and recovery through Setup.cmd.
+- Preserve personal INI and refuse manual replacement of automatic installations.
+- No changes to the published runtime DLLs or playback behavior.
+
 ## 1.2.1
 
 - Add bounded personal ByteBeat voice gain (0..6 dB, default +3 when absent).

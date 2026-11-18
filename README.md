@@ -7,7 +7,7 @@ without requiring Shift. Steam NMS **build 26540391**, Windows x64 desktop only.
 ## Install or upgrade
 
 Close NMS, verify the download checksum, and extract the complete ZIP to a
-persistent folder outside the game. Run **Setup.cmd**.
+persistent folder outside the game. Run **Setup.cmd** for automatic installation.
 
 - New installation: choose **Install**.
 - Published v1.2.0: choose **Upgrade v1.2.0 to v1.2.1**, then type `UPGRADE`.
@@ -15,8 +15,21 @@ persistent folder outside the game. Run **Setup.cmd**.
 
 Setup uses built-in Windows PowerShell 5.1; no Python or separate compiler is
 required. Keep the extracted setup folder and recovery records. Do not extract
-directly over the game or replace DLLs manually. See [installation](INSTALL.md)
+directly over the game or replace an existing installation's DLLs manually. See [installation](INSTALL.md)
 and the [v1.2.0 upgrade guide](docs/UPGRADE_1_2_0.md).
+
+For a fresh inactive game, **ManualSetup.cmd** can instead prepare verified files
+outside the game for you to copy yourself. It also verifies copied files and
+checks recognized files before manual removal. See [manual installation](MANUAL_INSTALL.md).
+Both routes use the same v1.2.1 DLLs and require built-in Windows PowerShell 5.1.
+Manual preparation creates no automatic recovery records and does not change the
+game. Keep automatic Setup.cmd for existing installations and v1.2.0 upgrades.
+
+**Updating a manual installation requires removing its four activation files
+first, then installing the new release. In-place manual updates are unsupported.**
+Keep Music, playlist.ini, Cache, State and logs; never delete the whole Supermoon
+folder. To switch to automatic setup, remove/verify those four files first, then
+use Setup.cmd Install. See the manual guide's update and removal steps.
 
 Add songs directly to `Binaries/Supermoon/Music`, restart, select Supermoon in
 personal ByteBeat and Play. First-time registration can need a normal restart.

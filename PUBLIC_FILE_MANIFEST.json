@@ -1,7 +1,8 @@
 {
-  "purpose": "Supermoon 1.2.1 public source: complete default INI and safe additive configuration completion; qualified DLL bytes unchanged",
-  "base_public_commit": "a8d3c652edd98979aea1c9693a4e8867082d96f2",
+  "purpose": "Supermoon v1.2.1 manual-tools revision 1; unchanged published runtime; automatic and optional manual preparation; explicit remove-before-update documentation",
+  "base_public_commit": "d13cb26c15341e042ed9169d32001ced71d22bc5",
   "native_checkpoint": "5d4671694eb0f020f10a63b2a600dbc820f05534",
+  "manual_tools_revision": 1,
   "files": {
     ".gitattributes": {
       "bytes": 38,
@@ -20,16 +21,16 @@
       "sha256": "91eaaef87995254e16a793b2f5981b95a3b76a4539c69034f0076ecd341bac82"
     },
     "CHANGELOG.md": {
-      "bytes": 680,
-      "sha256": "6457fc635c4b1791bf19e6b036386f949b7922ba21fb1b48a162f2f1194bf938"
+      "bytes": 1046,
+      "sha256": "92e5d3d12e14d9d82c1e409605d4c9b2d8b8d487f2eadc61396f0cf5225a94e8"
     },
     "COPYING": {
       "bytes": 1059,
       "sha256": "d6b4754bb67bdd08b97d5d11b2d7434997a371585a78fe77007149df3af8d09c"
     },
     "INSTALL.md": {
-      "bytes": 5124,
-      "sha256": "83103820cfa42c050c2f263626fee4f49cf172c682626cf37ac23e3245c32ec5"
+      "bytes": 6059,
+      "sha256": "0f2de413ba5954372b9353fa593677651433d06b8700947bd8fbf3ff4ef3fde0"
     },
     "LICENSE": {
       "bytes": 1097,
@@ -39,17 +40,25 @@
       "bytes": 1927,
       "sha256": "dc9bcab9d66a35a9a85a75200bf3f92abbee0c4262a1b99ea0b3903e9d4a6074"
     },
+    "MANUAL_INSTALL.md": {
+      "bytes": 7704,
+      "sha256": "4fabc46fd4988cf50a1a57ed2de43ee68db377555577815ded763a8ddba014b0"
+    },
+    "ManualSetup.cmd": {
+      "bytes": 919,
+      "sha256": "3f7f12f8cae085fd884c7621802025b27fcfb74fe736192404b5a57ce99ab84d"
+    },
     "README.md": {
-      "bytes": 3763,
-      "sha256": "e56142ab2bd08afb1b6a483ec92fdeb2cecaabd2530f3e70debe919e1c871443"
+      "bytes": 4708,
+      "sha256": "22f4eefb415d7f530b0494dc9b4a0e8384c36188614e843dce8b5f66c7c15f32"
     },
     "SETUP_README.txt": {
-      "bytes": 1709,
-      "sha256": "5f42a4ef084ba5b3d75401c551dd2168e94f093fafd87a9ca0a47fba908abd05"
+      "bytes": 2603,
+      "sha256": "c8fe512f63022bdcb7955a930408d1e585757c3295195003142f1174a30dd614"
     },
     "SETUP_SECURITY.txt": {
-      "bytes": 5000,
-      "sha256": "d8970d8ae9e7780bcaafe1e125bc52cb3f3b64b65dd3d5d1fbb795fa5ce50cf3"
+      "bytes": 5529,
+      "sha256": "40c57dc05cc2bc0db7db72fba0358cc57bcd4c8b293cf3e827c9765f11cdbf54"
     },
     "Setup.cmd": {
       "bytes": 947,
@@ -96,8 +105,8 @@
       "sha256": "5fdd69b89544db5bc426a6e2e67d9c6db136a41014844eed53ce38938fb410ae"
     },
     "docs/RELEASE_NOTES.md": {
-      "bytes": 1135,
-      "sha256": "fa58cc46f4e2b130bb006f26f6e9c3bf2de5cc6034194b20df16df3bb0809e00"
+      "bytes": 1643,
+      "sha256": "7f62137e232b14d1f49f115fe78288418d705d5afaf7cdd10d63b76be456754d"
     },
     "docs/SUPERMOON_V1_KNOWN_LIMITATIONS.md": {
       "bytes": 3234,
@@ -639,6 +648,10 @@
       "bytes": 2257,
       "sha256": "e4f8ae4544c994f2b89c7ebc0ac5f6f05bbde61e0482cdb67c6f768c111093cb"
     },
+    "tests/manual_installation_tests.py": {
+      "bytes": 18808,
+      "sha256": "8de1318a16d7b51348c0363eaae49d807980641ac469138fac094c8e22a3983a"
+    },
     "tests/music_control_recovery_tests.cpp": {
       "bytes": 8469,
       "sha256": "74fc45fa936ced0e18a3c9d060d5ea82d087b66736f55fc3702f3331d58fc1ae"
@@ -664,8 +677,8 @@
       "sha256": "4ec2ad1789fc78de5b7f60276db4eb5ab7278840d765aef6e15d79fd82ec0fdc"
     },
     "tests/package_installation_tests.py": {
-      "bytes": 6405,
-      "sha256": "16e9d0e763b8824c359fa81a162c21595de9fd80fb073e5dafc6e4c2349652d0"
+      "bytes": 6572,
+      "sha256": "831bbb6ef74de83345dc27ef5039762eb54179f3d3a51c2cfcbcfe4c4e4a69b2"
     },
     "tests/parser_cases.py": {
       "bytes": 6022,
@@ -727,6 +740,10 @@
       "bytes": 6107,
       "sha256": "c301191206fd7d78ebf70b415e6a188158c9fb2e99ec74efb624d65c3e63f239"
     },
+    "tools/ManualSetup.ps1": {
+      "bytes": 3356,
+      "sha256": "419d56d400d0fcc152d5091f3301d3829f31548062916ca1e1e78ffbf82d9655"
+    },
     "tools/Setup.ps1": {
       "bytes": 10729,
       "sha256": "e9de5b43f611bb8d6cfd7d571b8f0212b9feb6f797a77adb78c542c275710d0d"
@@ -756,8 +773,8 @@
       "sha256": "fb7a0bf7d7ab9c4626e4ebdc7a969c98ce6aab1600c33b2e441011e234d9612d"
     },
     "tools/package_installation.py": {
-      "bytes": 5558,
-      "sha256": "ad5281979f60c579166d985627343ae64e03e1a4984196c95641a212fdb93273"
+      "bytes": 5774,
+      "sha256": "9b8ff9b73f84931dc6e343e7c948f1a7496fac77e7b5556269731e0bb020f8b6"
     },
     "tools/package_source.py": {
       "bytes": 2355,
@@ -794,6 +811,10 @@
     "tools/setup/Native.cs": {
       "bytes": 11734,
       "sha256": "aa603e5b64bd8a574db2ff956660002d924bba354950dbb10f8fea1bdf53cd26"
+    },
+    "tools/setup/Supermoon.Manual.psm1": {
+      "bytes": 13708,
+      "sha256": "57990ecaa66833cd7ac87057fb86b1ba0b458a2f7bdc9567a41bbb03bc182c99"
     },
     "tools/setup/Supermoon.Setup.psm1": {
       "bytes": 26073,

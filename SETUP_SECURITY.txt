@@ -1,5 +1,13 @@
 Supermoon setup trust and Windows script restrictions
 
+ManualSetup.cmd is an optional fresh-install companion. It uses the same
+Windows PowerShell 5.1/.NET requirements and script-policy restrictions as
+Setup.cmd. It prepares files in a separate local folder and performs read-only
+verification; it never writes inside the selected game. It is not a workaround
+for organization policy or application control. Additional readable code is
+Supermoon/tools/ManualSetup.ps1 and setup/Supermoon.Manual.psm1. Do not broadly
+unblock files or weaken security settings. See MANUAL_INSTALL.md.
+
 Setup.cmd uses Windows' built-in Windows PowerShell 5.1, with no profile. Its
 RemoteSigned execution policy applies only to that child process; it does not
 change CurrentUser or LocalMachine policy or override organization Group Policy.

@@ -21,9 +21,9 @@ def members(dll_dir,recipe):
     files['bytebeat-playlist-experimental.enabled']=MARKER
     # Ordinary installation/recovery uses only Windows PowerShell 5.1. Python
     # development/oracle and version-specific legacy tools stay in source.
-    for name in ['Setup.cmd','SETUP_README.txt','SETUP_SECURITY.txt']:
+    for name in ['Setup.cmd','ManualSetup.cmd','MANUAL_INSTALL.md','SETUP_README.txt','SETUP_SECURITY.txt']:
         files[name]=(ROOT/name).read_bytes()
-    for name in ['Setup.ps1','setup/Supermoon.Setup.psm1','setup/Native.cs','audio_patch.json']:
+    for name in ['Setup.ps1','ManualSetup.ps1','setup/Supermoon.Manual.psm1','setup/Supermoon.Setup.psm1','setup/Native.cs','audio_patch.json']:
         files['Supermoon/tools/'+name]=(ROOT/'tools'/name).read_bytes()
     for name in ['Upgrade120.ps1','DefaultIni.ps1','legacy120/Supermoon120.psm1','legacy120/Native.cs','legacy120/recipe.json','legacy120/audio_patch.json']:
         files['Supermoon/tools/setup/'+name]=(ROOT/'tools/setup'/name).read_bytes()
@@ -31,7 +31,7 @@ def members(dll_dir,recipe):
     files['Supermoon/playlist.example.ini']=(ROOT/'source/playlist/playlist.example.ini').read_bytes()
     files['Supermoon/playlist.ini']=files['Supermoon/playlist.example.ini']
     if identity(files['Supermoon/playlist.ini'])!=recipe['configuration_defaults']:raise ValueError('Unqualified default INI template')
-    for name in ['INSTALL.md','README.md','CHANGELOG.md','COPYING','LICENSING.md','ASSET_NOTICE.md','THIRD_PARTY_NOTICES.md']:
+    for name in ['INSTALL.md','MANUAL_INSTALL.md','README.md','CHANGELOG.md','COPYING','LICENSING.md','ASSET_NOTICE.md','THIRD_PARTY_NOTICES.md']:
         files['Supermoon/'+name]=(ROOT/name).read_bytes()
     # Include the documentation linked by README/INSTALL in the end-user package.
     # Current user guides only. Historical release/qualification prose stays in
@@ -49,7 +49,8 @@ def members(dll_dir,recipe):
     manifest=(json.dumps({'purpose':'Supermoon '+recipe['version']+' Windows x64 Python-free installation',
                          'qualification':recipe.get('qualification','Unspecified; no live qualification implied'),
                          'native_checkpoint':'5d4671694eb0f020f10a63b2a600dbc820f05534',
-                         'end_user_setup':'Windows PowerShell Desktop 5.1 via Setup.cmd; no Python or external build tools',
+                         'end_user_setup':'Windows PowerShell Desktop 5.1: Setup.cmd automatic; ManualSetup.cmd prepares files for manual copying; no Python or external build tools',
+                         'manual_tools_revision':1,
                          'directories':['Supermoon/Music/'],
                          'files':{n:identity(b) for n,b in sorted(files.items())}},indent=2)+'\n').encode()
     files['PUBLIC_FILE_MANIFEST.json']=manifest
